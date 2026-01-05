@@ -73,25 +73,16 @@ It **understands behavior, designs roadmaps, and intervenes intelligently**.
 
 </div>
 
----
-
 ## ✨ Core Features
 
-### 🔹 Core Capabilities
-
-- 🚫 Smart distraction blocking  
-- 🗂️ Structured daily roadmaps  
-- 📊 Real-time progress insights  
-- 🔔 Timely focus interventions  
-
-### 🔸 What Makes Comrade Different
-
-- 🤖 LLM adapts to behavior daily  
-- 🧠 Specialized AI agents (focus, health, planning)  
-- ▶️ Distraction-free learning feeds  
-- 🎙️ Natural voice & text interaction  
-
----
+<div align="center">
+| 🔹 Core Capabilities | 🔸 What Makes Comrade Different |
+|:--|:--|
+| 🚫 Smart distraction blocking | 🤖 LLM adapts to behavior daily |
+| 🗂️ Structured daily roadmaps | 🧠 Specialized AI agents (focus, health, planning) |
+| 📊 Real-time progress insights | ▶️ Distraction-free learning feeds |
+| 🔔 Timely focus interventions | 🎙️ Natural voice & text interaction |
+</div>
 
 ### Feature Comparison
 
