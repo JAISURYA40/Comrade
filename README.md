@@ -110,12 +110,10 @@ It **understands behavior, designs roadmaps, and intervenes intelligently**.
 
 
 
+<div align="center">
+<h3>✨ COMRADE’s UI ✨</h3> 
 
-<h3>✨ COMRADE’s UI ✨</h3>
-
-<br/>
-
-<table cellspacing="16">
+<table cellspacing="20">
   <tr>
     <td><img src="assets/1.jpeg" width="200"/></td>
     <td><img src="assets/2.jpeg" width="200"/></td>
@@ -130,7 +128,7 @@ It **understands behavior, designs roadmaps, and intervenes intelligently**.
   </tr>
 </table>
 
-
+</div>
 <br/><br/>
 
 
