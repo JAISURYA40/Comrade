@@ -3,7 +3,7 @@
 <img src="assets/comrade_logo.png" alt="Comrade Logo" width="240" />
 
 <h1>
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=32&duration=2000&pause=500&color=22C55E&center=true&vCenter=true&width=600&lines=Comrade;Your+AI+Accountability+Partner" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=32&duration=2000&pause=500&color=22C55E&center=true&vCenter=true&width=600&lines=COMRADE;Your+AI+Accountability+Partner" alt="Typing SVG" />
 </h1>
 
 <p align="center">
