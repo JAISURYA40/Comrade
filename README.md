@@ -156,7 +156,7 @@ graph LR
     N --> IE[Intent Extraction]
     N --> ED[Emotion Detection]
 
-    TC --> LLM[LLM Engine (Gemini)]
+    TC --> LLM[LLM Engine - Gemini]
     IE --> LLM
     ED --> LLM
 
@@ -179,9 +179,10 @@ graph LR
     DA --> PER
     RA --> PER
 
-    PER --> UX[User Actions & Feedback]
+    PER --> UX[User Actions and Feedback]
 
     UX --> CL[Continuous Learning]
     CL --> MEM
 
     UX --> UT[User Transformation]
+
