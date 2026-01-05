@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/logo/comrade_logo.png" alt="Comrade Logo" width="220"/>
+<img src="assets/comrade_logo.png" alt="Comrade Logo" width="220"/>
 
 <h2><em>Comrade — Your AI Accountability Partner</em></h2>
 
