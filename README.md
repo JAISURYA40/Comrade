@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/logo/comrade_logo_dark.png" alt="Comrade Logo" width="220"/>
+<img src="assets/logo/comrade_logo" alt="Comrade Logo" width="220"/>
 
 <h2><em>Comrade — Your AI Accountability Partner</em></h2>
 
@@ -144,10 +144,15 @@ It **understands behavior, designs roadmaps, and intervenes intelligently**.
 
 ```mermaid
 graph TB
+
     U[User]
+
     I[Text / Voice Input]
+
     NLP[NLP & Emotion Analysis]
+
     LLM[LLM Engine - Gemini]
+
     MAS[Multi-Agent System]
 
     A1[Planning Agent]
@@ -156,15 +161,31 @@ graph TB
     A4[Notification & Reward Agent]
 
     PER[Personalization & Memory]
-    OUT[Actions & Feedback]
+
+    OUT[Actions, Guidance & Feedback]
+
     LEARN[Continuous Learning]
 
-    U --> I --> NLP --> LLM --> MAS
-    MAS --> A1 --> PER
-    MAS --> A2 --> PER
-    MAS --> A3 --> PER
-    MAS --> A4 --> PER
-    PER --> OUT --> LEARN --> PER
+    %% Flow
+    U --> I
+    I --> NLP
+    NLP --> LLM
+    LLM --> MAS
+
+    MAS --> A1
+    MAS --> A2
+    MAS --> A3
+    MAS --> A4
+
+    A1 --> PER
+    A2 --> PER
+    A3 --> PER
+    A4 --> PER
+
+    PER --> OUT
+    OUT --> LEARN
+    LEARN --> PER
+
 📧 Contact
 <div align="center">
 
