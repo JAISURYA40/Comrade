@@ -143,46 +143,79 @@ Unlike traditional productivity apps, Comrade:
 ## 🛠️ System Architecture
 
 ```mermaid
-graph LR
-    U[User] --> I[Input Handler]
+graph TB
 
-    I --> T[Text Input]
-    I --> V[Voice Input]
+    %% USER LAYER
+    U[User]
 
-    T --> N[NLP Parser]
+    %% INPUT LAYER
+    I[Input Handler]
+    T[Text Input]
+    V[Voice Input]
+
+    %% NLP LAYER
+    N[NLP Parser]
+    TC[Text Cleaning]
+    IE[Intent Extraction]
+    ED[Emotion Detection]
+
+    %% INTELLIGENCE LAYER
+    LLM[LLM Engine - Gemini]
+    MEM[Memory Layer]
+
+    %% AGENT LAYER
+    MAS[Multi-Agent System]
+    PA[Planning Agent]
+    NA[Notification Agent]
+    HA[Habit Tracking Agent]
+    HMA[Health Monitoring Agent]
+    DA[Distraction Agent]
+    RA[Reward System Agent]
+
+    %% PERSONALIZATION & LEARNING
+    PER[Personalization Layer]
+    UX[User Actions and Feedback]
+    CL[Continuous Learning]
+    UT[User Transformation]
+
+    %% FLOW CONNECTIONS
+    U --> I
+    I --> T
+    I --> V
+
+    T --> N
     V --> N
 
-    N --> TC[Text Cleaning]
-    N --> IE[Intent Extraction]
-    N --> ED[Emotion Detection]
+    N --> TC
+    N --> IE
+    N --> ED
 
-    TC --> LLM[LLM Engine - Gemini]
+    TC --> LLM
     IE --> LLM
     ED --> LLM
 
-    LLM --> MEM[Memory Layer]
-    LLM --> MAS[Multi-Agent System]
+    LLM --> MEM
+    MEM --> LLM
 
-    MEM --> MAS
+    LLM --> MAS
 
-    MAS --> PA[Planning Agent]
-    MAS --> NA[Notification Agent]
-    MAS --> HA[Habit Tracking Agent]
-    MAS --> HMA[Health Monitoring Agent]
-    MAS --> DA[Distraction Agent]
-    MAS --> RA[Reward System Agent]
+    MAS --> PA
+    MAS --> NA
+    MAS --> HA
+    MAS --> HMA
+    MAS --> DA
+    MAS --> RA
 
-    PA --> PER[Personalization Layer]
+    PA --> PER
     NA --> PER
     HA --> PER
     HMA --> PER
     DA --> PER
     RA --> PER
 
-    PER --> UX[User Actions and Feedback]
-
-    UX --> CL[Continuous Learning]
+    PER --> UX
+    UX --> CL
     CL --> MEM
 
-    UX --> UT[User Transformation]
+    UX --> UT
 
