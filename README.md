@@ -25,16 +25,6 @@
 
 ## 🎯 The Problem
 
-> **Motivation exists. Consistency doesn't.**
-
-Diwakar is a college student who struggles to study for 10 minutes  
-—but can scroll reels for hours.
-
-He wants success.  
-He lacks **focus, structure, and sustainable execution**.
-
-### ⚠️ Problems Faced
-
 - 🚀 Productivity apps feel like rocket science  
 - 🧭 Big dreams, zero roadmap, lost midway  
 - 🔋 Week 1: Fully charged → Week 2: 3%  
@@ -46,7 +36,9 @@ He lacks **focus, structure, and sustainable execution**.
 - **92%** abandon goals due to lack of structure  
 - **96 phone checks/day** during study sessions  
 
-**This is not laziness — it's a system failure.**
+**Time is what we want most, but what we use worst.”
+    — William Penn
+**
 
 ---
 
@@ -108,18 +100,6 @@ It **understands behavior, designs roadmaps, and intervenes intelligently**.
 
 ---
 
-## 🔍 Opportunities & Differentiation
-
-### Limitations of Existing Apps
-
-**Mindful**
-- Blocks alerts, not distractions  
-- Doom scrolling still possible  
-
-**Regain**
-- Too complex to customize  
-- Focus-only, ignores health  
-
 ### Feature Comparison
 
 <div align="center">
@@ -134,7 +114,7 @@ It **understands behavior, designs roadmaps, and intervenes intelligently**.
 
 </div>
 
-**➡️ Comrade builds systems — not reminders.**
+**➡️ Comrade builds Disciple — not reminders.**
 
 ---
 
@@ -198,34 +178,85 @@ graph TB
 
 ---
 
-## 📧 Contact & Team
-
 <div align="center">
 
-### Team: Pennywise ~ The Coding Clowns
+## 📧 Connect With Us
 
 <br/>
 
-#### 👤 Team Lead
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=20&pause=1000&color=6366F1&center=true&vCenter=true&width=600&lines=Team+Pennywise+~+The+Coding+Clowns;Building+the+future+of+productivity" alt="Team Banner" />
 
-**Harirajan S**  
-📧 [230213.it@rmkec.ac.in](mailto:230213.it@rmkec.ac.in)
+<br/>
+<br/>
+
+### 👑 Team Lead
+
+<table>
+<tr>
+<td align="center" width="200">
+<img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="80" style="border-radius: 50%"/><br/>
+<b>Harirajan S</b><br/>
+<sub>Project Leader</sub><br/>
+<a href="mailto:230213.it@rmkec.ac.in">📧 Email</a>
+</td>
+</tr>
+</table>
 
 <br/>
 
-#### 👥 Team Members
+### 👥 Core Team Members
 
-**Harirajan S** (Leader) – [230213.it@rmkec.ac.in](mailto:230213.it@rmkec.ac.in)  
-**Jaishree** – [230372.it@rmkec.ac.in](mailto:230372.it@rmkec.ac.in)  
-**Jaisurya** – [230600.it@rmkec.ac.in](mailto:230600.it@rmkec.ac.in)  
-**Dhanesh** – [230550.it@rmkec.ac.in](mailto:230550.it@rmkec.ac.in)
+<table>
+<tr>
+<td align="center" width="200">
+<img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="70" style="border-radius: 50%"/><br/>
+<b>Harirajan S</b><br/>
+<sub>Team Leader</sub><br/>
+<a href="mailto:230213.it@rmkec.ac.in">📧 Contact</a>
+</td>
+<td align="center" width="200">
+<img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="70" style="border-radius: 50%"/><br/>
+<b>Jaishree</b><br/>
+<sub>Core Developer</sub><br/>
+<a href="mailto:230372.it@rmkec.ac.in">📧 Contact</a>
+</td>
+<td align="center" width="200">
+<img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="70" style="border-radius: 50%"/><br/>
+<b>Jaisurya</b><br/>
+<sub>Core Developer</sub><br/>
+<a href="mailto:230600.it@rmkec.ac.in">📧 Contact</a>
+</td>
+<td align="center" width="200">
+<img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="70" style="border-radius: 50%"/><br/>
+<b>Dhanesh</b><br/>
+<sub>Core Developer</sub><br/>
+<a href="mailto:230550.it@rmkec.ac.in">📧 Contact</a>
+</td>
+</tr>
+</table>
 
 <br/>
 
 ---
 
-<p align="center">
-Made with ❤️ by Team Pennywise
-</p>
+<br/>
+
+### 🤝 Get In Touch
+
+Have questions or want to collaborate?  
+We'd love to hear from you!
+
+[![Email](https://img.shields.io/badge/Email-Team%20Pennywise-red?style=for-the-badge&logo=gmail&logoColor=white)](mailto:230213.it@rmkec.ac.in)
+[![GitHub](https://img.shields.io/badge/GitHub-Follow%20Us-black?style=for-the-badge&logo=github&logoColor=white)](https://github.com)
+
+<br/>
+
+---
+
+<br/>
+
+<sub>Made by Team Pennywise ~ The Coding Clowns</sub>
+
+**Building discipline, one day at a time.**
 
 </div>
