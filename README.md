@@ -112,16 +112,16 @@ It **understands behavior, designs roadmaps, and intervenes intelligently**.
 
 <table>
 <tr>
-<td><img src="Comrade/assets/1.jpeg" width="200"/></td>
-<td><img src="Comrade/assets/2.jpeg" width="200"/></td>
-<td><img src="Comrade/assets/3.jpeg" width="200"/></td>
-<td><img src="Comrade/assets/4.jpeg" width="200"/></td>
+<td><img src="assets/1.jpeg" width="200"/></td>
+<td><img src="assets/2.jpeg" width="200"/></td>
+<td><img src="assets/3.jpeg" width="200"/></td>
+<td><img src="assets/4.jpeg" width="200"/></td>
 </tr>
 <tr>
-<td><img src="Comrade/assets/5.jpeg" width="200"/></td>
-<td><img src="Comrade/assets/6.jpeg" width="200"/></td>
-<td><img src="Comrade/assets/7.jpeg" width="200"/></td>
-<td><img src="Comrade/assets/8.jpeg" width="200"/></td>
+<td><img src="assets/5.jpeg" width="200"/></td>
+<td><img src="assets/6.jpeg" width="200"/></td>
+<td><img src="assets/7.jpeg" width="200"/></td>
+<td><img src="assets/8.jpeg" width="200"/></td>
 </tr>
 
 </table>
