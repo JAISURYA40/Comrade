@@ -110,7 +110,6 @@ It **understands behavior, designs roadmaps, and intervenes intelligently**.
 
 
 
-<div align="center">
 
 <h3>✨ COMRADE’s UI ✨</h3>
 
@@ -131,7 +130,6 @@ It **understands behavior, designs roadmaps, and intervenes intelligently**.
   </tr>
 </table>
 
-</div>
 
 <br/><br/>
 
