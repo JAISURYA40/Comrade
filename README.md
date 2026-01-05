@@ -210,12 +210,6 @@ graph TB
 <tr>
 <td align="center" width="200">
 <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="70" style="border-radius: 50%"/><br/>
-<b>Harirajan S</b><br/>
-<sub>Team Leader</sub><br/>
-<a href="mailto:230213.it@rmkec.ac.in">📧 Contact</a>
-</td>
-<td align="center" width="200">
-<img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="70" style="border-radius: 50%"/><br/>
 <b>Jaishree</b><br/>
 <sub>Core Developer</sub><br/>
 <a href="mailto:230372.it@rmkec.ac.in">📧 Contact</a>
