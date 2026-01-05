@@ -108,7 +108,7 @@ It **understands behavior, designs roadmaps, and intervenes intelligently**.
 
 ---
 
-### **User Interface**
+### **comrade's UI ✨**
 
 <table>
 <tr>
