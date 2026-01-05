@@ -112,23 +112,18 @@ It **understands behavior, designs roadmaps, and intervenes intelligently**.
 
 <table>
 <tr>
-<td><img src="prism-frontend/assets/img1.jpg" width="200"/></td>
-<td><img src="prism-frontend/assets/img2.jpg" width="200"/></td>
-<td><img src="prism-frontend/assets/img3.jpg" width="200"/></td>
-<td><img src="prism-frontend/assets/img4.jpg" width="200"/></td>
+<td><img src="Comrade/assets/1.jpeg" width="200"/></td>
+<td><img src="Comrade/assets/2.jpeg" width="200"/></td>
+<td><img src="Comrade/assets/3.jpeg" width="200"/></td>
+<td><img src="Comrade/assets/4.jpeg" width="200"/></td>
 </tr>
 <tr>
-<td><img src="prism-frontend/assets/img5.jpg" width="200"/></td>
-<td><img src="prism-frontend/assets/img6.jpg" width="200"/></td>
-<td><img src="prism-frontend/assets/img7.jpg" width="200"/></td>
-<td><img src="prism-frontend/assets/img8.jpg" width="200"/></td>
+<td><img src="Comrade/assets/5.jpeg" width="200"/></td>
+<td><img src="Comrade/assets/6.jpeg" width="200"/></td>
+<td><img src="Comrade/assets/7.jpeg" width="200"/></td>
+<td><img src="Comrade/assets/8.jpeg" width="200"/></td>
 </tr>
-<tr>
-<td><img src="prism-frontend/assets/img9.jpg" width="200"/></td>
-<td><img src="prism-frontend/assets/img10.jpg" width="200"/></td>
-<td><img src="prism-frontend/assets/img11.jpg" width="200"/></td>
-<td><img src="prism-frontend/assets/img12.jpg" width="200"/></td>
-</tr>
+
 </table>
 
 ## 🌟 Impact & Benefits
