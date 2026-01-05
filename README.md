@@ -49,13 +49,6 @@
 It doesn't just track habits.  
 It **understands behavior, designs roadmaps, and intervenes intelligently**.
 
-### What Comrade Does
-
-- Blocks distractions, allows only essentials  
-- Converts goals into daily execution plans  
-- Tracks progress visually and clearly  
-- Supports health alongside productivity  
-
 ---
 
 ## 🎯 Comrade Goals
