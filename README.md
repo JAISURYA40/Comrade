@@ -117,7 +117,7 @@ It **understands behavior, designs roadmaps, and intervenes intelligently**.
 
 </div>
 
-**➡️ Comrade builds Disciple — not reminders.**
+**➡️ Comrade builds Discipline — not reminders.**
 
 ---
 
