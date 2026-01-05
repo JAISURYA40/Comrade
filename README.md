@@ -2,14 +2,18 @@
 
 <img src="assets/comrade_logo.png" alt="Comrade Logo" width="180" />
 
-### *Comrade — Your AI Accountability Partner for Focus & Discipline*
+<h2><i>Comrade — Your AI Accountability Partner for Focus & Discipline</i></h2>
 
 <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=18&duration=3000&pause=1000&color=22C55E&center=true&vCenter=true&width=900&lines=Focus+without+burnout.;Goals+without+confusion.;Discipline+without+guilt.;An+AI+that+keeps+you+on+track+every+day." alt="Typing SVG" />
+
+<br/>
 
 [![Flutter](https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=white)](https://flutter.dev/)
 [![Dart](https://img.shields.io/badge/Dart-0175C2?logo=dart&logoColor=white)](https://dart.dev/)
 [![Android Studio](https://img.shields.io/badge/Android_Studio-3DDC84?logo=android-studio&logoColor=white)](https://developer.android.com/studio)
-[![LLM](https://img.shields.io/badge/LLM-Powered-purple)](#)
+[![LLM](https://img.shields.io/badge/LLM-Gemini%20Powered-purple)](#)
+
+<br/>
 
 **[🎥 Demo](#) • [📱 APK](#) • [📧 Contact](#-contact)**
 
@@ -19,27 +23,28 @@
 
 ## 🎯 The Problem
 
-<h2 align="center" style="font-weight:800; font-size:28px;">
-Motivation exists. Consistency doesn’t.
-</h2>
+<div align="center">
+<h3>Motivation exists. Consistency doesn’t.</h3>
+</div>
 
-Students and young professionals struggle with **sustained execution**, not ambition.
+Students and young professionals don’t fail due to lack of ambition —  
+they fail due to **poor execution systems in a distraction-heavy world**.
 
 <table>
 <tr>
-<td width="50%">
+<td width="50%" valign="top">
 
-**⚠️ Key Challenges**
-- Infinite scrolling & digital distractions
-- Complex productivity apps
-- No clear daily execution plan
-- Motivation burnout in weeks
-- Ignoring health for productivity
+### ⚠️ Key Challenges
+- Infinite scrolling & digital distractions  
+- Overcomplicated productivity tools  
+- No clear daily execution plan  
+- Motivation burnout within weeks  
+- Health sacrificed for productivity  
 
 </td>
-<td width="50%">
+<td width="50%" valign="top">
 
-**📊 Validated Reality**
+### 📊 Validated Reality
 - **53%** lose 5+ hours/day to doomscrolling  
 - **92%** abandon goals due to lack of structure  
 - **96 phone checks/day** during study sessions  
@@ -48,26 +53,26 @@ Students and young professionals struggle with **sustained execution**, not ambi
 </tr>
 </table>
 
-> This is not a discipline failure — it is a design failure.
+> **This is not a discipline failure — it is a design failure.**
 
 ---
 
 ## 💡 Introducing Comrade
 
-**Comrade is a Flutter-based AI-powered mobile app that acts as a personal accountability companion.**
+**Comrade is a Flutter-based, AI-powered mobile application designed to act as a personal accountability companion.**
 
 Unlike traditional productivity apps, Comrade:
-- Understands user behavior
-- Adapts daily plans using AI
-- Intervenes only when focus drops
-- Protects health while improving execution
+- Understands user behavior and intent  
+- Adapts daily plans using AI  
+- Intervenes only when focus drops  
+- Protects health while improving execution  
 
 <div align="center">
 
 | ❌ Traditional Apps | ✅ Comrade |
 |---|---|
 | Static to-do lists | Adaptive daily roadmaps |
-| Harsh blockers | Intelligent distraction control |
+| Harsh app blockers | Intelligent distraction control |
 | Motivation spam | Context-aware nudges |
 | Burnout cycles | Health-aware productivity |
 
@@ -103,7 +108,7 @@ Unlike traditional productivity apps, Comrade:
 
 <table>
 <tr>
-<td width="50%">
+<td width="50%" valign="top">
 
 ### 🧠 AI-Driven Personalization
 - LLM-generated daily schedules  
@@ -113,17 +118,17 @@ Unlike traditional productivity apps, Comrade:
 ### 🚫 Intelligent Distraction Control
 - Blocks non-essential apps  
 - Allows only priority notifications  
-- Focus-mode based on context  
+- Context-aware focus mode  
 
 </td>
-<td width="50%">
+<td width="50%" valign="top">
 
 ### 💪 Health-First Productivity
 - Encourages breaks & rest  
 - Prevents overworking  
 - Sustainable habit building  
 
-### 🤖 Multi-Agent AI Design
+### 🤖 Multi-Agent AI Architecture
 - **Planning Agent** – task breakdown  
 - **Focus Agent** – distraction handling  
 - **Health Agent** – burnout detection  
@@ -138,18 +143,45 @@ Unlike traditional productivity apps, Comrade:
 ## 🛠️ System Architecture
 
 ```mermaid
-graph TB
-    A[Flutter Mobile App] --> B[LLM Orchestrator]
-    B --> C[Planning Agent]
-    B --> D[Focus Agent]
-    B --> E[Health Agent]
-    B --> F[Motivation Agent]
+graph LR
+    U[User] --> I[Input Handler]
 
-    C --> G[Daily Task Engine]
-    D --> H[Distraction Control Logic]
-    E --> I[Health Balance Monitor]
-    F --> J[Smart Motivation System]
+    I --> T[Text Input]
+    I --> V[Voice Input]
 
-    G --> K[(Local / Cloud Storage)]
-    I --> K
-    J --> L[Progress & Insights UI]
+    T --> N[NLP Parser]
+    V --> N
+
+    N --> TC[Text Cleaning]
+    N --> IE[Intent Extraction]
+    N --> ED[Emotion Detection]
+
+    TC --> LLM[LLM Engine (Gemini)]
+    IE --> LLM
+    ED --> LLM
+
+    LLM --> MEM[Memory Layer]
+    LLM --> MAS[Multi-Agent System]
+
+    MEM --> MAS
+
+    MAS --> PA[Planning Agent]
+    MAS --> NA[Notification Agent]
+    MAS --> HA[Habit Tracking Agent]
+    MAS --> HMA[Health Monitoring Agent]
+    MAS --> DA[Distraction Agent]
+    MAS --> RA[Reward System Agent]
+
+    PA --> PER[Personalization Layer]
+    NA --> PER
+    HA --> PER
+    HMA --> PER
+    DA --> PER
+    RA --> PER
+
+    PER --> UX[User Actions & Feedback]
+
+    UX --> CL[Continuous Learning]
+    CL --> MEM
+
+    UX --> UT[User Transformation]
