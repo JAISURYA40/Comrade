@@ -108,6 +108,29 @@ It **understands behavior, designs roadmaps, and intervenes intelligently**.
 
 ---
 
+### **User Interface**
+
+<table>
+<tr>
+<td><img src="prism-frontend/assets/img1.jpg" width="200"/></td>
+<td><img src="prism-frontend/assets/img2.jpg" width="200"/></td>
+<td><img src="prism-frontend/assets/img3.jpg" width="200"/></td>
+<td><img src="prism-frontend/assets/img4.jpg" width="200"/></td>
+</tr>
+<tr>
+<td><img src="prism-frontend/assets/img5.jpg" width="200"/></td>
+<td><img src="prism-frontend/assets/img6.jpg" width="200"/></td>
+<td><img src="prism-frontend/assets/img7.jpg" width="200"/></td>
+<td><img src="prism-frontend/assets/img8.jpg" width="200"/></td>
+</tr>
+<tr>
+<td><img src="prism-frontend/assets/img9.jpg" width="200"/></td>
+<td><img src="prism-frontend/assets/img10.jpg" width="200"/></td>
+<td><img src="prism-frontend/assets/img11.jpg" width="200"/></td>
+<td><img src="prism-frontend/assets/img12.jpg" width="200"/></td>
+</tr>
+</table>
+
 ## 🌟 Impact & Benefits
 
 - 🔥 Reduces digital distractions at the source  
