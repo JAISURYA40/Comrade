@@ -145,77 +145,45 @@ Unlike traditional productivity apps, Comrade:
 ```mermaid
 graph TB
 
-    %% USER LAYER
     U[User]
 
-    %% INPUT LAYER
-    I[Input Handler]
-    T[Text Input]
-    V[Voice Input]
+    I[Text / Voice Input]
 
-    %% NLP LAYER
-    N[NLP Parser]
-    TC[Text Cleaning]
-    IE[Intent Extraction]
-    ED[Emotion Detection]
+    NLP[NLP & Emotion Analysis]
 
-    %% INTELLIGENCE LAYER
     LLM[LLM Engine - Gemini]
-    MEM[Memory Layer]
 
-    %% AGENT LAYER
     MAS[Multi-Agent System]
-    PA[Planning Agent]
-    NA[Notification Agent]
-    HA[Habit Tracking Agent]
-    HMA[Health Monitoring Agent]
-    DA[Distraction Agent]
-    RA[Reward System Agent]
 
-    %% PERSONALIZATION & LEARNING
-    PER[Personalization Layer]
-    UX[User Actions and Feedback]
-    CL[Continuous Learning]
-    UT[User Transformation]
+    A1[Planning Agent]
+    A2[Focus & Distraction Agent]
+    A3[Health & Habit Agent]
+    A4[Notification & Reward Agent]
 
-    %% FLOW CONNECTIONS
+    PER[Personalization & Memory]
+
+    OUT[Actions, Guidance & Feedback]
+
+    LEARN[Continuous Learning]
+
+    %% Flow
     U --> I
-    I --> T
-    I --> V
-
-    T --> N
-    V --> N
-
-    N --> TC
-    N --> IE
-    N --> ED
-
-    TC --> LLM
-    IE --> LLM
-    ED --> LLM
-
-    LLM --> MEM
-    MEM --> LLM
-
+    I --> NLP
+    NLP --> LLM
     LLM --> MAS
 
-    MAS --> PA
-    MAS --> NA
-    MAS --> HA
-    MAS --> HMA
-    MAS --> DA
-    MAS --> RA
+    MAS --> A1
+    MAS --> A2
+    MAS --> A3
+    MAS --> A4
 
-    PA --> PER
-    NA --> PER
-    HA --> PER
-    HMA --> PER
-    DA --> PER
-    RA --> PER
+    A1 --> PER
+    A2 --> PER
+    A3 --> PER
+    A4 --> PER
 
-    PER --> UX
-    UX --> CL
-    CL --> MEM
+    PER --> OUT
+    OUT --> LEARN
+    LEARN --> PER
 
-    UX --> UT
 
