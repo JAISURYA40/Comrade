@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/logo/comrade_logo" alt="Comrade Logo" width="220"/>
+<img src="assets/logo/comrade_logo.png" alt="Comrade Logo" width="220"/>
 
 <h2><em>Comrade — Your AI Accountability Partner</em></h2>
 
@@ -144,15 +144,10 @@ It **understands behavior, designs roadmaps, and intervenes intelligently**.
 
 ```mermaid
 graph TB
-
     U[User]
-
     I[Text / Voice Input]
-
     NLP[NLP & Emotion Analysis]
-
     LLM[LLM Engine - Gemini]
-
     MAS[Multi-Agent System]
 
     A1[Planning Agent]
@@ -161,12 +156,9 @@ graph TB
     A4[Notification & Reward Agent]
 
     PER[Personalization & Memory]
-
     OUT[Actions, Guidance & Feedback]
-
     LEARN[Continuous Learning]
 
-    %% Flow
     U --> I
     I --> NLP
     NLP --> LLM
@@ -185,26 +177,27 @@ graph TB
     PER --> OUT
     OUT --> LEARN
     LEARN --> PER
-
-📧 Contact
+📧 Contact & Team
 <div align="center">
 
-If you’d like to collaborate, review the project, or discuss deployment opportunities, feel free to reach out.
+Team: Pennywise ~ The Coding Clowns
 
 <br/> <table> <tr> <td align="center">
 
 👤 Team Lead
 Harirajan S
-
-</td> <td align="center">
-
-📧 Email
-<a href="mailto:comrade.app@email.com">230213.it@rmkec.ac.in
+📧 <a href="mailto:230213.it@rmkec.ac.in">230213.it@rmkec.ac.in
 </a>
 
-</td> <td align="center">
+</td> </tr> </table> <br/>
+👥 Team Members
 
-💼 LinkedIn
-<a href="#">Comrade Team</a>
+Harirajan S (Leader) – 230213.it@rmkec.ac.in
 
-</td> </tr> </table> <br/> </div>
+Jaishree – 230372.it@rmkec.ac.in
+
+Jaisurya – 230600.it@rmkec.ac.in
+
+Dhanesh – 230550.it@rmkec.ac.in
+
+</div> ```
