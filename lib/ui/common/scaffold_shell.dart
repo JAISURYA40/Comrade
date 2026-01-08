@@ -113,55 +113,60 @@ class _ScaffoldShellState extends State<ScaffoldShell>
       extendBody: true,
       extendBodyBehindAppBar: true,
       bottomNavigationBar: _haveMultiTabs ? _bottomNavBar() : null,
-      body: TabBarView(
-        controller: _tabController,
-        physics: const BouncingScrollPhysics(),
-        children: List.generate(
-          widget.items.length,
-          (i) => NotificationListener<ScrollNotification>(
-            onNotification: (notification) {
-              if (notification is ScrollUpdateNotification) {
-                /// Add app bar offset if current scroll offset is from body
-                final currentOffset = notification.metrics.pixels +
-                    (notification.depth == 1 ? _appBarScrollOffSet.value : 0);
+          body: TabBarView(
+            controller: _tabController,
+            physics: const BouncingScrollPhysics(),
+            children: List.generate(
+              widget.items.length,
+              (i) => NotificationListener<ScrollNotification>(
+                onNotification: (notification) {
+                  if (notification is ScrollUpdateNotification) {
+                    /// Add app bar offset if current scroll offset is from body
+                    final currentOffset = notification.metrics.pixels +
+                        (notification.depth == 1 ? _appBarScrollOffSet.value : 0);
 
-                /// Show/Hide bottom bar
-                if (currentOffset >= widget.appBarExpandedHeight &&
-                    (currentOffset >= _wholeScreenScrollOffSet + 1)) {
-                  _isBottomNavVisible.value = false;
-                } else if (currentOffset <= _wholeScreenScrollOffSet - 1) {
-                  _isBottomNavVisible.value = true;
-                }
+                    /// Show/Hide bottom bar
+                    if (currentOffset >= widget.appBarExpandedHeight &&
+                        (currentOffset >= _wholeScreenScrollOffSet + 1)) {
+                      _isBottomNavVisible.value = false;
+                    } else if (currentOffset <= _wholeScreenScrollOffSet - 1) {
+                      _isBottomNavVisible.value = true;
+                    }
 
-                /// Cache offset for whole screen
-                _wholeScreenScrollOffSet = currentOffset == 0
-                    ? _wholeScreenScrollOffSet
-                    : currentOffset;
+                    /// Cache offset for whole screen
+                    _wholeScreenScrollOffSet = currentOffset == 0
+                        ? _wholeScreenScrollOffSet
+                        : currentOffset;
 
-                /// Cache offset for just the app bar only
-                if (notification.depth == 0) {
-                  _appBarScrollOffSet.value = currentOffset == 0
-                      ? _appBarScrollOffSet.value
-                      : currentOffset;
-                }
-              }
-              return false;
-            },
-            child: NestedScrollView(
-              physics: const BouncingScrollPhysics(),
-              headerSliverBuilder: (_, innerBoxIsScrolled) =>
-                  [_sliverAppBar(i, innerBoxIsScrolled)],
-              body: TabControllerProvider(
-                controller: _tabController,
-                child: Padding(
-                  padding: widget.bodyPadding,
-                  child: widget.items[i].sliverBody,
+                    /// Cache offset for just the app bar only
+                    if (notification.depth == 0) {
+                      _appBarScrollOffSet.value = currentOffset == 0
+                          ? _appBarScrollOffSet.value
+                          : currentOffset;
+                    }
+                  }
+                  return false;
+                },
+                child: NestedScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  headerSliverBuilder: (_, innerBoxIsScrolled) =>
+                      [_sliverAppBar(i, innerBoxIsScrolled)],
+                  body: TabControllerProvider(
+                    controller: _tabController,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        left: widget.bodyPadding.left,
+                        right: widget.bodyPadding.right,
+                        top: widget.bodyPadding.top,
+                        bottom: widget.bodyPadding.bottom,
+                      ),
+                      child: widget.items[i].sliverBody,
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ),
     );
   }
 
@@ -199,20 +204,29 @@ class _ScaffoldShellState extends State<ScaffoldShell>
           backgroundColor: _haveMultiTabs
               ? Theme.of(context).colorScheme.surface
               : appBarColor,
-          surfaceTintColor:
-              _haveMultiTabs ? Theme.of(context).colorScheme.surfaceTint : null,
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
+          shadowColor: Colors.transparent,
           automaticallyImplyLeading: false,
           actions: [
             ...navItem.actions ?? [],
             widget.bodyPadding.right.hBox,
           ],
           leading: widget.canGoBack
-              ? IconButton(
-                  icon: Icon(
-                    FluentIcons.chevron_left_24_filled,
-                    color: Theme.of(context).colorScheme.onSecondaryContainer,
+              ? Container(
+                  margin: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  onPressed: () => context.popOrPushReplace(AppRoutes.homePath),
+                  child: IconButton(
+                    icon: Icon(
+                      FluentIcons.chevron_left_24_filled,
+                      color: Theme.of(context).colorScheme.onSurface,
+                      size: 20,
+                    ),
+                    onPressed: () => context.popOrPushReplace(AppRoutes.homePath),
+                  ),
                 )
               : null,
           flexibleSpace: FlexibleSpaceBar(
@@ -236,37 +250,64 @@ class _ScaffoldShellState extends State<ScaffoldShell>
     return ValueListenableBuilder<bool>(
       valueListenable: _isBottomNavVisible,
       builder: (context, isVisible, child) => AnimatedContainer(
-        height: isVisible ? (80 + MediaQuery.of(context).padding.bottom) : 0,
+        height: isVisible ? (72 + MediaQuery.of(context).padding.bottom) : 0,
         duration: 300.ms,
         curve: isVisible ? Curves.easeOut : Curves.easeOut.flipped,
         alignment: Alignment.bottomCenter,
         child: SingleChildScrollView(child: child),
       ),
-      child: NavigationBar(
-        selectedIndex: _selectedTabIndex,
-        animationDuration: AppConstants.defaultAnimDuration,
-        backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
-        onDestinationSelected: (index) => _tabController.animateTo(
-          index,
-          duration: AppConstants.defaultAnimDuration,
-          curve: AppConstants.defaultCurve,
+      child: Container(
+        margin: EdgeInsets.only(
+          left: 12,
+          right: 12,
+          top: 8,
+          bottom: MediaQuery.of(context).padding.bottom + 8,
         ),
-        destinations: widget.items.map((e) {
-          final title = e.titleText!;
-          final trimmedTitle =
-              title.length >= 14 ? "${title.substring(0, 9)}..." : title;
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.black.withValues(alpha: 0.5)
+                  : Colors.black.withValues(alpha: 0.1),
+              blurRadius: 20,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: NavigationBar(
+          selectedIndex: _selectedTabIndex,
+          animationDuration: AppConstants.defaultAnimDuration,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          height: 56,
+          indicatorColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+          indicatorShape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          onDestinationSelected: (index) => _tabController.animateTo(
+            index,
+            duration: AppConstants.defaultAnimDuration,
+            curve: AppConstants.defaultCurve,
+          ),
+          destinations: widget.items.map((e) {
+            final title = e.titleText!;
+            final trimmedTitle =
+                title.length >= 14 ? "${title.substring(0, 9)}..." : title;
 
-          return NavigationDestination(
-            label: trimmedTitle,
-            icon: Icon(e.icon),
-            selectedIcon: Icon(e.filledIcon).animate().scale(
-                  begin: const Offset(0.5, 0.5),
-                  end: const Offset(1.05, 1.05),
-                  curve: Curves.elasticOut,
-                  duration: 1.seconds,
-                ),
-          );
-        }).toList(),
+            return NavigationDestination(
+              label: trimmedTitle,
+              icon: Icon(e.icon, size: 22),
+              selectedIcon: Icon(e.filledIcon, size: 22).animate().scale(
+                    begin: const Offset(0.8, 0.8),
+                    end: const Offset(1.0, 1.0),
+                    curve: Curves.elasticOut,
+                    duration: 600.ms,
+                  ),
+            );
+          }).toList(),
+        ),
       ),
     );
   }

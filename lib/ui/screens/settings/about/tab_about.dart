@@ -45,15 +45,20 @@ class TabAbout extends ConsumerWidget {
           dimension: min(360, MediaQuery.of(context).size.width * 0.7),
           child: RoundedContainer(
             circularRadius: 120,
-            color: Theme.of(context).colorScheme.secondaryContainer,
+            color: Colors.transparent,
             padding: const EdgeInsets.all(8),
-            child: const Icon(FluentIcons.target_arrow_20_regular, size: 64),
+            child: Image.asset(
+              'assets/comradelogo.png',
+              width: min(340, MediaQuery.of(context).size.width * 0.65),
+              height: min(340, MediaQuery.of(context).size.width * 0.65),
+              fit: BoxFit.contain,
+            ),
           ),
         ).sliver,
 
         /// Title
         const StyledText(
-          "Mindful",
+          "Comrade",
           fontSize: 32,
           fontWeight: FontWeight.bold,
         ).centered.sliver,

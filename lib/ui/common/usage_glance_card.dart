@@ -39,13 +39,16 @@ class UsageGlanceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mini = icon == null;
+    final theme = Theme.of(context);
+    final isPrimaryColor = isPrimary 
+        ? theme.colorScheme.primary.withValues(alpha: 0.15)
+        : theme.colorScheme.surfaceContainerHighest;
 
     return RoundedContainer(
-      circularRadius: 6,
+      circularRadius: 20,
       borderRadius: getBorderRadiusFromPosition(position),
-      padding: const EdgeInsets.all(16),
-      color:
-          isPrimary ? Theme.of(context).colorScheme.secondaryContainer : null,
+      padding: const EdgeInsets.all(20),
+      color: isPrimaryColor,
       onPressed: onTap,
       child: Stack(
         children: [
@@ -54,17 +57,33 @@ class UsageGlanceCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (!mini) Icon(icon),
-              mini ? 0.vBox : 14.vBox,
+              if (!mini) 
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.25),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    icon,
+                    color: theme.colorScheme.primary,
+                    size: 20,
+                  ),
+                ),
+              mini ? 0.vBox : 16.vBox,
               StyledText(
                 title,
-                fontSize: 12,
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                isSubtitle: true,
               ),
+              8.vBox,
               Skeleton.leaf(
                 child: FittedBox(
+                  alignment: Alignment.centerLeft,
                   child: StyledText(
                     info.isEmpty ? " " : info,
-                    fontSize: 24,
+                    fontSize: 28,
                     maxLines: 1,
                     fontWeight: FontWeight.bold,
                     overflow: TextOverflow.ellipsis,

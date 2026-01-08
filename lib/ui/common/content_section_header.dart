@@ -31,8 +31,10 @@ class ContentSectionHeader extends StatelessWidget {
       alignment: alignment,
       child: StyledText(
         title,
-        color: Theme.of(context).colorScheme.primary,
-        fontWeight: FontWeight.bold,
+        color: Theme.of(context).colorScheme.onSurface,
+        fontSize: 18,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.5,
       ),
     );
   }

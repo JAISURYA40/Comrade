@@ -59,11 +59,13 @@ class DefaultListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RoundedContainer(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      margin: margin ?? const EdgeInsets.only(top: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      margin: margin ?? const EdgeInsets.only(top: 6),
       borderRadius: getBorderRadiusFromPosition(position ?? ItemPosition.none),
       color:
-          isPrimary ? Theme.of(context).colorScheme.secondaryContainer : color,
+          isPrimary 
+              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.15) 
+              : color,
       onPressed: enabled ? onPressed : null,
       child: Row(
         mainAxisSize: MainAxisSize.max,
@@ -71,13 +73,21 @@ class DefaultListTile extends StatelessWidget {
         children: [
           /// Leading widget
           leadingIcon != null
-              ? Icon(
-                  leadingIcon,
-                  color: enabled
-                      ? accent
-                      : isPrimary
-                          ? Theme.of(context).colorScheme.secondaryContainer
-                          : Theme.of(context).hintColor,
+              ? Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: (isPrimary 
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.secondaryContainer).withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    leadingIcon,
+                    size: 20,
+                    color: enabled
+                        ? (accent ?? Theme.of(context).colorScheme.onSecondaryContainer)
+                        : Theme.of(context).hintColor,
+                  ),
                 )
               : leading ?? 0.hBox,
 
@@ -95,26 +105,29 @@ class DefaultListTile extends StatelessWidget {
                       ? StyledText(
                           titleText!,
                           fontSize: 16,
-                          fontWeight: isPrimary ? FontWeight.w500 : null,
+                          fontWeight: isPrimary ? FontWeight.w600 : FontWeight.w500,
                           color: enabled ? accent : Theme.of(context).hintColor,
                         )
                       : title ?? 0.vBox,
 
                   /// Subtitle widget
-                  subtitleText != null
-                      ? StyledText(
-                          subtitleText!,
-                          fontSize: 14,
-                          isSubtitle: true,
-                        )
-                      : subtitle ?? 0.vBox,
+                  if (subtitleText != null || subtitle != null) ...[
+                    const SizedBox(height: 4),
+                    subtitleText != null
+                        ? StyledText(
+                            subtitleText!,
+                            fontSize: 13,
+                            isSubtitle: true,
+                          )
+                        : subtitle ?? 0.vBox,
+                  ],
                 ],
               ),
             ),
           ),
 
           if (switchValue != null || isSelected != null || trailing != null)
-            4.hBox,
+            8.hBox,
 
           /// Trailing widget
           switchValue != null

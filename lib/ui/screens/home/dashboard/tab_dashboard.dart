@@ -54,7 +54,7 @@ class TabDashboard extends ConsumerWidget {
 
           MultiSliver(
             children: [
-              8.vBox,
+              16.vBox,
               Skeletonizer.zone(
                 enabled: isUsageLoading,
                 enableSwitchAnimation: true,
@@ -63,7 +63,7 @@ class TabDashboard extends ConsumerWidget {
                     children: [
                       /// Screen time
                       const Expanded(child: ScreenTimeGlance()),
-                      4.hBox,
+                      12.hBox,
 
                       /// Data usage
                       const Expanded(child: FocusDailyGlance()),
@@ -71,6 +71,8 @@ class TabDashboard extends ConsumerWidget {
                   ),
                 ),
               ),
+
+              20.vBox,
 
               /// Usage glance
               DefaultExpandableListTile(

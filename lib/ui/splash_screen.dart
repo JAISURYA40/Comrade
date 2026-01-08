@@ -131,11 +131,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
               dimension: min(420, MediaQuery.of(context).size.width * 0.8),
               child: RoundedContainer(
                 circularRadius: 420,
-                color: Theme.of(context).colorScheme.secondaryContainer,
+                color: Colors.transparent,
                 padding: const EdgeInsets.all(8),
-                child: const Icon(
-                  FluentIcons.target_arrow_20_regular,
-                  size: 64,
+                child: Image.asset(
+                  'assets/comradelogo.png',
+                  width: min(400, MediaQuery.of(context).size.width * 0.75),
+                  height: min(400, MediaQuery.of(context).size.width * 0.75),
+                  fit: BoxFit.contain,
                 ),
               ),
             ),
@@ -144,7 +146,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
               children: [
                 /// Title
                 const StyledText(
-                  "Mindful",
+                  "Comrade",
                   fontSize: 48,
                   fontWeight: FontWeight.bold,
                   height: 1,

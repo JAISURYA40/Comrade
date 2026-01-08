@@ -23,6 +23,7 @@ import 'package:mindful/ui/screens/settings/settings_screen.dart';
 import 'package:mindful/ui/screens/shorts_blocking/shorts_blocking_screen.dart';
 import 'package:mindful/ui/screens/notifications/notifications_screen.dart';
 import 'package:mindful/ui/screens/websites_blocking/websites_blocking_screen.dart';
+import 'package:mindful/ui/screens/roadmap/roadmap_screen.dart';
 import 'package:mindful/ui/splash_screen.dart';
 
 class AppRoutes {
@@ -42,6 +43,7 @@ class AppRoutes {
 
   static const String appDashboardPath = '/appDashboard';
   static const String notificationsPath = '/notifications';
+  static const String roadmapPath = '/roadmap';
 
   static final Map<String, Widget Function(BuildContext)> routes = {
     /// Root
@@ -98,5 +100,8 @@ class AppRoutes {
               UsageType.values[(context.resolveParam<int>("usageType") ?? 0) % 2],
           selectedDay: context.resolveParam<DateTime>("day"),
         ),
+
+    /// Roadmap screen
+    roadmapPath: (context) => const RoadmapScreen(),
   };
 }

@@ -31,6 +31,7 @@ import 'package:mindful/ui/screens/home/dashboard/tab_dashboard.dart';
 import 'package:mindful/ui/screens/home/notifications/new_notification_schedule_fab.dart';
 import 'package:mindful/ui/screens/home/statistics/tab_statistics.dart';
 import 'package:mindful/ui/screens/home/notifications/tab_notifications.dart';
+import 'package:mindful/ui/screens/home/chat/tab_chat.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -115,6 +116,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             icon: FluentIcons.sleep_20_regular,
             filledIcon: FluentIcons.sleep_20_filled,
             sliverBody: const TabBedtime(),
+          ),
+          NavbarItem(
+            titleText: "Chat",
+            icon: FluentIcons.chat_20_regular,
+            filledIcon: FluentIcons.chat_20_filled,
+            sliverBody: const TabChat(),
           ),
         ],
       ),

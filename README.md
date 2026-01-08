@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="assets/comrade_logo.png" alt="Comrade Logo" width="220"/>
-
 <h2><em>Comrade — Where Focus Wins the War</em></h2>
 
 <p>

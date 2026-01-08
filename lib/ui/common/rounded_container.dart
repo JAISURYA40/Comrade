@@ -41,8 +41,11 @@ class RoundedContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = color ?? Theme.of(context).colorScheme.surfaceContainer;
+    final theme = Theme.of(context);
+    final bgColor = color ?? theme.colorScheme.surfaceContainerHighest;
     final radius = borderRadius ?? BorderRadius.circular(circularRadius);
+    final isDark = theme.brightness == Brightness.dark;
+    
     return onPressed == null
 
         /// Static container
@@ -55,6 +58,16 @@ class RoundedContainer extends StatelessWidget {
             decoration: BoxDecoration(
               color: bgColor,
               borderRadius: radius,
+              boxShadow: [
+                BoxShadow(
+                  color: isDark 
+                      ? Colors.black.withValues(alpha: 0.4)
+                      : Colors.black.withValues(alpha: 0.08),
+                  blurRadius: 12,
+                  spreadRadius: -2,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
             child: child,
           )
@@ -64,6 +77,19 @@ class RoundedContainer extends StatelessWidget {
             height: height,
             width: width,
             margin: margin,
+            decoration: BoxDecoration(
+              borderRadius: radius,
+              boxShadow: [
+                BoxShadow(
+                  color: isDark 
+                      ? Colors.black.withValues(alpha: 0.4)
+                      : Colors.black.withValues(alpha: 0.08),
+                  blurRadius: 12,
+                  spreadRadius: -2,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
             child: Material(
               color: bgColor,
               elevation: 0,
@@ -73,7 +99,8 @@ class RoundedContainer extends StatelessWidget {
               child: InkWell(
                 onTap: onPressed,
                 splashFactory: InkSparkle.splashFactory,
-                splashColor: Theme.of(context).colorScheme.secondaryContainer,
+                splashColor: theme.colorScheme.primary.withValues(alpha: 0.2),
+                highlightColor: theme.colorScheme.primary.withValues(alpha: 0.1),
                 borderRadius: radius,
                 child: Padding(
                   padding: padding,

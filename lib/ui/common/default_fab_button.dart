@@ -32,13 +32,24 @@ class DefaultFabButton extends StatelessWidget {
       tag: heroTag ?? "defaultScaffoldFabButton",
       child: FilledButton.icon(
         onPressed: onPressed,
-        icon: Icon(icon),
-        label: Text(label),
-        style: const ButtonStyle().copyWith(
-          elevation: WidgetStatePropertyAll(5),
-          padding: const WidgetStatePropertyAll(EdgeInsets.all(16)),
+        icon: Icon(icon, size: 20),
+        label: Text(
+          label,
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
+          ),
+        ),
+        style: ButtonStyle(
+          elevation: WidgetStatePropertyAll(0),
+          padding: const WidgetStatePropertyAll(
+            EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+          ),
           shape: WidgetStatePropertyAll(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
           ),
         ),
       ),

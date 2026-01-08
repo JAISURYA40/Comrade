@@ -509,7 +509,7 @@
         "placeholders": {
             "appName": {
                 "type": "String",
-                "example": "Mindful"
+                "example": "Comrade"
             }
         }
     },
@@ -518,7 +518,7 @@
         "placeholders": {
             "appName": {
                 "type": "String",
-                "example": "Mindful"
+                "example": "Comrade"
             }
         }
     },
@@ -528,7 +528,7 @@
         "placeholders": {
             "appName": {
                 "type": "String",
-                "example": "Mindful"
+                "example": "Comrade"
             }
         }
     },
@@ -541,7 +541,7 @@
         "placeholders": {
             "appName": {
                 "type": "String",
-                "example": "Mindful"
+                "example": "Comrade"
             }
         }
     },
@@ -550,7 +550,7 @@
         "placeholders": {
             "appName": {
                 "type": "String",
-                "example": "Mindful"
+                "example": "Comrade"
             }
         }
     },
@@ -576,9 +576,9 @@
     "usage_history_6_month": "6 months",
     "usage_history_1_year": "1 year",
     "service_heading": "Service",
-    "service_stopping_warning": "If Mindful stops working unexpectedly, please grant the 'Ignore Battery Optimization' permission to keep it running in the background. If the issue continues, try whitelisting Mindful for uninterrupted performance.",
-    "whitelist_app_tile_title": "Whitelist Mindful",
-    "whitelist_app_tile_subtitle": "Allow Mindful to auto start.",
+    "service_stopping_warning": "If Comrade stops working unexpectedly, please grant the 'Ignore Battery Optimization' permission to keep it running in the background. If the issue continues, try whitelisting Comrade for uninterrupted performance.",
+    "whitelist_app_tile_title": "Whitelist Comrade",
+    "whitelist_app_tile_subtitle": "Allow Comrade to auto start.",
     "whitelist_app_unsupported_snack_alert": "This device does not support automatic startup management.",
     "@----------------------------- SETTINGS SCREEN - DATABASE TAB -----------------------------": {},
     "database_tab_title": "Database",
@@ -611,6 +611,6 @@
     "write_email_tile_title": "Write to us via email",
     "write_email_tile_subtitle": "You will be redirected to Email app.",
     "privacy_policy_heading": "Privacy policy",
-    "privacy_policy_info": "Mindful is committed to protecting your privacy. We do not collect, store, or transfer any type of user data. The app operates entirely offline and does not require an internet connection, ensuring that your personal information remains private and secure on your device. As a Free and Open Source Software (FOSS) application, Mindful guarantees complete transparency and user control over their data.",
+    "privacy_policy_info": "Comrade is committed to protecting your privacy. We do not collect, store, or transfer any type of user data. The app operates entirely offline and does not require an internet connection, ensuring that your personal information remains private and secure on your device. As a Free and Open Source Software (FOSS) application, Comrade guarantees complete transparency and user control over their data.",
     "more_details_button": "More details"
 }
