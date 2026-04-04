@@ -4,12 +4,12 @@ import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:mindful/core/database/app_database.dart';
-import 'package:mindful/core/services/crash_log_service.dart';
-import 'package:mindful/core/services/drift_db_service.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/core/utils/date_time_utils.dart';
-import 'package:mindful/initializer.dart';
+import 'package:comrade/core/database/app_database.dart';
+import 'package:comrade/core/services/crash_log_service.dart';
+import 'package:comrade/core/services/drift_db_service.dart';
+import 'package:comrade/core/services/method_channel_service.dart';
+import 'package:comrade/core/utils/date_time_utils.dart';
+import 'package:comrade/initializer.dart';
 
 /// This class handles the Flutter method channel and is responsible for invoking flutter code.
 ///
@@ -23,7 +23,7 @@ class BgExecutorService {
 
   /// The method channel object used for communication.
   final MethodChannel _methodChannel = const MethodChannel(
-    'com.mindful.android.methodchannel.bg',
+    'com.comrade.android.methodchannel.bg',
   );
 
   /// Initializes the method channel by setting a handler for incoming method calls from the native side.
@@ -71,7 +71,7 @@ class BgExecutorService {
   }
 
   /// This method will be invoked when the device boots or
-  /// if the Mindful app is updated or changed
+  /// if the Comrade app is updated or changed
   ///
   /// Initialize and start all necessary services here
   Future<void> _onBootOrAppUpdate() async {
@@ -108,7 +108,7 @@ class BgExecutorService {
 
     /// Remove usages before the specified history time
     final usageHistoryDays =
-        (await uniqueDao.loadMindfulSettings()).usageHistoryWeeks * 7;
+        (await uniqueDao.loadComradeSettings()).usageHistoryWeeks * 7;
     await dynamicDao.removeBatchAppUsagesBefore(
       dateYesterday.subtract(usageHistoryDays.days),
     );

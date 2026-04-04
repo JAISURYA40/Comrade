@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -11,11 +11,11 @@
 import 'dart:math' as math;
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:mindful/core/enums/usage_type.dart';
-import 'package:mindful/core/extensions/ext_int.dart';
-import 'package:mindful/config/app_constants.dart';
-import 'package:mindful/models/usage_model.dart';
-import 'package:mindful/ui/common/styled_text.dart';
+import 'package:comrade/core/enums/usage_type.dart';
+import 'package:comrade/core/extensions/ext_int.dart';
+import 'package:comrade/config/app_constants.dart';
+import 'package:comrade/models/usage_model.dart';
+import 'package:comrade/ui/common/styled_text.dart';
 
 class DefaultBarChart extends StatelessWidget {
   /// Base bar chart used for displaying app/device usage convert the [data] to percentage range from 0% - 100%

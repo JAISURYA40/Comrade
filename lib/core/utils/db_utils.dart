@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
-/// Get the SQLITE database file path: /data/user/0/com.mindful.android/app_flutter/Mindful.sqlite
+/// Get the SQLITE database file path: /data/user/0/com.comrade.android/app_flutter/Comrade.sqlite
 Future<String> getSqliteDbPath() async => path.join(
       (await getApplicationDocumentsDirectory()).path,
-      'Mindful.sqlite',
+      'Comrade.sqlite',
     );
 
 /// Invoke the method in the [try/catch] block and print the error if it occurred

@@ -1,8 +1,8 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:mindful/config/navigation/app_routes.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:comrade/config/navigation/app_routes.dart';
+import 'package:comrade/core/extensions/ext_build_context.dart';
+import 'package:comrade/core/services/method_channel_service.dart';
 
 @immutable
 class ChangeLog {
@@ -34,7 +34,7 @@ class ChangeLogsData {
 
   /// Map of all app versions and the list of[ChangeLog]
   late final Map<String, List<ChangeLog>> _allChangeLogs = {
-    MethodChannelService.instance.deviceInfo.mindfulVersion: _latest,
+    MethodChannelService.instance.deviceInfo.comradeVersion: _latest,
     "v1.2.8": _v1_2_8,
     "v1.2.4": _v1_2_4,
     "v1.2.0": _v1_2_0,
@@ -87,7 +87,7 @@ class ChangeLogsData {
     ),
     const ChangeLog(
       icon: FluentIcons.app_title_20_filled,
-      label: "Mindful overlay",
+      label: "Comrade overlay",
       bulletPoints: [
         "New app paused overlay with more info.",
         "Clearly see why an app is blocked.",

@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -11,9 +11,9 @@
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
-import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
-import 'package:mindful/core/database/converters/bool_list_converter.dart';
-import 'package:mindful/core/database/converters/string_list_converter.dart';
+import 'package:comrade/core/database/adapters/time_of_day_adapter.dart';
+import 'package:comrade/core/database/converters/bool_list_converter.dart';
+import 'package:comrade/core/database/converters/string_list_converter.dart';
 
 @DataClassName("BedtimeSchedule")
 class BedtimeScheduleTable extends Table {

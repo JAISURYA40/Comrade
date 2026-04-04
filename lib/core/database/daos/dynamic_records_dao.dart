@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -12,21 +12,21 @@ import 'package:drift/drift.dart';
 import 'package:flutter/material.dart' as m;
 import 'package:flutter_animate/flutter_animate.dart';
 
-import 'package:mindful/core/database/app_database.dart';
-import 'package:mindful/core/database/tables/app_restriction_table.dart';
-import 'package:mindful/core/database/tables/app_usage_table.dart';
-import 'package:mindful/core/database/tables/crash_logs_table.dart';
-import 'package:mindful/core/database/tables/focus_profile_table.dart';
-import 'package:mindful/core/database/tables/focus_sessions_table.dart';
-import 'package:mindful/core/database/tables/notifications_table.dart';
-import 'package:mindful/core/database/tables/restriction_groups_table.dart';
-import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
-import 'package:mindful/core/enums/session_state.dart';
-import 'package:mindful/core/enums/session_type.dart';
-import 'package:mindful/core/extensions/ext_date_time.dart';
-import 'package:mindful/core/utils/default_models_utils.dart';
-import 'package:mindful/core/utils/provider_utils.dart';
-import 'package:mindful/models/usage_model.dart';
+import 'package:comrade/core/database/app_database.dart';
+import 'package:comrade/core/database/tables/app_restriction_table.dart';
+import 'package:comrade/core/database/tables/app_usage_table.dart';
+import 'package:comrade/core/database/tables/crash_logs_table.dart';
+import 'package:comrade/core/database/tables/focus_profile_table.dart';
+import 'package:comrade/core/database/tables/focus_sessions_table.dart';
+import 'package:comrade/core/database/tables/notifications_table.dart';
+import 'package:comrade/core/database/tables/restriction_groups_table.dart';
+import 'package:comrade/core/database/adapters/time_of_day_adapter.dart';
+import 'package:comrade/core/enums/session_state.dart';
+import 'package:comrade/core/enums/session_type.dart';
+import 'package:comrade/core/extensions/ext_date_time.dart';
+import 'package:comrade/core/utils/default_models_utils.dart';
+import 'package:comrade/core/utils/provider_utils.dart';
+import 'package:comrade/models/usage_model.dart';
 
 part 'dynamic_records_dao.g.dart';
 

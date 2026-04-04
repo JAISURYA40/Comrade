@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:mindful/core/enums/item_position.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/utils/widget_utils.dart';
-import 'package:mindful/ui/common/go_to_badge_icon.dart';
+import 'package:comrade/core/enums/item_position.dart';
+import 'package:comrade/core/extensions/ext_num.dart';
+import 'package:comrade/core/utils/widget_utils.dart';
+import 'package:comrade/ui/common/go_to_badge_icon.dart';
 
-import 'package:mindful/ui/common/rounded_container.dart';
-import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/screens/change_logs/data/change_logs_data.dart';
+import 'package:comrade/ui/common/rounded_container.dart';
+import 'package:comrade/ui/common/styled_text.dart';
+import 'package:comrade/ui/screens/change_logs/data/change_logs_data.dart';
 
 class ChangeLogCard extends StatelessWidget {
   const ChangeLogCard({

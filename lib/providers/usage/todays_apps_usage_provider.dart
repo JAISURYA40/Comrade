@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/core/utils/date_time_utils.dart';
-import 'package:mindful/models/usage_model.dart';
-import 'package:mindful/providers/shared_unique_data_provider.dart';
+import 'package:comrade/core/services/method_channel_service.dart';
+import 'package:comrade/core/utils/date_time_utils.dart';
+import 'package:comrade/models/usage_model.dart';
+import 'package:comrade/providers/shared_unique_data_provider.dart';
 
 /// A state notifier provider that manages a map of Package and installed Android applications and respected usage for today.
 final todaysAppsUsageProvider = StateNotifierProvider<TodaysUsageNotifier,

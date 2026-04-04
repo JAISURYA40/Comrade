@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -15,24 +15,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/config/navigation/app_routes.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/config/app_constants.dart';
-import 'package:mindful/config/hero_tags.dart';
-import 'package:mindful/providers/system/mindful_settings_provider.dart';
-import 'package:mindful/ui/common/scaffold_shell.dart';
-import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
-import 'package:mindful/ui/screens/home/bedtime/tab_bedtime.dart';
-import 'package:mindful/ui/screens/home/dashboard/customize_glance_cards.dart';
-import 'package:mindful/ui/screens/home/dashboard/focus_now_fab.dart';
-import 'package:mindful/ui/screens/home/dashboard/greetings_username.dart';
-import 'package:mindful/ui/screens/home/dashboard/tab_dashboard.dart';
-import 'package:mindful/ui/screens/home/notifications/new_notification_schedule_fab.dart';
-import 'package:mindful/ui/screens/home/statistics/tab_statistics.dart';
-import 'package:mindful/ui/screens/home/notifications/tab_notifications.dart';
-import 'package:mindful/ui/screens/home/chat/tab_chat.dart';
-import 'package:mindful/ui/transitions/default_hero.dart';
+import 'package:comrade/config/navigation/app_routes.dart';
+import 'package:comrade/core/extensions/ext_build_context.dart';
+import 'package:comrade/core/services/method_channel_service.dart';
+import 'package:comrade/config/app_constants.dart';
+import 'package:comrade/config/hero_tags.dart';
+import 'package:comrade/providers/system/comrade_settings_provider.dart';
+import 'package:comrade/ui/common/scaffold_shell.dart';
+import 'package:comrade/ui/dialogs/confirmation_dialog.dart';
+import 'package:comrade/ui/screens/home/bedtime/tab_bedtime.dart';
+import 'package:comrade/ui/screens/home/dashboard/customize_glance_cards.dart';
+import 'package:comrade/ui/screens/home/dashboard/focus_now_fab.dart';
+import 'package:comrade/ui/screens/home/dashboard/greetings_username.dart';
+import 'package:comrade/ui/screens/home/dashboard/tab_dashboard.dart';
+import 'package:comrade/ui/screens/home/notifications/new_notification_schedule_fab.dart';
+import 'package:comrade/ui/screens/home/statistics/tab_statistics.dart';
+import 'package:comrade/ui/screens/home/notifications/tab_notifications.dart';
+import 'package:comrade/ui/screens/home/chat/tab_chat.dart';
+import 'package:comrade/ui/transitions/default_hero.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({
@@ -78,7 +78,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final homeTab =
-        ref.watch((mindfulSettingsProvider.select((v) => v.defaultHomeTab)));
+        ref.watch((comradeSettingsProvider.select((v) => v.defaultHomeTab)));
 
     return PopScope(
       onPopInvokedWithResult: (didPop, _) => SystemNavigator.pop(),

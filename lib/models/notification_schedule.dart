@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
-import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
+import 'package:comrade/core/database/adapters/time_of_day_adapter.dart';
 
 @immutable
 class NotificationSchedule {

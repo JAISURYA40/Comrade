@@ -9,7 +9,7 @@ class AppLocalizationsPt extends AppLocalizations {
   AppLocalizationsPt([String locale = 'pt']) : super(locale);
 
   @override
-  String get mindful_tagline => 'Concentre-se no que realmente importa';
+  String get comrade_tagline => 'Concentre-se no que realmente importa';
 
   @override
   String get unlock_button_label => 'Desbloquear';
@@ -37,7 +37,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get permission_sheet_privacy_info =>
-      'O Mindful é 100% seguro e funciona offline. Não recolhemos nem armazenamos quaisquer dados pessoais.';
+      'O Comrade é 100% seguro e funciona offline. Não recolhemos nem armazenamos quaisquer dados pessoais.';
 
   @override
   String permission_grant_step_one(String button_label) {
@@ -46,7 +46,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get permission_grant_step_two =>
-      '2. Selecione Mindful na próxima tela.';
+      '2. Selecione Comrade na próxima tela.';
 
   @override
   String get permission_grant_step_three => '3. Clique e ative a opção abaixo.';
@@ -59,7 +59,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get permission_alarms_info =>
-      'Por favor, conceda permissão para definir alarmes e lembretes. Isso permitirá que o Mindful inicie sua programação de hora de dormir a tempo e redefina os cronômetros do aplicativo diariamente à meia-noite e ajude você a ficar no caminho certo.';
+      'Por favor, conceda permissão para definir alarmes e lembretes. Isso permitirá que o Comrade inicie sua programação de hora de dormir a tempo e redefina os cronômetros do aplicativo diariamente à meia-noite e ajude você a ficar no caminho certo.';
 
   @override
   String get permission_alarms_device_tile_label =>
@@ -70,7 +70,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get permission_usage_info =>
-      'Por favor, conceda permissão de acesso ao uso. Isso permitirá que a Mindful monitore o uso de aplicativos e gerencie o acesso a determinados aplicativos, garantindo um ambiente digital mais focado e controlado.';
+      'Por favor, conceda permissão de acesso ao uso. Isso permitirá que a Comrade monitore o uso de aplicativos e gerencie o acesso a determinados aplicativos, garantindo um ambiente digital mais focado e controlado.';
 
   @override
   String get permission_usage_device_tile_label => 'Permitir acesso ao uso';
@@ -80,7 +80,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get permission_overlay_info =>
-      'Por favor, conceda permissão de sobreposição de tela. Isso permitirá que o Mindful mostre uma sobreposição quando um aplicativo pausado é aberto, ajudando você a manter o foco e manter sua agenda.';
+      'Por favor, conceda permissão de sobreposição de tela. Isso permitirá que o Comrade mostre uma sobreposição quando um aplicativo pausado é aberto, ajudando você a manter o foco e manter sua agenda.';
 
   @override
   String get permission_overlay_device_tile_label =>
@@ -91,21 +91,21 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get permission_accessibility_info =>
-      'Por favor, conceda permissão de acessibilidade. Isso permitirá que o Mindful restrinja o acesso ao conteúdo de vídeo curto (por exemplo, Reels, Shorts) dentro dos aplicativos e navegadores de mídia social e filtre sites inadequados.';
+      'Por favor, conceda permissão de acessibilidade. Isso permitirá que o Comrade restrinja o acesso ao conteúdo de vídeo curto (por exemplo, Reels, Shorts) dentro dos aplicativos e navegadores de mídia social e filtre sites inadequados.';
 
   @override
   String get permission_accessibility_required =>
-      'Mindful requer permissão de acessibilidade para bloquear conteúdo curto e websites de forma eficaz.';
+      'Comrade requer permissão de acessibilidade para bloquear conteúdo curto e websites de forma eficaz.';
 
   @override
-  String get permission_accessibility_device_tile_label => 'Usar Mindful';
+  String get permission_accessibility_device_tile_label => 'Usar Comrade';
 
   @override
   String get permission_dnd_title => 'Não perturbe';
 
   @override
   String get permission_dnd_info =>
-      'Por favor, conceda acesso a Não Perturbe. Isso permitirá que o Mindful inicie e pare o modo Não Perturbe durante a programação da hora de dormir.';
+      'Por favor, conceda acesso a Não Perturbe. Isso permitirá que o Comrade inicie e pare o modo Não Perturbe durante a programação da hora de dormir.';
 
   @override
   String get permission_dnd_tile_title => 'Ativar DND';
@@ -133,7 +133,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get permission_vpn_info =>
-      'Por favor, conceda permissão para criar uma conexão de rede privada virtual (VPN). Isso permitirá que o Mindful restrinja o acesso à internet para aplicativos designados, criando uma VPN local no dispositivo.';
+      'Por favor, conceda permissão para criar uma conexão de rede privada virtual (VPN). Isso permitirá que o Comrade restrinja o acesso à internet para aplicativos designados, criando uma VPN local no dispositivo.';
 
   @override
   String get permission_admin_title => 'Administrador';
@@ -151,11 +151,11 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get permission_notification_access_info =>
-      'Conceda permissão de acesso à notificação. Isso permitirá que Mindful  organize suas notificações e leva-las em sua agenda.';
+      'Conceda permissão de acesso à notificação. Isso permitirá que Comrade  organize suas notificações e leva-las em sua agenda.';
 
   @override
   String get permission_notification_access_required =>
-      'Mindful requer acesso a notificações para agrupar e agendar notificações.';
+      'Comrade requer acesso a notificações para agrupar e agendar notificações.';
 
   @override
   String get permission_notification_access_device_tile_label =>
@@ -277,7 +277,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get development_dialog_info =>
-      'Mindful está atualmente em desenvolvimento e pode ter bugs ou recursos incompletos. Se você encontrar algum problema, por favor informe-os para nos ajudar a melhorar. Obrigado pelo seu feedback!';
+      'Comrade está atualmente em desenvolvimento e pode ter bugs ou recursos incompletos. Se você encontrar algum problema, por favor informe-os para nos ajudar a melhorar. Obrigado pelo seu feedback!';
 
   @override
   String get development_dialog_button_report_issue => 'Reportar problema';
@@ -329,7 +329,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get donation_card_info =>
-      'Mindful é de graça e de código aberto, desenvolvido com meses de dedicação. Se isso ajudou você, sua doação significaria o mundo para nós. Toda contribuição nos ajudam continuar melhorando e revisando isso para todos.';
+      'Comrade é de graça e de código aberto, desenvolvido com meses de dedicação. Se isso ajudou você, sua doação significaria o mundo para nós. Toda contribuição nos ajudam continuar melhorando e revisando isso para todos.';
 
   @override
   String get operation_failed_snack_alert =>
@@ -343,15 +343,15 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get app_restart_dialog_info =>
-      'Mindful será reiniciado automaticamente quando a contagem regressiva terminar. Por favor, seja paciente como as mudanças são aplicadas.';
+      'Comrade será reiniciado automaticamente quando a contagem regressiva terminar. Por favor, seja paciente como as mudanças são aplicadas.';
 
   @override
   String get accessibility_tip =>
-      'Quer um bloqueio mais inteligente e amigável à bateria? Ative a permissão de acessibilidade para o Mindful.';
+      'Quer um bloqueio mais inteligente e amigável à bateria? Ative a permissão de acessibilidade para o Comrade.';
 
   @override
   String get battery_optimization_tip =>
-      'Mindful não está funcionando? Permitir \'Ignorar Otimização da bateria\' nas Configurações para mantê-lo funcionando sem problemas.';
+      'Comrade não está funcionando? Permitir \'Ignorar Otimização da bateria\' nas Configurações para mantê-lo funcionando sem problemas.';
 
   @override
   String get invincible_mode_tip =>
@@ -363,7 +363,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get tamper_protection_tip =>
-      'Desinstalar o Mindful? Habilite a Janela de Desinstalação para desativar a proteção de desinstalação com segurança primeiro.';
+      'Desinstalar o Comrade? Habilite a Janela de Desinstalação para desativar a proteção de desinstalação com segurança primeiro.';
 
   @override
   String get notification_blocking_tip =>
@@ -460,7 +460,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get onboarding_page_one_info =>
-      'Pause apps que distraem, bloqueie conteúdo curto e mantenha-se no caminho certo com sessões de foco personalizáveis. Se você está trabalhando, estudando ou relaxando, Mindful ajuda você a ficar no controle.';
+      'Pause apps que distraem, bloqueie conteúdo curto e mantenha-se no caminho certo com sessões de foco personalizáveis. Se você está trabalhando, estudando ou relaxando, Comrade ajuda você a ficar no controle.';
 
   @override
   String get onboarding_page_two_title => 'Bloquear Distrações.';
@@ -474,14 +474,14 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get onboarding_page_three_info =>
-      'A Mindful é 100% open-source e opera totalmente offline. Não recolhemos nem partilhamos os seus dados pessoais — a sua privacidade está garantida de todas as formas.';
+      'A Comrade é 100% open-source e opera totalmente offline. Não recolhemos nem partilhamos os seus dados pessoais — a sua privacidade está garantida de todas as formas.';
 
   @override
   String get onboarding_page_permissions_title => 'Permissões Essenciais.';
 
   @override
   String get onboarding_page_permissions_info =>
-      'O Mindful requer as seguintes permissões essenciais para rastrear e gerenciar seu tempo de tela, ajudando a reduzir distrações e melhorar o foco.';
+      'O Comrade requer as seguintes permissões essenciais para rastrear e gerenciar seu tempo de tela, ajudando a reduzir distrações e melhorar o foco.';
 
   @override
   String get dashboard_tab_title => 'Painel de controle';
@@ -757,7 +757,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get protected_access_tile_subtitle =>
-      'Proteja Mindful com o bloqueio do seu dispositivo.';
+      'Proteja Comrade com o bloqueio do seu dispositivo.';
 
   @override
   String get protected_access_no_lock_snack_alert =>
@@ -780,7 +780,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get tamper_protection_confirmation_dialog_info =>
-      'Uma vez ativado, você não poderá desinstalar, forçar parada ou limpar os dados do Mindful, exceto durante a janela de desinstalação selecionada. Não há soluções alternativas.\n\nProssiga por sua conta e risco.';
+      'Uma vez ativado, você não poderá desinstalar, forçar parada ou limpar os dados do Comrade, exceto durante a janela de desinstalação selecionada. Não há soluções alternativas.\n\nProssiga por sua conta e risco.';
 
   @override
   String get uninstall_window_tile_title => 'Desinstalar uma janela';
@@ -1424,15 +1424,15 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get service_stopping_warning =>
-      'Se o Mindful parar de funcionar inesperadamente, por favor, conceda a permissão \'Ignorar Otimização de bateria\' para mantê-lo em execução em segundo plano. Se o problema continuar, tente incluir o Mindful na lista de permissões para um desempenho ininterrupto.';
+      'Se o Comrade parar de funcionar inesperadamente, por favor, conceda a permissão \'Ignorar Otimização de bateria\' para mantê-lo em execução em segundo plano. Se o problema continuar, tente incluir o Comrade na lista de permissões para um desempenho ininterrupto.';
 
   @override
   String get whitelist_app_tile_title =>
-      'Colocar Mindful na lista de permissões';
+      'Colocar Comrade na lista de permissões';
 
   @override
   String get whitelist_app_tile_subtitle =>
-      'Permitir que o Mindful inicie automaticamente.';
+      'Permitir que o Comrade inicie automaticamente.';
 
   @override
   String get whitelist_app_unsupported_snack_alert =>
@@ -1538,7 +1538,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get privacy_policy_info =>
-      'A Mindful está empenhado em proteger a sua privacidade. Não recolhemos, armazenamos ou transferimos qualquer tipo de dados do usuário. O aplicativo funciona totalmente offline e não requer uma conexão com a Internet, garantindo que suas informações pessoais permaneçam privadas e seguras em seu dispositivo. Como um aplicativo de software livre e de código aberto (FOSS), o Mindful garante total transparência e controle do usuário sobre seus dados.';
+      'A Comrade está empenhado em proteger a sua privacidade. Não recolhemos, armazenamos ou transferimos qualquer tipo de dados do usuário. O aplicativo funciona totalmente offline e não requer uma conexão com a Internet, garantindo que suas informações pessoais permaneçam privadas e seguras em seu dispositivo. Como um aplicativo de software livre e de código aberto (FOSS), o Comrade garante total transparência e controle do usuário sobre seus dados.';
 
   @override
   String get more_details_button => 'Mais detalhes';

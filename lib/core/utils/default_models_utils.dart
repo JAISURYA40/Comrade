@@ -1,13 +1,13 @@
-import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
-import 'package:mindful/core/database/app_database.dart';
-import 'package:mindful/core/enums/default_home_tab.dart';
-import 'package:mindful/core/enums/recap_type.dart';
-import 'package:mindful/core/enums/reminder_type.dart';
-import 'package:mindful/core/enums/session_type.dart';
-import 'package:mindful/config/app_constants.dart';
-import 'package:mindful/models/notification_schedule.dart';
+import 'package:comrade/core/database/adapters/time_of_day_adapter.dart';
+import 'package:comrade/core/database/app_database.dart';
+import 'package:comrade/core/enums/default_home_tab.dart';
+import 'package:comrade/core/enums/recap_type.dart';
+import 'package:comrade/core/enums/reminder_type.dart';
+import 'package:comrade/core/enums/session_type.dart';
+import 'package:comrade/config/app_constants.dart';
+import 'package:comrade/models/notification_schedule.dart';
 
-final defaultMindfulSettingsModel = MindfulSettings(
+final defaultComradeSettingsModel = ComradeSettings(
   id: 0,
   defaultHomeTab: DefaultHomeTab.dashboard,
   themeMode: AppConstants.defaultThemeMode,

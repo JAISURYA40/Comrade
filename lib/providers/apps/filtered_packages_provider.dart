@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -9,10 +9,10 @@
  */
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/enums/usage_type.dart';
-import 'package:mindful/models/usage_filter_model.dart';
-import 'package:mindful/providers/apps/apps_info_provider.dart';
-import 'package:mindful/providers/usage/dated_apps_usage_provider.dart';
+import 'package:comrade/core/enums/usage_type.dart';
+import 'package:comrade/models/usage_filter_model.dart';
+import 'package:comrade/providers/apps/apps_info_provider.dart';
+import 'package:comrade/providers/usage/dated_apps_usage_provider.dart';
 
 /// A provider that filters and sorts app packages based on [UsageFilterModel]
 final filteredPackagesProvider =

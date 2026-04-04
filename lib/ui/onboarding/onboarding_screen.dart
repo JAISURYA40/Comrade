@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -13,15 +13,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/config/navigation/navigation_service.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/config/app_constants.dart';
-import 'package:mindful/models/permissions_model.dart';
-import 'package:mindful/providers/system/mindful_settings_provider.dart';
-import 'package:mindful/providers/system/permissions_provider.dart';
-import 'package:mindful/ui/onboarding/onboarding_page.dart';
-import 'package:mindful/ui/onboarding/permission_page.dart';
+import 'package:comrade/config/navigation/navigation_service.dart';
+import 'package:comrade/core/extensions/ext_build_context.dart';
+import 'package:comrade/core/extensions/ext_num.dart';
+import 'package:comrade/config/app_constants.dart';
+import 'package:comrade/models/permissions_model.dart';
+import 'package:comrade/providers/system/comrade_settings_provider.dart';
+import 'package:comrade/providers/system/permissions_provider.dart';
+import 'package:comrade/ui/onboarding/onboarding_page.dart';
+import 'package:comrade/ui/onboarding/permission_page.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
@@ -98,7 +98,7 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
 
   void _finishOnboarding() async {
     if (mounted) {
-      ref.read(mindfulSettingsProvider.notifier).markOnboardingDone();
+      ref.read(comradeSettingsProvider.notifier).markOnboardingDone();
 
       Future.delayed(
         200.ms,

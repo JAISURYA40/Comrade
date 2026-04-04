@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -10,8 +10,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:mindful/config/app_constants.dart';
-import 'package:mindful/ui/transitions/default_hero.dart';
+import 'package:comrade/config/app_constants.dart';
+import 'package:comrade/ui/transitions/default_hero.dart';
 
 class DefaultFabButton extends StatelessWidget {
   const DefaultFabButton({

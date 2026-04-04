@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -11,7 +11,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
-import 'package:mindful/core/enums/app_theme_mode.dart';
+import 'package:comrade/core/enums/app_theme_mode.dart';
 
 class AppConstants {
   // App Defaults
@@ -27,28 +27,28 @@ class AppConstants {
   static const tetheringAppPackage = "com.android.tethering";
 
   /// Urls
-  static const githubUrl = "https://github.com/akaMrNagar/Mindful/";
+  static const githubUrl = "https://github.com/akaMrNagar/Comrade/";
   static const bmcUrl = "https://buymeacoffee.com/akamrnagar";
   static const instagramUrl = "https://www.instagram.com/lasthopedevelopers/";
-  static const telegramUrl = "https://t.me/fossmindful";
+  static const telegramUrl = "https://t.me/fosscomrade";
   static const supportEmailUrl = "mailto:help.lasthopedevs@gmail.com";
-  static const privacyPolicyUrl = "https://bemindful.vercel.app/privacy";
-  static const faqsUrl = "https://bemindful.vercel.app/#faqs";
+  static const privacyPolicyUrl = "https://becomrade.vercel.app/privacy";
+  static const faqsUrl = "https://becomrade.vercel.app/#faqs";
 
   static String githubChangeLogUrl(String appVersion) =>
-      "https://github.com/akaMrNagar/Mindful/releases/tag/$appVersion";
+      "https://github.com/akaMrNagar/Comrade/releases/tag/$appVersion";
 
   static const githubIssueDirectUrl =
-      "https://github.com/akaMrNagar/Mindful/issues/new?template=bug_report.md";
+      "https://github.com/akaMrNagar/Comrade/issues/new?template=bug_report.md";
 
   static const githubSuggestionDirectUrl =
-      "https://github.com/akaMrNagar/Mindful/issues/new?template=feature_request.md";
+      "https://github.com/akaMrNagar/Comrade/issues/new?template=feature_request.md";
 
   static const gitHubDonationSectionUrl =
-      "https://github.com/akaMrNagar/Mindful?tab=readme-ov-file#donate";
+      "https://github.com/akaMrNagar/Comrade?tab=readme-ov-file#donate";
 
   static const githubFeedbackSectionUrl =
-      "https://github.com/akaMrNagar/Mindful?tab=readme-ov-file#feedback-and-support";
+      "https://github.com/akaMrNagar/Comrade?tab=readme-ov-file#feedback-and-support";
 
   /// Returns localized list of days in a week in short
   ///  e.g., ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]

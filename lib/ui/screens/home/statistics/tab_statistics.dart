@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -11,27 +11,27 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_date_time.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/config/app_constants.dart';
-import 'package:mindful/core/utils/provider_utils.dart';
-import 'package:mindful/models/usage_filter_model.dart';
-import 'package:mindful/models/usage_model.dart';
-import 'package:mindful/providers/usage/weekly_device_usage_provider.dart';
-import 'package:mindful/providers/apps/apps_info_provider.dart';
-import 'package:mindful/providers/apps/filtered_packages_provider.dart';
-import 'package:mindful/providers/usage/todays_apps_usage_provider.dart';
-import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/common/default_refresh_indicator.dart';
-import 'package:mindful/ui/common/content_section_header.dart';
-import 'package:mindful/ui/common/sliver_implicitly_animated_list.dart';
-import 'package:mindful/ui/common/sliver_usage_chart_panel.dart';
-import 'package:mindful/ui/common/sliver_usage_cards.dart';
-import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
-import 'package:mindful/ui/screens/home/statistics/application_tile.dart';
-import 'package:mindful/ui/common/sliver_shimmer_list.dart';
+import 'package:comrade/core/extensions/ext_build_context.dart';
+import 'package:comrade/core/extensions/ext_date_time.dart';
+import 'package:comrade/core/extensions/ext_num.dart';
+import 'package:comrade/core/extensions/ext_widget.dart';
+import 'package:comrade/config/app_constants.dart';
+import 'package:comrade/core/utils/provider_utils.dart';
+import 'package:comrade/models/usage_filter_model.dart';
+import 'package:comrade/models/usage_model.dart';
+import 'package:comrade/providers/usage/weekly_device_usage_provider.dart';
+import 'package:comrade/providers/apps/apps_info_provider.dart';
+import 'package:comrade/providers/apps/filtered_packages_provider.dart';
+import 'package:comrade/providers/usage/todays_apps_usage_provider.dart';
+import 'package:comrade/ui/common/default_list_tile.dart';
+import 'package:comrade/ui/common/default_refresh_indicator.dart';
+import 'package:comrade/ui/common/content_section_header.dart';
+import 'package:comrade/ui/common/sliver_implicitly_animated_list.dart';
+import 'package:comrade/ui/common/sliver_usage_chart_panel.dart';
+import 'package:comrade/ui/common/sliver_usage_cards.dart';
+import 'package:comrade/ui/common/sliver_tabs_bottom_padding.dart';
+import 'package:comrade/ui/screens/home/statistics/application_tile.dart';
+import 'package:comrade/ui/common/sliver_shimmer_list.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 

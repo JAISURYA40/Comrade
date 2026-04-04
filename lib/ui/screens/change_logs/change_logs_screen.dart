@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -12,21 +12,21 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/config/app_constants.dart';
-import 'package:mindful/core/enums/item_position.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/providers/system/mindful_settings_provider.dart';
-import 'package:mindful/ui/common/content_section_header.dart';
-import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/common/scaffold_shell.dart';
-import 'package:mindful/ui/common/sliver_app_version_info.dart';
-import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
-import 'package:mindful/ui/screens/change_logs/data/change_logs_data.dart';
-import 'package:mindful/ui/screens/change_logs/widgets/change_log_card.dart';
-import 'package:mindful/ui/transitions/default_effects.dart';
+import 'package:comrade/config/app_constants.dart';
+import 'package:comrade/core/enums/item_position.dart';
+import 'package:comrade/core/extensions/ext_build_context.dart';
+import 'package:comrade/core/extensions/ext_num.dart';
+import 'package:comrade/core/extensions/ext_widget.dart';
+import 'package:comrade/core/services/method_channel_service.dart';
+import 'package:comrade/providers/system/comrade_settings_provider.dart';
+import 'package:comrade/ui/common/content_section_header.dart';
+import 'package:comrade/ui/common/default_list_tile.dart';
+import 'package:comrade/ui/common/scaffold_shell.dart';
+import 'package:comrade/ui/common/sliver_app_version_info.dart';
+import 'package:comrade/ui/common/sliver_tabs_bottom_padding.dart';
+import 'package:comrade/ui/screens/change_logs/data/change_logs_data.dart';
+import 'package:comrade/ui/screens/change_logs/widgets/change_log_card.dart';
+import 'package:comrade/ui/transitions/default_effects.dart';
 
 class ChangeLogsScreen extends ConsumerStatefulWidget {
   const ChangeLogsScreen({super.key});
@@ -41,7 +41,7 @@ class _ChangeLogsScreenState extends ConsumerState<ChangeLogsScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) => ref.read(mindfulSettingsProvider.notifier).updateAppVersion(),
+      (_) => ref.read(comradeSettingsProvider.notifier).updateAppVersion(),
     );
   }
 
@@ -73,7 +73,7 @@ class _ChangeLogsScreenState extends ConsumerState<ChangeLogsScreen> {
                 trailing: const Icon(FluentIcons.chevron_right_20_regular),
                 onPressed: () => MethodChannelService.instance.launchUrl(
                   AppConstants.githubChangeLogUrl(
-                      MethodChannelService.instance.deviceInfo.mindfulVersion),
+                      MethodChannelService.instance.deviceInfo.comradeVersion),
                 ),
               ).sliver,
               12.vSliverBox,

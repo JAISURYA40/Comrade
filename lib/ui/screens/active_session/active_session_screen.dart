@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -16,25 +16,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_confetti/flutter_confetti.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/config/navigation/app_routes.dart';
-import 'package:mindful/core/database/app_database.dart';
-import 'package:mindful/core/enums/session_type.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_duration.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/config/app_constants.dart';
-import 'package:mindful/config/hero_tags.dart';
-import 'package:mindful/providers/focus/focus_mode_provider.dart';
-import 'package:mindful/ui/common/default_fab_button.dart';
-import 'package:mindful/ui/common/flip_countdown_text.dart';
-import 'package:mindful/ui/common/scaffold_shell.dart';
-import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
-import 'package:mindful/ui/dialogs/input_field_dialog.dart';
-import 'package:mindful/ui/screens/active_session/sine_wave.dart';
-import 'package:mindful/ui/screens/active_session/timer_progress_clock.dart';
-import 'package:mindful/ui/transitions/default_hero.dart';
+import 'package:comrade/config/navigation/app_routes.dart';
+import 'package:comrade/core/database/app_database.dart';
+import 'package:comrade/core/enums/session_type.dart';
+import 'package:comrade/core/extensions/ext_build_context.dart';
+import 'package:comrade/core/extensions/ext_duration.dart';
+import 'package:comrade/core/extensions/ext_num.dart';
+import 'package:comrade/core/extensions/ext_widget.dart';
+import 'package:comrade/config/app_constants.dart';
+import 'package:comrade/config/hero_tags.dart';
+import 'package:comrade/providers/focus/focus_mode_provider.dart';
+import 'package:comrade/ui/common/default_fab_button.dart';
+import 'package:comrade/ui/common/flip_countdown_text.dart';
+import 'package:comrade/ui/common/scaffold_shell.dart';
+import 'package:comrade/ui/common/styled_text.dart';
+import 'package:comrade/ui/dialogs/confirmation_dialog.dart';
+import 'package:comrade/ui/dialogs/input_field_dialog.dart';
+import 'package:comrade/ui/screens/active_session/sine_wave.dart';
+import 'package:comrade/ui/screens/active_session/timer_progress_clock.dart';
+import 'package:comrade/ui/transitions/default_hero.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 

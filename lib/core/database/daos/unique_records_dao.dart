@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -10,21 +10,21 @@
 
 import 'package:drift/drift.dart';
 
-import 'package:mindful/core/database/app_database.dart';
-import 'package:mindful/core/database/tables/bedtime_schedule_table.dart';
-import 'package:mindful/core/database/tables/focus_mode_table.dart';
-import 'package:mindful/core/database/tables/notification_settings_table.dart';
-import 'package:mindful/core/database/tables/parental_controls_table.dart';
-import 'package:mindful/core/database/tables/mindful_settings_table.dart';
-import 'package:mindful/core/database/tables/shared_unique_data_table.dart';
-import 'package:mindful/core/database/tables/wellbeing_table.dart';
-import 'package:mindful/core/utils/default_models_utils.dart';
+import 'package:comrade/core/database/app_database.dart';
+import 'package:comrade/core/database/tables/bedtime_schedule_table.dart';
+import 'package:comrade/core/database/tables/focus_mode_table.dart';
+import 'package:comrade/core/database/tables/notification_settings_table.dart';
+import 'package:comrade/core/database/tables/parental_controls_table.dart';
+import 'package:comrade/core/database/tables/comrade_settings_table.dart';
+import 'package:comrade/core/database/tables/shared_unique_data_table.dart';
+import 'package:comrade/core/database/tables/wellbeing_table.dart';
+import 'package:comrade/core/utils/default_models_utils.dart';
 
 part 'unique_records_dao.g.dart';
 
 @DriftAccessor(
   tables: [
-    MindfulSettingsTable,
+    ComradeSettingsTable,
     ParentalControlsTable,
     BedtimeScheduleTable,
     FocusModeTable,
@@ -48,16 +48,16 @@ class UniqueRecordsDao extends DatabaseAccessor<AppDatabase>
       await select(sharedUniqueDataTable).getSingleOrNull() ??
       defaultSharedUniqueDataModel;
 
-  /// Saves a single [MindfulSettings] object to the database.
-  Future<void> saveMindfulSettings(MindfulSettings settings) async =>
-      into(mindfulSettingsTable)
+  /// Saves a single [ComradeSettings] object to the database.
+  Future<void> saveComradeSettings(ComradeSettings settings) async =>
+      into(comradeSettingsTable)
           .insert(settings, mode: InsertMode.insertOrReplace);
 
-  /// Loads the first (and likely only) [MindfulSettings] object
+  /// Loads the first (and likely only) [ComradeSettings] object
   /// from the database. If none exists, returns default instance.
-  Future<MindfulSettings> loadMindfulSettings() async =>
-      await select(mindfulSettingsTable).getSingleOrNull() ??
-      defaultMindfulSettingsModel;
+  Future<ComradeSettings> loadComradeSettings() async =>
+      await select(comradeSettingsTable).getSingleOrNull() ??
+      defaultComradeSettingsModel;
 
   /// Saves a single [ParentalControls] object to the database.
   Future<void> saveParentalControls(

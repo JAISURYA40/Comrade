@@ -2,7 +2,7 @@
 
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -12,10 +12,10 @@
 
 import 'package:drift/drift.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:mindful/core/database/app_database.dart';
-import 'package:mindful/core/services/drift_db_service.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/core/utils/date_time_utils.dart';
+import 'package:comrade/core/database/app_database.dart';
+import 'package:comrade/core/services/drift_db_service.dart';
+import 'package:comrade/core/services/method_channel_service.dart';
+import 'package:comrade/core/utils/date_time_utils.dart';
 
 /// A service class responsible for logging Crashes in the Isar database.
 class CrashLogService {
@@ -53,7 +53,7 @@ class CrashLogService {
     /// Create log
     final crashLog = CrashLogsTableCompanion.insert(
       appVersion:
-          Value(MethodChannelService.instance.deviceInfo.mindfulVersion),
+          Value(MethodChannelService.instance.deviceInfo.comradeVersion),
       error: Value(error),
       stackTrace: Value(stackTrace),
       timeStamp: Value(DateTime.now()),

@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -9,22 +9,22 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:mindful/core/enums/usage_type.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/ui/onboarding/onboarding_screen.dart';
-import 'package:mindful/ui/screens/active_session/active_session_screen.dart';
-import 'package:mindful/ui/screens/app_dashboard/app_dashboard_screen.dart';
-import 'package:mindful/ui/screens/change_logs/change_logs_screen.dart';
-import 'package:mindful/ui/screens/focus/focus_screen.dart';
-import 'package:mindful/ui/screens/home/home_screen.dart';
-import 'package:mindful/ui/screens/parental_controls/parental_controls_screen.dart';
-import 'package:mindful/ui/screens/restriction_groups/restriction_groups_screen.dart';
-import 'package:mindful/ui/screens/settings/settings_screen.dart';
-import 'package:mindful/ui/screens/shorts_blocking/shorts_blocking_screen.dart';
-import 'package:mindful/ui/screens/notifications/notifications_screen.dart';
-import 'package:mindful/ui/screens/websites_blocking/websites_blocking_screen.dart';
-import 'package:mindful/ui/screens/roadmap/roadmap_screen.dart';
-import 'package:mindful/ui/splash_screen.dart';
+import 'package:comrade/core/enums/usage_type.dart';
+import 'package:comrade/core/extensions/ext_build_context.dart';
+import 'package:comrade/ui/onboarding/onboarding_screen.dart';
+import 'package:comrade/ui/screens/active_session/active_session_screen.dart';
+import 'package:comrade/ui/screens/app_dashboard/app_dashboard_screen.dart';
+import 'package:comrade/ui/screens/change_logs/change_logs_screen.dart';
+import 'package:comrade/ui/screens/focus/focus_screen.dart';
+import 'package:comrade/ui/screens/home/home_screen.dart';
+import 'package:comrade/ui/screens/parental_controls/parental_controls_screen.dart';
+import 'package:comrade/ui/screens/restriction_groups/restriction_groups_screen.dart';
+import 'package:comrade/ui/screens/settings/settings_screen.dart';
+import 'package:comrade/ui/screens/shorts_blocking/shorts_blocking_screen.dart';
+import 'package:comrade/ui/screens/notifications/notifications_screen.dart';
+import 'package:comrade/ui/screens/websites_blocking/websites_blocking_screen.dart';
+import 'package:comrade/ui/screens/roadmap/roadmap_screen.dart';
+import 'package:comrade/ui/splash_screen.dart';
 
 class AppRoutes {
   static const String rootSplashPath = '/';

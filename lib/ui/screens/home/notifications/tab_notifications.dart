@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -11,29 +11,29 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/config/navigation/app_routes.dart';
-import 'package:mindful/core/enums/item_position.dart';
-import 'package:mindful/core/enums/recap_type.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_date_time.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/providers/notifications/dated_notifications_provider.dart';
-import 'package:mindful/providers/notifications/notification_settings_provider.dart';
-import 'package:mindful/providers/system/permissions_provider.dart';
-import 'package:mindful/ui/common/content_section_header.dart';
-import 'package:mindful/ui/common/default_dropdown_tile.dart';
-import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/common/default_refresh_indicator.dart';
-import 'package:mindful/ui/common/go_to_badge_icon.dart';
-import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
-import 'package:mindful/ui/common/status_label.dart';
-import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/common/usage_glance_card.dart';
-import 'package:mindful/ui/dialogs/modal_bottom_sheet.dart';
-import 'package:mindful/ui/permissions/notification_access_permission_card.dart';
-import 'package:mindful/ui/screens/home/notifications/sliver_batched_apps_list.dart';
-import 'package:mindful/ui/screens/home/notifications/sliver_schedules_list.dart';
+import 'package:comrade/config/navigation/app_routes.dart';
+import 'package:comrade/core/enums/item_position.dart';
+import 'package:comrade/core/enums/recap_type.dart';
+import 'package:comrade/core/extensions/ext_build_context.dart';
+import 'package:comrade/core/extensions/ext_date_time.dart';
+import 'package:comrade/core/extensions/ext_num.dart';
+import 'package:comrade/core/extensions/ext_widget.dart';
+import 'package:comrade/providers/notifications/dated_notifications_provider.dart';
+import 'package:comrade/providers/notifications/notification_settings_provider.dart';
+import 'package:comrade/providers/system/permissions_provider.dart';
+import 'package:comrade/ui/common/content_section_header.dart';
+import 'package:comrade/ui/common/default_dropdown_tile.dart';
+import 'package:comrade/ui/common/default_list_tile.dart';
+import 'package:comrade/ui/common/default_refresh_indicator.dart';
+import 'package:comrade/ui/common/go_to_badge_icon.dart';
+import 'package:comrade/ui/common/sliver_tabs_bottom_padding.dart';
+import 'package:comrade/ui/common/status_label.dart';
+import 'package:comrade/ui/common/styled_text.dart';
+import 'package:comrade/ui/common/usage_glance_card.dart';
+import 'package:comrade/ui/dialogs/modal_bottom_sheet.dart';
+import 'package:comrade/ui/permissions/notification_access_permission_card.dart';
+import 'package:comrade/ui/screens/home/notifications/sliver_batched_apps_list.dart';
+import 'package:comrade/ui/screens/home/notifications/sliver_schedules_list.dart';
 
 class TabNotifications extends ConsumerStatefulWidget {
   const TabNotifications({super.key});

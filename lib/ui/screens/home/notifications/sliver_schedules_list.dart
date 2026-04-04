@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -10,16 +10,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/enums/item_position.dart';
-import 'package:mindful/config/app_constants.dart';
-import 'package:mindful/config/hero_tags.dart';
-import 'package:mindful/core/utils/widget_utils.dart';
-import 'package:mindful/models/notification_schedule.dart';
-import 'package:mindful/providers/notifications/notification_settings_provider.dart';
-import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/common/default_slide_to_remove.dart';
-import 'package:mindful/ui/common/sliver_implicitly_animated_list.dart';
-import 'package:mindful/ui/common/time_card.dart';
+import 'package:comrade/core/enums/item_position.dart';
+import 'package:comrade/config/app_constants.dart';
+import 'package:comrade/config/hero_tags.dart';
+import 'package:comrade/core/utils/widget_utils.dart';
+import 'package:comrade/models/notification_schedule.dart';
+import 'package:comrade/providers/notifications/notification_settings_provider.dart';
+import 'package:comrade/ui/common/default_list_tile.dart';
+import 'package:comrade/ui/common/default_slide_to_remove.dart';
+import 'package:comrade/ui/common/sliver_implicitly_animated_list.dart';
+import 'package:comrade/ui/common/time_card.dart';
 
 class SliverSchedulesList extends ConsumerWidget {
   const SliverSchedulesList({

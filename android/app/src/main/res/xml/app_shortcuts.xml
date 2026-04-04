@@ -11,8 +11,8 @@
         tools:ignore="UnusedAttribute">
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="com.mindful.android://open/focus"
-            android:targetClass="com.mindful.android.MainActivity" />
+            android:data="com.comrade.android://open/focus"
+            android:targetClass="com.comrade.android.MainActivity" />
 
         <categories android:name="android.shortcut.static" />
 <!--        <capability-binding android:key="actions.intent.START_FOCUS_MODE" />-->
@@ -28,8 +28,8 @@
         tools:ignore="UnusedAttribute">
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="com.mindful.android://open/notifications"
-            android:targetClass="com.mindful.android.MainActivity" />
+            android:data="com.comrade.android://open/notifications"
+            android:targetClass="com.comrade.android.MainActivity" />
 
         <categories android:name="android.shortcut.static" />
     </shortcut>
@@ -44,8 +44,8 @@
         tools:ignore="UnusedAttribute">
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="com.mindful.android://open/parentalControls"
-            android:targetClass="com.mindful.android.MainActivity" />
+            android:data="com.comrade.android://open/parentalControls"
+            android:targetClass="com.comrade.android.MainActivity" />
 
         <categories android:name="android.shortcut.static" />
     </shortcut>

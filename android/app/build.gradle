@@ -24,7 +24,7 @@ if (flutterVersionName == null) {
 
 android {
 
-    namespace "com.mindful.android"
+    namespace "com.comrade.android"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion '27.0.12077973'
 
@@ -40,7 +40,7 @@ android {
     defaultConfig {
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        applicationId "com.mindful.android"
+        applicationId "com.comrade.android"
         minSdkVersion defaultMinSdkVersion
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
