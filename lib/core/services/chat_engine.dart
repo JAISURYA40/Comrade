@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ChatEngine {
-  final String apiKey = "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";
+  final String apiKey = "";
 
   Future<String> processMessage(
     String message,
