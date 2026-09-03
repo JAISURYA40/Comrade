@@ -26,7 +26,7 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Additional context**
-Mindful's version -
+Comrade's version -
 Android version -
 Device manufacturer -
 Device OS/ROM -

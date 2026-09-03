@@ -1,8 +1,8 @@
 // ignore_for_file: file_names
 
 import 'package:drift/drift.dart';
-import 'package:mindful/core/database/schemas/schema_versions.dart';
-import 'package:mindful/core/utils/db_utils.dart';
+import 'package:comrade/core/database/schemas/schema_versions.dart';
+import 'package:comrade/core/utils/db_utils.dart';
 
 Future<void> from4To5(Migrator m, Schema5 schema) async => await runSafe(
       "Migration(4 to 5)",

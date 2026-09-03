@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -9,7 +9,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:mindful/ui/common/styled_text.dart';
+import 'package:comrade/ui/common/styled_text.dart';
 
 class ContentSectionHeader extends StatelessWidget {
   /// Global title text with primary accent mainly used as a header for different sections in a list of widgets
@@ -31,8 +31,10 @@ class ContentSectionHeader extends StatelessWidget {
       alignment: alignment,
       child: StyledText(
         title,
-        color: Theme.of(context).colorScheme.primary,
-        fontWeight: FontWeight.bold,
+        color: Theme.of(context).colorScheme.onSurface,
+        fontSize: 18,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.5,
       ),
     );
   }

@@ -4,8 +4,8 @@ part of 'unique_records_dao.dart';
 
 // ignore_for_file: type=lint
 mixin _$UniqueRecordsDaoMixin on DatabaseAccessor<AppDatabase> {
-  $MindfulSettingsTableTable get mindfulSettingsTable =>
-      attachedDatabase.mindfulSettingsTable;
+  $ComradeSettingsTableTable get comradeSettingsTable =>
+      attachedDatabase.comradeSettingsTable;
   $ParentalControlsTableTable get parentalControlsTable =>
       attachedDatabase.parentalControlsTable;
   $BedtimeScheduleTableTable get bedtimeScheduleTable =>

@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -9,11 +9,11 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:mindful/core/enums/item_position.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/utils/widget_utils.dart';
-import 'package:mindful/ui/common/rounded_container.dart';
-import 'package:mindful/ui/common/styled_text.dart';
+import 'package:comrade/core/enums/item_position.dart';
+import 'package:comrade/core/extensions/ext_num.dart';
+import 'package:comrade/core/utils/widget_utils.dart';
+import 'package:comrade/ui/common/rounded_container.dart';
+import 'package:comrade/ui/common/styled_text.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class UsageGlanceCard extends StatelessWidget {
@@ -39,13 +39,16 @@ class UsageGlanceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mini = icon == null;
+    final theme = Theme.of(context);
+    final isPrimaryColor = isPrimary 
+        ? theme.colorScheme.primary.withValues(alpha: 0.15)
+        : theme.colorScheme.surfaceContainerHighest;
 
     return RoundedContainer(
-      circularRadius: 6,
+      circularRadius: 20,
       borderRadius: getBorderRadiusFromPosition(position),
-      padding: const EdgeInsets.all(16),
-      color:
-          isPrimary ? Theme.of(context).colorScheme.secondaryContainer : null,
+      padding: const EdgeInsets.all(20),
+      color: isPrimaryColor,
       onPressed: onTap,
       child: Stack(
         children: [
@@ -54,17 +57,33 @@ class UsageGlanceCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (!mini) Icon(icon),
-              mini ? 0.vBox : 14.vBox,
+              if (!mini) 
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.25),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    icon,
+                    color: theme.colorScheme.primary,
+                    size: 20,
+                  ),
+                ),
+              mini ? 0.vBox : 16.vBox,
               StyledText(
                 title,
-                fontSize: 12,
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                isSubtitle: true,
               ),
+              8.vBox,
               Skeleton.leaf(
                 child: FittedBox(
+                  alignment: Alignment.centerLeft,
                   child: StyledText(
                     info.isEmpty ? " " : info,
-                    fontSize: 24,
+                    fontSize: 28,
                     maxLines: 1,
                     fontWeight: FontWeight.bold,
                     overflow: TextOverflow.ellipsis,

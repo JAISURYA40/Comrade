@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -18,17 +18,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:mindful/core/enums/item_position.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/core/services/drift_db_service.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/config/hero_tags.dart';
-import 'package:mindful/core/utils/db_utils.dart';
-import 'package:mindful/ui/common/content_section_header.dart';
-import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/dialogs/time_countdown_dialog.dart';
-import 'package:mindful/ui/transitions/default_hero.dart';
+import 'package:comrade/core/enums/item_position.dart';
+import 'package:comrade/core/extensions/ext_build_context.dart';
+import 'package:comrade/core/extensions/ext_widget.dart';
+import 'package:comrade/core/services/drift_db_service.dart';
+import 'package:comrade/core/services/method_channel_service.dart';
+import 'package:comrade/config/hero_tags.dart';
+import 'package:comrade/core/utils/db_utils.dart';
+import 'package:comrade/ui/common/content_section_header.dart';
+import 'package:comrade/ui/common/default_list_tile.dart';
+import 'package:comrade/ui/dialogs/time_countdown_dialog.dart';
+import 'package:comrade/ui/transitions/default_hero.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class ImportExportDb extends ConsumerStatefulWidget {
@@ -143,7 +143,7 @@ class _ImportExportDbState extends ConsumerState<ImportExportDb> {
     try {
       setState(() => _isExporting = true);
 
-      /// Get the database path: /data/user/0/com.mindful.android/app_flutter/Mindful.sqlite
+      /// Get the database path: /data/user/0/com.comrade.android/app_flutter/Comrade.sqlite
       final dbFile = File(await getSqliteDbPath());
       if (!await dbFile.exists()) {
         throw Exception('Database file not found at ${dbFile.path}');
@@ -153,14 +153,14 @@ class _ImportExportDbState extends ConsumerState<ImportExportDb> {
       final dbFileBytes = await dbFile.readAsBytes();
       final timeStamp = DateFormat('yyyy-MM-dThh-mm-ss').format(DateTime.now());
       final dbVersionCode = DriftDbService.instance.driftDb.schemaVersion;
-      final mindfulVersionCode = MethodChannelService
-          .instance.deviceInfo.mindfulVersion
+      final comradeVersionCode = MethodChannelService
+          .instance.deviceInfo.comradeVersion
           .split("+")
           .lastOrNull;
 
       final resultPath = await FilePicker.platform.saveFile(
         fileName:
-            "Mindful_v${mindfulVersionCode}_dbv${dbVersionCode}_$timeStamp.sqlite",
+            "Comrade_v${comradeVersionCode}_dbv${dbVersionCode}_$timeStamp.sqlite",
         bytes: Uint8List.fromList(dbFileBytes),
       );
 

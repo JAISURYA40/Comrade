@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_date_time.dart';
-import 'package:mindful/providers/notifications/dated_notifications_provider.dart';
-import 'package:mindful/ui/common/default_refresh_indicator.dart';
-import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
-import 'package:mindful/ui/screens/notifications/sliver_notifications_list.dart';
+import 'package:comrade/core/extensions/ext_build_context.dart';
+import 'package:comrade/core/extensions/ext_date_time.dart';
+import 'package:comrade/providers/notifications/dated_notifications_provider.dart';
+import 'package:comrade/ui/common/default_refresh_indicator.dart';
+import 'package:comrade/ui/common/sliver_tabs_bottom_padding.dart';
+import 'package:comrade/ui/screens/notifications/sliver_notifications_list.dart';
 
 class TabTodaysNotifications extends ConsumerStatefulWidget {
   const TabTodaysNotifications({super.key});

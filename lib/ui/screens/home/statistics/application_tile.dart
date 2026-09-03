@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -11,24 +11,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/config/navigation/app_routes.dart';
-import 'package:mindful/core/enums/item_position.dart';
-import 'package:mindful/core/enums/usage_type.dart';
-import 'package:mindful/core/extensions/ext_duration.dart';
-import 'package:mindful/core/extensions/ext_int.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/config/hero_tags.dart';
-import 'package:mindful/core/utils/date_time_utils.dart';
-import 'package:mindful/models/usage_model.dart';
-import 'package:mindful/providers/restrictions/apps_restrictions_provider.dart';
-import 'package:mindful/providers/apps/apps_info_provider.dart';
-import 'package:mindful/providers/usage/dated_apps_usage_provider.dart';
-import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/common/application_icon.dart';
-import 'package:mindful/ui/screens/app_dashboard/app_internet_tile.dart';
-import 'package:mindful/ui/screens/app_dashboard/app_timer_tile.dart';
-import 'package:mindful/ui/transitions/default_hero.dart';
+import 'package:comrade/config/navigation/app_routes.dart';
+import 'package:comrade/core/enums/item_position.dart';
+import 'package:comrade/core/enums/usage_type.dart';
+import 'package:comrade/core/extensions/ext_duration.dart';
+import 'package:comrade/core/extensions/ext_int.dart';
+import 'package:comrade/core/extensions/ext_num.dart';
+import 'package:comrade/config/hero_tags.dart';
+import 'package:comrade/core/utils/date_time_utils.dart';
+import 'package:comrade/models/usage_model.dart';
+import 'package:comrade/providers/restrictions/apps_restrictions_provider.dart';
+import 'package:comrade/providers/apps/apps_info_provider.dart';
+import 'package:comrade/providers/usage/dated_apps_usage_provider.dart';
+import 'package:comrade/ui/common/default_list_tile.dart';
+import 'package:comrade/ui/common/styled_text.dart';
+import 'package:comrade/ui/common/application_icon.dart';
+import 'package:comrade/ui/screens/app_dashboard/app_internet_tile.dart';
+import 'package:comrade/ui/screens/app_dashboard/app_timer_tile.dart';
+import 'package:comrade/ui/transitions/default_hero.dart';
 
 /// List tile used for displaying app usage info based on the bool [selectedUsageType]
 class ApplicationTile extends ConsumerWidget {

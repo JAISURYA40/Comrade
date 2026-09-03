@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -10,9 +10,9 @@
 
 import 'package:flutter/material.dart' as m;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/database/app_database.dart';
-import 'package:mindful/core/database/daos/dynamic_records_dao.dart';
-import 'package:mindful/core/services/drift_db_service.dart';
+import 'package:comrade/core/database/app_database.dart';
+import 'package:comrade/core/database/daos/dynamic_records_dao.dart';
+import 'package:comrade/core/services/drift_db_service.dart';
 
 final datedNotificationsProvider = StateNotifierProvider.family<
     NotificationsNotifier, AsyncValue<List<Notification>>, m.DateTimeRange>(

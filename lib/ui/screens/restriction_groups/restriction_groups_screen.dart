@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -12,18 +12,18 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/core/utils/widget_utils.dart';
-import 'package:mindful/providers/restrictions/restriction_groups_provider.dart';
-import 'package:mindful/ui/common/default_fab_button.dart';
-import 'package:mindful/ui/common/scaffold_shell.dart';
-import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
-import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/screens/restriction_groups/create_update_group_screen.dart';
-import 'package:mindful/ui/screens/restriction_groups/restriction_group_card.dart';
-import 'package:mindful/ui/screens/restriction_groups/sample_restriction_group.dart';
+import 'package:comrade/core/extensions/ext_build_context.dart';
+import 'package:comrade/core/extensions/ext_num.dart';
+import 'package:comrade/core/extensions/ext_widget.dart';
+import 'package:comrade/core/utils/widget_utils.dart';
+import 'package:comrade/providers/restrictions/restriction_groups_provider.dart';
+import 'package:comrade/ui/common/default_fab_button.dart';
+import 'package:comrade/ui/common/scaffold_shell.dart';
+import 'package:comrade/ui/common/sliver_tabs_bottom_padding.dart';
+import 'package:comrade/ui/common/styled_text.dart';
+import 'package:comrade/ui/screens/restriction_groups/create_update_group_screen.dart';
+import 'package:comrade/ui/screens/restriction_groups/restriction_group_card.dart';
+import 'package:comrade/ui/screens/restriction_groups/sample_restriction_group.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class RestrictionGroupsScreen extends ConsumerWidget {

@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -12,11 +12,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/services/bg_executor_service.dart';
-import 'package:mindful/core/services/crash_log_service.dart';
-import 'package:mindful/core/services/drift_db_service.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/mindful_app.dart';
+import 'package:comrade/core/services/bg_executor_service.dart';
+import 'package:comrade/core/services/crash_log_service.dart';
+import 'package:comrade/core/services/drift_db_service.dart';
+import 'package:comrade/core/services/method_channel_service.dart';
+import 'package:comrade/comrade_app.dart';
 
 /// Dart background
 @pragma('vm:entry-point')
@@ -61,7 +61,7 @@ Future<void> main() async {
   /// run main app
   runApp(
     const ProviderScope(
-      child: MindfulApp(),
+      child: ComradeApp(),
     ),
   );
 }

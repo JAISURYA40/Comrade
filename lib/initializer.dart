@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mindful/core/services/drift_db_service.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:comrade/core/services/drift_db_service.dart';
+import 'package:comrade/core/services/method_channel_service.dart';
 
 /// Initializer to initialize necessary things.
 class Initializer {

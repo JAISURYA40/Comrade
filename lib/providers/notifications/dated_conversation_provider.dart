@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -10,9 +10,9 @@
 
 import 'package:flutter/material.dart' as m;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/database/app_database.dart';
-import 'package:mindful/core/utils/string_utils.dart';
-import 'package:mindful/providers/notifications/dated_notifications_provider.dart';
+import 'package:comrade/core/database/app_database.dart';
+import 'package:comrade/core/utils/string_utils.dart';
+import 'package:comrade/providers/notifications/dated_notifications_provider.dart';
 
 final datedConversationProvider = StateNotifierProvider.family<
     GroupedNotificationsNotifier,

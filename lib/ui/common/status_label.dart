@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/ui/common/rounded_container.dart';
-import 'package:mindful/ui/common/styled_text.dart';
+import 'package:comrade/core/extensions/ext_num.dart';
+import 'package:comrade/ui/common/rounded_container.dart';
+import 'package:comrade/ui/common/styled_text.dart';
 
 class StatusLabel extends StatelessWidget {
   const StatusLabel({

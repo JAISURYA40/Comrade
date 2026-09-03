@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -14,10 +14,10 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:mindful/core/database/app_database.dart';
-import 'package:mindful/models/usage_model.dart';
-import 'package:mindful/models/app_info.dart';
-import 'package:mindful/models/device_info_model.dart';
+import 'package:comrade/core/database/app_database.dart';
+import 'package:comrade/models/usage_model.dart';
+import 'package:comrade/models/app_info.dart';
+import 'package:comrade/models/device_info_model.dart';
 
 /// This class handles the Flutter method channel and is responsible for invoking native Android Java code.
 ///
@@ -31,7 +31,7 @@ class MethodChannelService {
 
   /// The method channel object used for communication.
   final MethodChannel _methodChannel = const MethodChannel(
-    'com.mindful.android.methodchannel.fg',
+    'com.comrade.android.methodchannel.fg',
   );
 
   /// Flag indicating if the app is restarted by itself (after importing database).
@@ -387,7 +387,7 @@ class MethodChannelService {
   Future<bool> openDeviceDndSettings() async =>
       await _methodChannel.invokeMethod('openDeviceDndSettings');
 
-  /// Opens the device specific settings to whitelist mindful.
+  /// Opens the device specific settings to whitelist comrade.
   Future<bool> openAutoStartSettings() async =>
       await _methodChannel.invokeMethod('openAutoStartSettings');
 

@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -10,9 +10,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:mindful/core/enums/item_position.dart';
-import 'package:mindful/config/app_constants.dart';
-import 'package:mindful/core/utils/widget_utils.dart';
+import 'package:comrade/core/enums/item_position.dart';
+import 'package:comrade/config/app_constants.dart';
+import 'package:comrade/core/utils/widget_utils.dart';
 
 class SliverImplicitlyAnimatedList<T> extends StatefulWidget {
   const SliverImplicitlyAnimatedList({

@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -35,7 +35,7 @@ class AuthService {
       if (availableBiometrics.isEmpty) return null;
 
       /// Return status
-      return await _auth.authenticate(localizedReason: "Mindful");
+      return await _auth.authenticate(localizedReason: "Comrade");
     } catch (e) {
       debugPrint("Failed to authenticate : ${e.toString()}");
       return false;

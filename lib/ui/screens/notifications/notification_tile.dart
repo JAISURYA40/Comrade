@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -9,14 +9,14 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:mindful/core/database/app_database.dart' as db;
-import 'package:mindful/core/enums/item_position.dart';
-import 'package:mindful/core/extensions/ext_date_time.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/common/default_slide_to_remove.dart';
-import 'package:mindful/ui/common/rounded_container.dart';
-import 'package:mindful/ui/common/styled_text.dart';
+import 'package:comrade/core/database/app_database.dart' as db;
+import 'package:comrade/core/enums/item_position.dart';
+import 'package:comrade/core/extensions/ext_date_time.dart';
+import 'package:comrade/core/services/method_channel_service.dart';
+import 'package:comrade/ui/common/default_list_tile.dart';
+import 'package:comrade/ui/common/default_slide_to_remove.dart';
+import 'package:comrade/ui/common/rounded_container.dart';
+import 'package:comrade/ui/common/styled_text.dart';
 
 class NotificationTile extends StatelessWidget {
   const NotificationTile({

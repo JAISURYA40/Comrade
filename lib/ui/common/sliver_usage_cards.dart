@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -11,19 +11,19 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:mindful/core/enums/item_position.dart';
+import 'package:comrade/core/enums/item_position.dart';
 
-import 'package:mindful/core/enums/usage_type.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_duration.dart';
-import 'package:mindful/core/extensions/ext_int.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/config/app_constants.dart';
-import 'package:mindful/models/usage_model.dart';
-import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/common/default_segmented_button.dart';
-import 'package:mindful/ui/common/styled_text.dart';
+import 'package:comrade/core/enums/usage_type.dart';
+import 'package:comrade/core/extensions/ext_build_context.dart';
+import 'package:comrade/core/extensions/ext_duration.dart';
+import 'package:comrade/core/extensions/ext_int.dart';
+import 'package:comrade/core/extensions/ext_num.dart';
+import 'package:comrade/core/extensions/ext_widget.dart';
+import 'package:comrade/config/app_constants.dart';
+import 'package:comrade/models/usage_model.dart';
+import 'package:comrade/ui/common/default_list_tile.dart';
+import 'package:comrade/ui/common/default_segmented_button.dart';
+import 'package:comrade/ui/common/styled_text.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class SliverUsageCards extends StatelessWidget {

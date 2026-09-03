@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -10,12 +10,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/ui/common/rounded_container.dart';
-import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/dialogs/time_picker_dialog.dart';
-import 'package:mindful/ui/transitions/default_hero.dart';
+import 'package:comrade/core/database/adapters/time_of_day_adapter.dart';
+import 'package:comrade/core/extensions/ext_num.dart';
+import 'package:comrade/ui/common/rounded_container.dart';
+import 'package:comrade/ui/common/styled_text.dart';
+import 'package:comrade/ui/dialogs/time_picker_dialog.dart';
+import 'package:comrade/ui/transitions/default_hero.dart';
 
 class TimeCard extends StatelessWidget {
   const TimeCard({
@@ -52,7 +52,7 @@ class TimeCard extends StatelessWidget {
       tag: heroTag,
       child: RoundedContainer(
         color: bgColor,
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         onPressed: enabled
             ? () async {
                 if (!(isModifiable?.call() ?? true)) return;
@@ -72,8 +72,13 @@ class TimeCard extends StatelessWidget {
           children: [
             /// Icon
             if (icon != null)
-              Padding(
-                padding: const EdgeInsets.only(right: 16),
+              Container(
+                padding: const EdgeInsets.all(12),
+                margin: const EdgeInsets.only(right: 16),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(14),
+                ),
                 child: Icon(
                   icon,
                   size: iconSize,
@@ -81,39 +86,47 @@ class TimeCard extends StatelessWidget {
                 ),
               ),
 
-            SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  /// Label
-                  StyledText(
-                    label,
-                    isSubtitle: !enabled,
-                  ),
-                  4.vBox,
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      /// Time in hour and minutes
-                      StyledText(
-                        timeParts.firstOrNull ?? timeString,
-                        height: 1,
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        isSubtitle: !enabled,
-                      ),
-                      4.hBox,
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    /// Label
+                    StyledText(
+                      label,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      isSubtitle: !enabled,
+                    ),
+                    8.vBox,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        /// Time in hour and minutes
+                        StyledText(
+                          timeParts.firstOrNull ?? timeString,
+                          height: 1,
+                          fontSize: 36,
+                          fontWeight: FontWeight.bold,
+                          isSubtitle: !enabled,
+                        ),
+                        6.hBox,
 
-                      /// Time period AM/PM
-                      StyledText(
-                        timeParts.elementAtOrNull(1) ?? "",
-                        height: 2,
-                        isSubtitle: !enabled,
-                      ),
-                    ],
-                  ),
-                ],
+                        /// Time period AM/PM
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: StyledText(
+                            timeParts.elementAtOrNull(1) ?? "",
+                            height: 1.2,
+                            fontSize: 14,
+                            isSubtitle: !enabled,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

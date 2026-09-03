@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -10,14 +10,14 @@
 
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
-import 'package:mindful/core/database/app_database.dart';
-import 'package:mindful/core/database/daos/dynamic_records_dao.dart';
-import 'package:mindful/core/enums/reminder_type.dart';
-import 'package:mindful/core/services/drift_db_service.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/core/utils/default_models_utils.dart';
-import 'package:mindful/providers/apps/apps_info_provider.dart';
+import 'package:comrade/core/database/adapters/time_of_day_adapter.dart';
+import 'package:comrade/core/database/app_database.dart';
+import 'package:comrade/core/database/daos/dynamic_records_dao.dart';
+import 'package:comrade/core/enums/reminder_type.dart';
+import 'package:comrade/core/services/drift_db_service.dart';
+import 'package:comrade/core/services/method_channel_service.dart';
+import 'package:comrade/core/utils/default_models_utils.dart';
+import 'package:comrade/providers/apps/apps_info_provider.dart';
 
 /// A Riverpod state notifier provider that manages a map of Package and [AppRestriction].
 final appsRestrictionsProvider = StateNotifierProvider<AppsRestrictionsNotifier,

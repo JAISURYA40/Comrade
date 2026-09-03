@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -11,10 +11,10 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/config/navigation/app_routes.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/providers/focus/focus_mode_provider.dart';
-import 'package:mindful/ui/common/sliver_primary_action_container.dart';
+import 'package:comrade/config/navigation/app_routes.dart';
+import 'package:comrade/core/extensions/ext_build_context.dart';
+import 'package:comrade/providers/focus/focus_mode_provider.dart';
+import 'package:comrade/ui/common/sliver_primary_action_container.dart';
 
 class SliverActiveSessionAlert extends ConsumerWidget {
   const SliverActiveSessionAlert({

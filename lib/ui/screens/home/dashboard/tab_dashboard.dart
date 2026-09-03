@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -12,25 +12,25 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/config/navigation/app_routes.dart';
-import 'package:mindful/core/enums/default_home_tab.dart';
-import 'package:mindful/core/enums/item_position.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_list.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/providers/usage/todays_apps_usage_provider.dart';
-import 'package:mindful/ui/common/content_section_header.dart';
-import 'package:mindful/ui/common/default_expandable_list_tile.dart';
-import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/common/sliver_active_session_alert.dart';
-import 'package:mindful/ui/common/default_refresh_indicator.dart';
-import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
-import 'package:mindful/ui/controllers/tab_controller_provider.dart';
-import 'package:mindful/ui/screens/home/dashboard/glance_cards/focus_daily_glance.dart';
-import 'package:mindful/ui/screens/home/dashboard/glance_cards/screen_time_glance.dart';
-import 'package:mindful/ui/screens/home/dashboard/glance_cards_grid.dart';
-import 'package:mindful/ui/screens/home/dashboard/sliver_tips_and_tricks.dart';
-import 'package:mindful/ui/transitions/default_effects.dart';
+import 'package:comrade/config/navigation/app_routes.dart';
+import 'package:comrade/core/enums/default_home_tab.dart';
+import 'package:comrade/core/enums/item_position.dart';
+import 'package:comrade/core/extensions/ext_build_context.dart';
+import 'package:comrade/core/extensions/ext_list.dart';
+import 'package:comrade/core/extensions/ext_num.dart';
+import 'package:comrade/providers/usage/todays_apps_usage_provider.dart';
+import 'package:comrade/ui/common/content_section_header.dart';
+import 'package:comrade/ui/common/default_expandable_list_tile.dart';
+import 'package:comrade/ui/common/default_list_tile.dart';
+import 'package:comrade/ui/common/sliver_active_session_alert.dart';
+import 'package:comrade/ui/common/default_refresh_indicator.dart';
+import 'package:comrade/ui/common/sliver_tabs_bottom_padding.dart';
+import 'package:comrade/ui/controllers/tab_controller_provider.dart';
+import 'package:comrade/ui/screens/home/dashboard/glance_cards/focus_daily_glance.dart';
+import 'package:comrade/ui/screens/home/dashboard/glance_cards/screen_time_glance.dart';
+import 'package:comrade/ui/screens/home/dashboard/glance_cards_grid.dart';
+import 'package:comrade/ui/screens/home/dashboard/sliver_tips_and_tricks.dart';
+import 'package:comrade/ui/transitions/default_effects.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -54,7 +54,7 @@ class TabDashboard extends ConsumerWidget {
 
           MultiSliver(
             children: [
-              8.vBox,
+              16.vBox,
               Skeletonizer.zone(
                 enabled: isUsageLoading,
                 enableSwitchAnimation: true,
@@ -63,7 +63,7 @@ class TabDashboard extends ConsumerWidget {
                     children: [
                       /// Screen time
                       const Expanded(child: ScreenTimeGlance()),
-                      4.hBox,
+                      12.hBox,
 
                       /// Data usage
                       const Expanded(child: FocusDailyGlance()),
@@ -71,6 +71,8 @@ class TabDashboard extends ConsumerWidget {
                   ),
                 ),
               ),
+
+              20.vBox,
 
               /// Usage glance
               DefaultExpandableListTile(

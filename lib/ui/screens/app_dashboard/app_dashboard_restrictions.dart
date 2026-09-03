@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -12,27 +12,27 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/config/navigation/app_routes.dart';
-import 'package:mindful/core/enums/item_position.dart';
-import 'package:mindful/core/enums/reminder_type.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/core/utils/default_models_utils.dart';
-import 'package:mindful/config/hero_tags.dart';
-import 'package:mindful/models/app_info.dart';
-import 'package:mindful/providers/restrictions/apps_restrictions_provider.dart';
-import 'package:mindful/providers/system/parental_controls_provider.dart';
-import 'package:mindful/providers/usage/apps_launch_count_provider.dart';
-import 'package:mindful/providers/restrictions/restriction_groups_provider.dart';
-import 'package:mindful/ui/common/active_period_tile_content.dart';
-import 'package:mindful/ui/common/default_dropdown_tile.dart';
-import 'package:mindful/ui/common/default_expandable_list_tile.dart';
-import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/dialogs/app_launch_limit_dialog.dart';
-import 'package:mindful/ui/screens/app_dashboard/app_internet_tile.dart';
-import 'package:mindful/ui/screens/app_dashboard/app_timer_tile.dart';
-import 'package:mindful/ui/transitions/default_hero.dart';
+import 'package:comrade/config/navigation/app_routes.dart';
+import 'package:comrade/core/enums/item_position.dart';
+import 'package:comrade/core/enums/reminder_type.dart';
+import 'package:comrade/core/extensions/ext_build_context.dart';
+import 'package:comrade/core/extensions/ext_widget.dart';
+import 'package:comrade/core/utils/default_models_utils.dart';
+import 'package:comrade/config/hero_tags.dart';
+import 'package:comrade/models/app_info.dart';
+import 'package:comrade/providers/restrictions/apps_restrictions_provider.dart';
+import 'package:comrade/providers/system/parental_controls_provider.dart';
+import 'package:comrade/providers/usage/apps_launch_count_provider.dart';
+import 'package:comrade/providers/restrictions/restriction_groups_provider.dart';
+import 'package:comrade/ui/common/active_period_tile_content.dart';
+import 'package:comrade/ui/common/default_dropdown_tile.dart';
+import 'package:comrade/ui/common/default_expandable_list_tile.dart';
+import 'package:comrade/ui/common/default_list_tile.dart';
+import 'package:comrade/ui/common/styled_text.dart';
+import 'package:comrade/ui/dialogs/app_launch_limit_dialog.dart';
+import 'package:comrade/ui/screens/app_dashboard/app_internet_tile.dart';
+import 'package:comrade/ui/screens/app_dashboard/app_timer_tile.dart';
+import 'package:comrade/ui/transitions/default_hero.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 /// Displays available restriction actions for the app in [AppDashboard]

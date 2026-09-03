@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -11,10 +11,10 @@
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
-import 'package:mindful/core/database/converters/notification_schedule_list_converter.dart';
-import 'package:mindful/core/database/converters/string_list_converter.dart';
-import 'package:mindful/core/enums/recap_type.dart';
-import 'package:mindful/core/utils/default_models_utils.dart';
+import 'package:comrade/core/database/converters/notification_schedule_list_converter.dart';
+import 'package:comrade/core/database/converters/string_list_converter.dart';
+import 'package:comrade/core/enums/recap_type.dart';
+import 'package:comrade/core/utils/default_models_utils.dart';
 
 @DataClassName("NotificationSettings")
 class NotificationSettingsTable extends Table {

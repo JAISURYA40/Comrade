@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -11,22 +11,22 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/config/hero_tags.dart';
-import 'package:mindful/core/enums/item_position.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/core/services/auth_service.dart';
-import 'package:mindful/providers/system/parental_controls_provider.dart';
-import 'package:mindful/providers/system/permissions_provider.dart';
-import 'package:mindful/ui/common/content_section_header.dart';
-import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/common/scaffold_shell.dart';
-import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
-import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/dialogs/time_picker_dialog.dart';
-import 'package:mindful/ui/permissions/admin_permission_tile.dart';
-import 'package:mindful/ui/screens/parental_controls/invincible_mode_settings.dart';
-import 'package:mindful/ui/transitions/default_hero.dart';
+import 'package:comrade/config/hero_tags.dart';
+import 'package:comrade/core/enums/item_position.dart';
+import 'package:comrade/core/extensions/ext_build_context.dart';
+import 'package:comrade/core/extensions/ext_widget.dart';
+import 'package:comrade/core/services/auth_service.dart';
+import 'package:comrade/providers/system/parental_controls_provider.dart';
+import 'package:comrade/providers/system/permissions_provider.dart';
+import 'package:comrade/ui/common/content_section_header.dart';
+import 'package:comrade/ui/common/default_list_tile.dart';
+import 'package:comrade/ui/common/scaffold_shell.dart';
+import 'package:comrade/ui/common/sliver_tabs_bottom_padding.dart';
+import 'package:comrade/ui/common/styled_text.dart';
+import 'package:comrade/ui/dialogs/time_picker_dialog.dart';
+import 'package:comrade/ui/permissions/admin_permission_tile.dart';
+import 'package:comrade/ui/screens/parental_controls/invincible_mode_settings.dart';
+import 'package:comrade/ui/transitions/default_hero.dart';
 
 class ParentalControlsScreen extends ConsumerWidget {
   const ParentalControlsScreen({super.key});

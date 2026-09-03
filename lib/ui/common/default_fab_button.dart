@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -10,8 +10,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:mindful/config/app_constants.dart';
-import 'package:mindful/ui/transitions/default_hero.dart';
+import 'package:comrade/config/app_constants.dart';
+import 'package:comrade/ui/transitions/default_hero.dart';
 
 class DefaultFabButton extends StatelessWidget {
   const DefaultFabButton({
@@ -32,13 +32,24 @@ class DefaultFabButton extends StatelessWidget {
       tag: heroTag ?? "defaultScaffoldFabButton",
       child: FilledButton.icon(
         onPressed: onPressed,
-        icon: Icon(icon),
-        label: Text(label),
-        style: const ButtonStyle().copyWith(
-          elevation: WidgetStatePropertyAll(5),
-          padding: const WidgetStatePropertyAll(EdgeInsets.all(16)),
+        icon: Icon(icon, size: 20),
+        label: Text(
+          label,
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
+          ),
+        ),
+        style: ButtonStyle(
+          elevation: WidgetStatePropertyAll(0),
+          padding: const WidgetStatePropertyAll(
+            EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+          ),
           shape: WidgetStatePropertyAll(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
           ),
         ),
       ),

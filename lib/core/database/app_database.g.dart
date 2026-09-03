@@ -1170,7 +1170,7 @@ class CrashLog extends DataClass implements Insertable<CrashLog> {
   /// Unique ID for crash logs
   final int id;
 
-  /// Current version of Mindful app
+  /// Current version of Comrade app
   final String appVersion;
 
   /// [DateTime] when the error was thrown
@@ -2407,12 +2407,12 @@ class FocusSessionsTableCompanion extends UpdateCompanion<FocusSession> {
   }
 }
 
-class $MindfulSettingsTableTable extends MindfulSettingsTable
-    with TableInfo<$MindfulSettingsTableTable, MindfulSettings> {
+class $ComradeSettingsTableTable extends ComradeSettingsTable
+    with TableInfo<$ComradeSettingsTableTable, ComradeSettings> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $MindfulSettingsTableTable(this.attachedDatabase, [this._alias]);
+  $ComradeSettingsTableTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -2427,7 +2427,7 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
               requiredDuringInsert: false,
               defaultValue: Constant(AppConstants.defaultThemeMode.index))
           .withConverter<AppThemeMode>(
-              $MindfulSettingsTableTable.$converterthemeMode);
+              $ComradeSettingsTableTable.$converterthemeMode);
   static const VerificationMeta _accentColorMeta =
       const VerificationMeta('accentColor');
   @override
@@ -2480,7 +2480,7 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
               requiredDuringInsert: false,
               defaultValue: Constant(DefaultHomeTab.dashboard.index))
           .withConverter<DefaultHomeTab>(
-              $MindfulSettingsTableTable.$converterdefaultHomeTab);
+              $ComradeSettingsTableTable.$converterdefaultHomeTab);
   static const VerificationMeta _usageHistoryWeeksMeta =
       const VerificationMeta('usageHistoryWeeks');
   @override
@@ -2543,9 +2543,9 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'mindful_settings_table';
+  static const String $name = 'comrade_settings_table';
   @override
-  VerificationContext validateIntegrity(Insertable<MindfulSettings> instance,
+  VerificationContext validateIntegrity(Insertable<ComradeSettings> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -2616,12 +2616,12 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  MindfulSettings map(Map<String, dynamic> data, {String? tablePrefix}) {
+  ComradeSettings map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return MindfulSettings(
+    return ComradeSettings(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      themeMode: $MindfulSettingsTableTable.$converterthemeMode.fromSql(
+      themeMode: $ComradeSettingsTableTable.$converterthemeMode.fromSql(
           attachedDatabase.typeMapping
               .read(DriftSqlType.int, data['${effectivePrefix}theme_mode'])!),
       accentColor: attachedDatabase.typeMapping
@@ -2634,7 +2634,7 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
           .read(DriftSqlType.bool, data['${effectivePrefix}use_amoled_dark'])!,
       useDynamicColors: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}use_dynamic_colors'])!,
-      defaultHomeTab: $MindfulSettingsTableTable.$converterdefaultHomeTab
+      defaultHomeTab: $ComradeSettingsTableTable.$converterdefaultHomeTab
           .fromSql(attachedDatabase.typeMapping.read(
               DriftSqlType.int, data['${effectivePrefix}default_home_tab'])!),
       usageHistoryWeeks: attachedDatabase.typeMapping.read(
@@ -2652,8 +2652,8 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
   }
 
   @override
-  $MindfulSettingsTableTable createAlias(String alias) {
-    return $MindfulSettingsTableTable(attachedDatabase, alias);
+  $ComradeSettingsTableTable createAlias(String alias) {
+    return $ComradeSettingsTableTable(attachedDatabase, alias);
   }
 
   static JsonTypeConverter2<AppThemeMode, int, int> $converterthemeMode =
@@ -2662,7 +2662,7 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
       const EnumIndexConverter<DefaultHomeTab>(DefaultHomeTab.values);
 }
 
-class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
+class ComradeSettings extends DataClass implements Insertable<ComradeSettings> {
   /// Unique ID for app settings
   final int id;
 
@@ -2699,10 +2699,10 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
   /// Flag indicating if onboarding is completed or not
   final bool isOnboardingDone;
 
-  /// The currently installed version of Mindful.
+  /// The currently installed version of Comrade.
   /// Mainly used to show changelogs screen.
   final String appVersion;
-  const MindfulSettings(
+  const ComradeSettings(
       {required this.id,
       required this.themeMode,
       required this.accentColor,
@@ -2722,7 +2722,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
     map['id'] = Variable<int>(id);
     {
       map['theme_mode'] = Variable<int>(
-          $MindfulSettingsTableTable.$converterthemeMode.toSql(themeMode));
+          $ComradeSettingsTableTable.$converterthemeMode.toSql(themeMode));
     }
     map['accent_color'] = Variable<String>(accentColor);
     map['username'] = Variable<String>(username);
@@ -2730,7 +2730,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
     map['use_amoled_dark'] = Variable<bool>(useAmoledDark);
     map['use_dynamic_colors'] = Variable<bool>(useDynamicColors);
     {
-      map['default_home_tab'] = Variable<int>($MindfulSettingsTableTable
+      map['default_home_tab'] = Variable<int>($ComradeSettingsTableTable
           .$converterdefaultHomeTab
           .toSql(defaultHomeTab));
     }
@@ -2742,8 +2742,8 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
     return map;
   }
 
-  MindfulSettingsTableCompanion toCompanion(bool nullToAbsent) {
-    return MindfulSettingsTableCompanion(
+  ComradeSettingsTableCompanion toCompanion(bool nullToAbsent) {
+    return ComradeSettingsTableCompanion(
       id: Value(id),
       themeMode: Value(themeMode),
       accentColor: Value(accentColor),
@@ -2760,19 +2760,19 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
     );
   }
 
-  factory MindfulSettings.fromJson(Map<String, dynamic> json,
+  factory ComradeSettings.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return MindfulSettings(
+    return ComradeSettings(
       id: serializer.fromJson<int>(json['id']),
-      themeMode: $MindfulSettingsTableTable.$converterthemeMode
+      themeMode: $ComradeSettingsTableTable.$converterthemeMode
           .fromJson(serializer.fromJson<int>(json['themeMode'])),
       accentColor: serializer.fromJson<String>(json['accentColor']),
       username: serializer.fromJson<String>(json['username']),
       localeCode: serializer.fromJson<String>(json['localeCode']),
       useAmoledDark: serializer.fromJson<bool>(json['useAmoledDark']),
       useDynamicColors: serializer.fromJson<bool>(json['useDynamicColors']),
-      defaultHomeTab: $MindfulSettingsTableTable.$converterdefaultHomeTab
+      defaultHomeTab: $ComradeSettingsTableTable.$converterdefaultHomeTab
           .fromJson(serializer.fromJson<int>(json['defaultHomeTab'])),
       usageHistoryWeeks: serializer.fromJson<int>(json['usageHistoryWeeks']),
       leftEmergencyPasses:
@@ -2789,13 +2789,13 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'themeMode': serializer.toJson<int>(
-          $MindfulSettingsTableTable.$converterthemeMode.toJson(themeMode)),
+          $ComradeSettingsTableTable.$converterthemeMode.toJson(themeMode)),
       'accentColor': serializer.toJson<String>(accentColor),
       'username': serializer.toJson<String>(username),
       'localeCode': serializer.toJson<String>(localeCode),
       'useAmoledDark': serializer.toJson<bool>(useAmoledDark),
       'useDynamicColors': serializer.toJson<bool>(useDynamicColors),
-      'defaultHomeTab': serializer.toJson<int>($MindfulSettingsTableTable
+      'defaultHomeTab': serializer.toJson<int>($ComradeSettingsTableTable
           .$converterdefaultHomeTab
           .toJson(defaultHomeTab)),
       'usageHistoryWeeks': serializer.toJson<int>(usageHistoryWeeks),
@@ -2806,7 +2806,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
     };
   }
 
-  MindfulSettings copyWith(
+  ComradeSettings copyWith(
           {int? id,
           AppThemeMode? themeMode,
           String? accentColor,
@@ -2820,7 +2820,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           DateTime? lastEmergencyUsed,
           bool? isOnboardingDone,
           String? appVersion}) =>
-      MindfulSettings(
+      ComradeSettings(
         id: id ?? this.id,
         themeMode: themeMode ?? this.themeMode,
         accentColor: accentColor ?? this.accentColor,
@@ -2835,8 +2835,8 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
         isOnboardingDone: isOnboardingDone ?? this.isOnboardingDone,
         appVersion: appVersion ?? this.appVersion,
       );
-  MindfulSettings copyWithCompanion(MindfulSettingsTableCompanion data) {
-    return MindfulSettings(
+  ComradeSettings copyWithCompanion(ComradeSettingsTableCompanion data) {
+    return ComradeSettings(
       id: data.id.present ? data.id.value : this.id,
       themeMode: data.themeMode.present ? data.themeMode.value : this.themeMode,
       accentColor:
@@ -2872,7 +2872,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
 
   @override
   String toString() {
-    return (StringBuffer('MindfulSettings(')
+    return (StringBuffer('ComradeSettings(')
           ..write('id: $id, ')
           ..write('themeMode: $themeMode, ')
           ..write('accentColor: $accentColor, ')
@@ -2908,7 +2908,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is MindfulSettings &&
+      (other is ComradeSettings &&
           other.id == this.id &&
           other.themeMode == this.themeMode &&
           other.accentColor == this.accentColor &&
@@ -2924,7 +2924,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           other.appVersion == this.appVersion);
 }
 
-class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
+class ComradeSettingsTableCompanion extends UpdateCompanion<ComradeSettings> {
   final Value<int> id;
   final Value<AppThemeMode> themeMode;
   final Value<String> accentColor;
@@ -2938,7 +2938,7 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
   final Value<DateTime> lastEmergencyUsed;
   final Value<bool> isOnboardingDone;
   final Value<String> appVersion;
-  const MindfulSettingsTableCompanion({
+  const ComradeSettingsTableCompanion({
     this.id = const Value.absent(),
     this.themeMode = const Value.absent(),
     this.accentColor = const Value.absent(),
@@ -2953,7 +2953,7 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     this.isOnboardingDone = const Value.absent(),
     this.appVersion = const Value.absent(),
   });
-  MindfulSettingsTableCompanion.insert({
+  ComradeSettingsTableCompanion.insert({
     this.id = const Value.absent(),
     this.themeMode = const Value.absent(),
     this.accentColor = const Value.absent(),
@@ -2968,7 +2968,7 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     this.isOnboardingDone = const Value.absent(),
     this.appVersion = const Value.absent(),
   });
-  static Insertable<MindfulSettings> custom({
+  static Insertable<ComradeSettings> custom({
     Expression<int>? id,
     Expression<int>? themeMode,
     Expression<String>? accentColor,
@@ -3001,7 +3001,7 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     });
   }
 
-  MindfulSettingsTableCompanion copyWith(
+  ComradeSettingsTableCompanion copyWith(
       {Value<int>? id,
       Value<AppThemeMode>? themeMode,
       Value<String>? accentColor,
@@ -3015,7 +3015,7 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
       Value<DateTime>? lastEmergencyUsed,
       Value<bool>? isOnboardingDone,
       Value<String>? appVersion}) {
-    return MindfulSettingsTableCompanion(
+    return ComradeSettingsTableCompanion(
       id: id ?? this.id,
       themeMode: themeMode ?? this.themeMode,
       accentColor: accentColor ?? this.accentColor,
@@ -3039,7 +3039,7 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
       map['id'] = Variable<int>(id.value);
     }
     if (themeMode.present) {
-      map['theme_mode'] = Variable<int>($MindfulSettingsTableTable
+      map['theme_mode'] = Variable<int>($ComradeSettingsTableTable
           .$converterthemeMode
           .toSql(themeMode.value));
     }
@@ -3059,7 +3059,7 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
       map['use_dynamic_colors'] = Variable<bool>(useDynamicColors.value);
     }
     if (defaultHomeTab.present) {
-      map['default_home_tab'] = Variable<int>($MindfulSettingsTableTable
+      map['default_home_tab'] = Variable<int>($ComradeSettingsTableTable
           .$converterdefaultHomeTab
           .toSql(defaultHomeTab.value));
     }
@@ -3083,7 +3083,7 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
 
   @override
   String toString() {
-    return (StringBuffer('MindfulSettingsTableCompanion(')
+    return (StringBuffer('ComradeSettingsTableCompanion(')
           ..write('id: $id, ')
           ..write('themeMode: $themeMode, ')
           ..write('accentColor: $accentColor, ')
@@ -3367,7 +3367,7 @@ class ParentalControls extends DataClass
   /// Unique ID for Invincible Mode settings
   final int id;
 
-  /// Flag indicating whether to authenticate before opening Mindful or not
+  /// Flag indicating whether to authenticate before opening Comrade or not
   final bool protectedAccess;
 
   /// Daily uninstall window start time [TimeOfDay] stored as minutes
@@ -5996,8 +5996,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $FocusProfileTableTable(this);
   late final $FocusSessionsTableTable focusSessionsTable =
       $FocusSessionsTableTable(this);
-  late final $MindfulSettingsTableTable mindfulSettingsTable =
-      $MindfulSettingsTableTable(this);
+  late final $ComradeSettingsTableTable comradeSettingsTable =
+      $ComradeSettingsTableTable(this);
   late final $ParentalControlsTableTable parentalControlsTable =
       $ParentalControlsTableTable(this);
   late final $RestrictionGroupsTableTable restrictionGroupsTable =
@@ -6025,7 +6025,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         focusModeTable,
         focusProfileTable,
         focusSessionsTable,
-        mindfulSettingsTable,
+        comradeSettingsTable,
         parentalControlsTable,
         restrictionGroupsTable,
         wellbeingTable,
@@ -7231,8 +7231,8 @@ typedef $$FocusSessionsTableTableProcessedTableManager = ProcessedTableManager<
     ),
     FocusSession,
     PrefetchHooks Function()>;
-typedef $$MindfulSettingsTableTableCreateCompanionBuilder
-    = MindfulSettingsTableCompanion Function({
+typedef $$ComradeSettingsTableTableCreateCompanionBuilder
+    = ComradeSettingsTableCompanion Function({
   Value<int> id,
   Value<AppThemeMode> themeMode,
   Value<String> accentColor,
@@ -7247,8 +7247,8 @@ typedef $$MindfulSettingsTableTableCreateCompanionBuilder
   Value<bool> isOnboardingDone,
   Value<String> appVersion,
 });
-typedef $$MindfulSettingsTableTableUpdateCompanionBuilder
-    = MindfulSettingsTableCompanion Function({
+typedef $$ComradeSettingsTableTableUpdateCompanionBuilder
+    = ComradeSettingsTableCompanion Function({
   Value<int> id,
   Value<AppThemeMode> themeMode,
   Value<String> accentColor,
@@ -7264,9 +7264,9 @@ typedef $$MindfulSettingsTableTableUpdateCompanionBuilder
   Value<String> appVersion,
 });
 
-class $$MindfulSettingsTableTableFilterComposer
-    extends Composer<_$AppDatabase, $MindfulSettingsTableTable> {
-  $$MindfulSettingsTableTableFilterComposer({
+class $$ComradeSettingsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $ComradeSettingsTableTable> {
+  $$ComradeSettingsTableTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -7322,9 +7322,9 @@ class $$MindfulSettingsTableTableFilterComposer
       column: $table.appVersion, builder: (column) => ColumnFilters(column));
 }
 
-class $$MindfulSettingsTableTableOrderingComposer
-    extends Composer<_$AppDatabase, $MindfulSettingsTableTable> {
-  $$MindfulSettingsTableTableOrderingComposer({
+class $$ComradeSettingsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $ComradeSettingsTableTable> {
+  $$ComradeSettingsTableTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -7378,9 +7378,9 @@ class $$MindfulSettingsTableTableOrderingComposer
       column: $table.appVersion, builder: (column) => ColumnOrderings(column));
 }
 
-class $$MindfulSettingsTableTableAnnotationComposer
-    extends Composer<_$AppDatabase, $MindfulSettingsTableTable> {
-  $$MindfulSettingsTableTableAnnotationComposer({
+class $$ComradeSettingsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ComradeSettingsTableTable> {
+  $$ComradeSettingsTableTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -7428,33 +7428,33 @@ class $$MindfulSettingsTableTableAnnotationComposer
       column: $table.appVersion, builder: (column) => column);
 }
 
-class $$MindfulSettingsTableTableTableManager extends RootTableManager<
+class $$ComradeSettingsTableTableTableManager extends RootTableManager<
     _$AppDatabase,
-    $MindfulSettingsTableTable,
-    MindfulSettings,
-    $$MindfulSettingsTableTableFilterComposer,
-    $$MindfulSettingsTableTableOrderingComposer,
-    $$MindfulSettingsTableTableAnnotationComposer,
-    $$MindfulSettingsTableTableCreateCompanionBuilder,
-    $$MindfulSettingsTableTableUpdateCompanionBuilder,
+    $ComradeSettingsTableTable,
+    ComradeSettings,
+    $$ComradeSettingsTableTableFilterComposer,
+    $$ComradeSettingsTableTableOrderingComposer,
+    $$ComradeSettingsTableTableAnnotationComposer,
+    $$ComradeSettingsTableTableCreateCompanionBuilder,
+    $$ComradeSettingsTableTableUpdateCompanionBuilder,
     (
-      MindfulSettings,
-      BaseReferences<_$AppDatabase, $MindfulSettingsTableTable, MindfulSettings>
+      ComradeSettings,
+      BaseReferences<_$AppDatabase, $ComradeSettingsTableTable, ComradeSettings>
     ),
-    MindfulSettings,
+    ComradeSettings,
     PrefetchHooks Function()> {
-  $$MindfulSettingsTableTableTableManager(
-      _$AppDatabase db, $MindfulSettingsTableTable table)
+  $$ComradeSettingsTableTableTableManager(
+      _$AppDatabase db, $ComradeSettingsTableTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$MindfulSettingsTableTableFilterComposer($db: db, $table: table),
+              $$ComradeSettingsTableTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$MindfulSettingsTableTableOrderingComposer(
+              $$ComradeSettingsTableTableOrderingComposer(
                   $db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$MindfulSettingsTableTableAnnotationComposer(
+              $$ComradeSettingsTableTableAnnotationComposer(
                   $db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -7471,7 +7471,7 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             Value<bool> isOnboardingDone = const Value.absent(),
             Value<String> appVersion = const Value.absent(),
           }) =>
-              MindfulSettingsTableCompanion(
+              ComradeSettingsTableCompanion(
             id: id,
             themeMode: themeMode,
             accentColor: accentColor,
@@ -7501,7 +7501,7 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             Value<bool> isOnboardingDone = const Value.absent(),
             Value<String> appVersion = const Value.absent(),
           }) =>
-              MindfulSettingsTableCompanion.insert(
+              ComradeSettingsTableCompanion.insert(
             id: id,
             themeMode: themeMode,
             accentColor: accentColor,
@@ -7523,22 +7523,22 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
         ));
 }
 
-typedef $$MindfulSettingsTableTableProcessedTableManager
+typedef $$ComradeSettingsTableTableProcessedTableManager
     = ProcessedTableManager<
         _$AppDatabase,
-        $MindfulSettingsTableTable,
-        MindfulSettings,
-        $$MindfulSettingsTableTableFilterComposer,
-        $$MindfulSettingsTableTableOrderingComposer,
-        $$MindfulSettingsTableTableAnnotationComposer,
-        $$MindfulSettingsTableTableCreateCompanionBuilder,
-        $$MindfulSettingsTableTableUpdateCompanionBuilder,
+        $ComradeSettingsTableTable,
+        ComradeSettings,
+        $$ComradeSettingsTableTableFilterComposer,
+        $$ComradeSettingsTableTableOrderingComposer,
+        $$ComradeSettingsTableTableAnnotationComposer,
+        $$ComradeSettingsTableTableCreateCompanionBuilder,
+        $$ComradeSettingsTableTableUpdateCompanionBuilder,
         (
-          MindfulSettings,
-          BaseReferences<_$AppDatabase, $MindfulSettingsTableTable,
-              MindfulSettings>
+          ComradeSettings,
+          BaseReferences<_$AppDatabase, $ComradeSettingsTableTable,
+              ComradeSettings>
         ),
-        MindfulSettings,
+        ComradeSettings,
         PrefetchHooks Function()>;
 typedef $$ParentalControlsTableTableCreateCompanionBuilder
     = ParentalControlsTableCompanion Function({
@@ -8991,8 +8991,8 @@ class $AppDatabaseManager {
       $$FocusProfileTableTableTableManager(_db, _db.focusProfileTable);
   $$FocusSessionsTableTableTableManager get focusSessionsTable =>
       $$FocusSessionsTableTableTableManager(_db, _db.focusSessionsTable);
-  $$MindfulSettingsTableTableTableManager get mindfulSettingsTable =>
-      $$MindfulSettingsTableTableTableManager(_db, _db.mindfulSettingsTable);
+  $$ComradeSettingsTableTableTableManager get comradeSettingsTable =>
+      $$ComradeSettingsTableTableTableManager(_db, _db.comradeSettingsTable);
   $$ParentalControlsTableTableTableManager get parentalControlsTable =>
       $$ParentalControlsTableTableTableManager(_db, _db.parentalControlsTable);
   $$RestrictionGroupsTableTableTableManager get restrictionGroupsTable =>

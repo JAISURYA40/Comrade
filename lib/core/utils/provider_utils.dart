@@ -1,6 +1,6 @@
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:mindful/core/extensions/ext_date_time.dart';
-import 'package:mindful/models/usage_model.dart';
+import 'package:comrade/core/extensions/ext_date_time.dart';
+import 'package:comrade/models/usage_model.dart';
 
 /// Generates a Map<DateTime, int> for the 7 days of the week starting
 /// from the given date's start of the week, initializing all values to 0.

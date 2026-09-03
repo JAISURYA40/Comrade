@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -10,12 +10,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/providers/restrictions/wellbeing_provider.dart';
-import 'package:mindful/ui/common/empty_list_indicator.dart';
-import 'package:mindful/ui/common/sliver_implicitly_animated_list.dart';
-import 'package:mindful/ui/screens/websites_blocking/website_tile.dart';
+import 'package:comrade/core/extensions/ext_build_context.dart';
+import 'package:comrade/core/extensions/ext_widget.dart';
+import 'package:comrade/providers/restrictions/wellbeing_provider.dart';
+import 'package:comrade/ui/common/empty_list_indicator.dart';
+import 'package:comrade/ui/common/sliver_implicitly_animated_list.dart';
+import 'package:comrade/ui/screens/websites_blocking/website_tile.dart';
 
 class SliverBlockedWebsitesList extends ConsumerWidget {
   const SliverBlockedWebsitesList({super.key});

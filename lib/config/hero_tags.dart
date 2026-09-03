@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -10,10 +10,10 @@
 
 class HeroTags {
   /// Tag used to identify the beta warning container
-  static const betaWarningTag = "mindful.appbar.betaWarning";
+  static const betaWarningTag = "comrade.appbar.betaWarning";
 
   /// Tag used to identify the beta warning container
-  static const donationDialogTag = "mindful.appbar.donation";
+  static const donationDialogTag = "comrade.appbar.donation";
 
   /// Tag used to identify the FAB for adding a distracting website.
   static const editUsernameTag = "dashboard.editUsername";

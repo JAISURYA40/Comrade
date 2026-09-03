@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -9,12 +9,12 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:mindful/ui/screens/home/dashboard/glance_cards/data_mobile_glance.dart';
-import 'package:mindful/ui/screens/home/dashboard/glance_cards/data_total_glance.dart';
-import 'package:mindful/ui/screens/home/dashboard/glance_cards/data_wifi_glance.dart';
-import 'package:mindful/ui/screens/home/dashboard/glance_cards/focus_lifetime_glance.dart';
-import 'package:mindful/ui/screens/home/dashboard/glance_cards/focus_monthly_glance.dart';
-import 'package:mindful/ui/screens/home/dashboard/glance_cards/focus_weekly_glance.dart';
+import 'package:comrade/ui/screens/home/dashboard/glance_cards/data_mobile_glance.dart';
+import 'package:comrade/ui/screens/home/dashboard/glance_cards/data_total_glance.dart';
+import 'package:comrade/ui/screens/home/dashboard/glance_cards/data_wifi_glance.dart';
+import 'package:comrade/ui/screens/home/dashboard/glance_cards/focus_lifetime_glance.dart';
+import 'package:comrade/ui/screens/home/dashboard/glance_cards/focus_monthly_glance.dart';
+import 'package:comrade/ui/screens/home/dashboard/glance_cards/focus_weekly_glance.dart';
 
 class GlanceCardsGrid extends StatelessWidget {
   const GlanceCardsGrid({super.key});

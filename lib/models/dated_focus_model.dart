@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:mindful/core/database/app_database.dart';
+import 'package:comrade/core/database/app_database.dart';
 
 @immutable
 class DatedFocusModel {

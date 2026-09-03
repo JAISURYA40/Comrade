@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -10,11 +10,11 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/ui/common/scaffold_shell.dart';
-import 'package:mindful/ui/screens/settings/about/tab_about.dart';
-import 'package:mindful/ui/screens/settings/database/tab_database.dart';
-import 'package:mindful/ui/screens/settings/general/tab_general.dart';
+import 'package:comrade/core/extensions/ext_build_context.dart';
+import 'package:comrade/ui/common/scaffold_shell.dart';
+import 'package:comrade/ui/screens/settings/about/tab_about.dart';
+import 'package:comrade/ui/screens/settings/database/tab_database.dart';
+import 'package:comrade/ui/screens/settings/general/tab_general.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({

@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:mindful/core/enums/item_position.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:comrade/core/enums/item_position.dart';
+import 'package:comrade/core/extensions/ext_num.dart';
 
 /// Resolves [ItemPosition] from the given [index] and [length] of the item in the list
 ItemPosition getItemPositionInList(int index, int length) => length <= 1

@@ -5,7 +5,7 @@ be verified using
 [apksigner](https://developer.android.com/studio/command-line/apksigner.html#options-verify) :
 
 ```sh
-apksigner verify --print-certs --verbose mindful.apk
+apksigner verify --print-certs --verbose comrade.apk
 ```
 
 The certificate fingerprints should correspond to the ones listed below:

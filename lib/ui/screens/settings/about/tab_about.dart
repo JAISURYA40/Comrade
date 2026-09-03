@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -13,22 +13,22 @@ import 'dart:math';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/config/navigation/app_routes.dart';
-import 'package:mindful/core/enums/item_position.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/config/app_constants.dart';
-import 'package:mindful/core/utils/widget_utils.dart';
-import 'package:mindful/ui/common/breathing_widget.dart';
-import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/common/rounded_container.dart';
-import 'package:mindful/ui/common/content_section_header.dart';
-import 'package:mindful/ui/common/sliver_primary_action_container.dart';
-import 'package:mindful/ui/common/sliver_app_version_info.dart';
-import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
+import 'package:comrade/config/navigation/app_routes.dart';
+import 'package:comrade/core/enums/item_position.dart';
+import 'package:comrade/core/extensions/ext_build_context.dart';
+import 'package:comrade/core/extensions/ext_num.dart';
+import 'package:comrade/core/extensions/ext_widget.dart';
+import 'package:comrade/core/services/method_channel_service.dart';
+import 'package:comrade/config/app_constants.dart';
+import 'package:comrade/core/utils/widget_utils.dart';
+import 'package:comrade/ui/common/breathing_widget.dart';
+import 'package:comrade/ui/common/default_list_tile.dart';
+import 'package:comrade/ui/common/rounded_container.dart';
+import 'package:comrade/ui/common/content_section_header.dart';
+import 'package:comrade/ui/common/sliver_primary_action_container.dart';
+import 'package:comrade/ui/common/sliver_app_version_info.dart';
+import 'package:comrade/ui/common/styled_text.dart';
+import 'package:comrade/ui/common/sliver_tabs_bottom_padding.dart';
 
 class TabAbout extends ConsumerWidget {
   const TabAbout({super.key});
@@ -45,22 +45,27 @@ class TabAbout extends ConsumerWidget {
           dimension: min(360, MediaQuery.of(context).size.width * 0.7),
           child: RoundedContainer(
             circularRadius: 120,
-            color: Theme.of(context).colorScheme.secondaryContainer,
+            color: Colors.transparent,
             padding: const EdgeInsets.all(8),
-            child: const Icon(FluentIcons.target_arrow_20_regular, size: 64),
+            child: Image.asset(
+              'assets/comradelogo.png',
+              width: min(340, MediaQuery.of(context).size.width * 0.65),
+              height: min(340, MediaQuery.of(context).size.width * 0.65),
+              fit: BoxFit.contain,
+            ),
           ),
         ).sliver,
 
         /// Title
         const StyledText(
-          "Mindful",
+          "Comrade",
           fontSize: 32,
           fontWeight: FontWeight.bold,
         ).centered.sliver,
 
         /// Tag line about focus
         StyledText(
-          context.locale.mindful_tagline,
+          context.locale.comrade_tagline,
           fontSize: 16,
           isSubtitle: true,
         ).centered.sliver,

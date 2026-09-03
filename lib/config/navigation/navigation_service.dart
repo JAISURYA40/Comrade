@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -11,9 +11,9 @@
 import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:mindful/config/navigation/app_routes.dart';
-import 'package:mindful/config/navigation/app_routes_observer.dart';
-import 'package:mindful/initializer.dart';
+import 'package:comrade/config/navigation/app_routes.dart';
+import 'package:comrade/config/navigation/app_routes_observer.dart';
+import 'package:comrade/initializer.dart';
 
 /// A service class responsible for handling deep link and navigation to different routes externally without widget ui.
 class NavigationService {
@@ -27,7 +27,7 @@ class NavigationService {
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
 
-  // NOTE: To test  => adb shell am start -W -a android.intent.action.VIEW -d "com.mindful.android://open/settings?tab=1" com.mindful.android.debug
+  // NOTE: To test  => adb shell am start -W -a android.intent.action.VIEW -d "com.comrade.android://open/settings?tab=1" com.comrade.android.debug
   /// App links package instance
   final _appLinks = AppLinks();
 

@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -11,9 +11,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/enums/permission_type.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/models/permissions_model.dart';
+import 'package:comrade/core/enums/permission_type.dart';
+import 'package:comrade/core/services/method_channel_service.dart';
+import 'package:comrade/models/permissions_model.dart';
 
 /// A Riverpod state notifier provider that manages and requests various permissions required by the app.
 final permissionProvider =

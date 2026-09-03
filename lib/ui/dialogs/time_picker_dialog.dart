@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -10,11 +10,11 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/ui/common/rounded_container.dart';
-import 'package:mindful/ui/transitions/default_hero.dart';
-import 'package:mindful/ui/transitions/hero_page_route.dart';
+import 'package:comrade/core/database/adapters/time_of_day_adapter.dart';
+import 'package:comrade/core/extensions/ext_build_context.dart';
+import 'package:comrade/ui/common/rounded_container.dart';
+import 'package:comrade/ui/transitions/default_hero.dart';
+import 'package:comrade/ui/transitions/hero_page_route.dart';
 
 /// Animates the hero widget to a alert dialog to pick Timer in 24H format
 ///

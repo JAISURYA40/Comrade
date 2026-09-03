@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -15,19 +15,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/config/navigation/app_routes.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/services/auth_service.dart';
-import 'package:mindful/config/navigation/navigation_service.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/providers/system/mindful_settings_provider.dart';
-import 'package:mindful/providers/system/parental_controls_provider.dart';
-import 'package:mindful/providers/system/permissions_provider.dart';
-import 'package:mindful/ui/common/breathing_widget.dart';
-import 'package:mindful/ui/common/rounded_container.dart';
-import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/transitions/default_effects.dart';
+import 'package:comrade/config/navigation/app_routes.dart';
+import 'package:comrade/core/extensions/ext_build_context.dart';
+import 'package:comrade/core/extensions/ext_num.dart';
+import 'package:comrade/core/services/auth_service.dart';
+import 'package:comrade/config/navigation/navigation_service.dart';
+import 'package:comrade/core/services/method_channel_service.dart';
+import 'package:comrade/providers/system/comrade_settings_provider.dart';
+import 'package:comrade/providers/system/parental_controls_provider.dart';
+import 'package:comrade/providers/system/permissions_provider.dart';
+import 'package:comrade/ui/common/breathing_widget.dart';
+import 'package:comrade/ui/common/rounded_container.dart';
+import 'package:comrade/ui/common/styled_text.dart';
+import 'package:comrade/ui/transitions/default_effects.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -52,10 +52,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     final perms =
         await ref.read(permissionProvider.notifier).fetchPermissionsStatus();
 
-    final settings = await ref.read(mindfulSettingsProvider.notifier).init();
+    final settings = await ref.read(comradeSettingsProvider.notifier).init();
     _isOnboardingDone = settings.isOnboardingDone;
     _isAppUpdated = settings.appVersion !=
-        MethodChannelService.instance.deviceInfo.mindfulVersion;
+        MethodChannelService.instance.deviceInfo.comradeVersion;
 
     _isAccessProtected =
         (await ref.read(parentalControlsProvider.notifier).init())
@@ -131,11 +131,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
               dimension: min(420, MediaQuery.of(context).size.width * 0.8),
               child: RoundedContainer(
                 circularRadius: 420,
-                color: Theme.of(context).colorScheme.secondaryContainer,
+                color: Colors.transparent,
                 padding: const EdgeInsets.all(8),
-                child: const Icon(
-                  FluentIcons.target_arrow_20_regular,
-                  size: 64,
+                child: Image.asset(
+                  'assets/comradelogo.png',
+                  width: min(400, MediaQuery.of(context).size.width * 0.75),
+                  height: min(400, MediaQuery.of(context).size.width * 0.75),
+                  fit: BoxFit.contain,
                 ),
               ),
             ),
@@ -144,7 +146,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
               children: [
                 /// Title
                 const StyledText(
-                  "Mindful",
+                  "Comrade",
                   fontSize: 48,
                   fontWeight: FontWeight.bold,
                   height: 1,
@@ -152,7 +154,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
                 /// Tag line
                 StyledText(
-                  context.locale.mindful_tagline,
+                  context.locale.comrade_tagline,
                   fontSize: 16,
                   isSubtitle: true,
                 ),

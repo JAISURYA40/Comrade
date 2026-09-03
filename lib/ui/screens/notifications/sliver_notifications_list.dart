@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -12,22 +12,22 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/providers/apps/apps_info_provider.dart';
-import 'package:mindful/providers/notifications/dated_conversation_provider.dart';
-import 'package:mindful/providers/notifications/dated_notifications_provider.dart';
-import 'package:mindful/ui/common/application_icon.dart';
-import 'package:mindful/ui/common/content_section_header.dart';
-import 'package:mindful/ui/common/default_segmented_button.dart';
-import 'package:mindful/ui/common/empty_list_indicator.dart';
-import 'package:mindful/ui/common/sliver_implicitly_animated_list.dart';
-import 'package:mindful/ui/common/sliver_shimmer_list.dart';
-import 'package:mindful/ui/screens/notifications/conversation_tile.dart';
-import 'package:mindful/ui/screens/notifications/notification_tile.dart';
+import 'package:comrade/core/extensions/ext_build_context.dart';
+import 'package:comrade/core/extensions/ext_num.dart';
+import 'package:comrade/core/extensions/ext_widget.dart';
+import 'package:comrade/providers/apps/apps_info_provider.dart';
+import 'package:comrade/providers/notifications/dated_conversation_provider.dart';
+import 'package:comrade/providers/notifications/dated_notifications_provider.dart';
+import 'package:comrade/ui/common/application_icon.dart';
+import 'package:comrade/ui/common/content_section_header.dart';
+import 'package:comrade/ui/common/default_segmented_button.dart';
+import 'package:comrade/ui/common/empty_list_indicator.dart';
+import 'package:comrade/ui/common/sliver_implicitly_animated_list.dart';
+import 'package:comrade/ui/common/sliver_shimmer_list.dart';
+import 'package:comrade/ui/screens/notifications/conversation_tile.dart';
+import 'package:comrade/ui/screens/notifications/notification_tile.dart';
 import 'package:sliver_tools/sliver_tools.dart';
-import 'package:mindful/core/database/app_database.dart' as db;
+import 'package:comrade/core/database/app_database.dart' as db;
 
 class SliverNotificationsList extends ConsumerStatefulWidget {
   const SliverNotificationsList({

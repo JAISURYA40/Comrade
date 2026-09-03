@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -11,24 +11,24 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/enums/item_position.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_date_time.dart';
-import 'package:mindful/core/extensions/ext_duration.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/core/utils/date_time_utils.dart';
-import 'package:mindful/core/utils/widget_utils.dart';
-import 'package:mindful/providers/focus/dated_focus_provider.dart';
-import 'package:mindful/providers/focus/monthly_focus_provider.dart';
-import 'package:mindful/ui/common/default_refresh_indicator.dart';
-import 'package:mindful/ui/common/content_section_header.dart';
-import 'package:mindful/ui/common/empty_list_indicator.dart';
-import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
-import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/common/usage_glance_card.dart';
-import 'package:mindful/ui/screens/focus/focus_timeline/session_card.dart';
-import 'package:mindful/ui/screens/focus/focus_timeline/sliver_heatmap_calender.dart';
+import 'package:comrade/core/enums/item_position.dart';
+import 'package:comrade/core/extensions/ext_build_context.dart';
+import 'package:comrade/core/extensions/ext_date_time.dart';
+import 'package:comrade/core/extensions/ext_duration.dart';
+import 'package:comrade/core/extensions/ext_num.dart';
+import 'package:comrade/core/extensions/ext_widget.dart';
+import 'package:comrade/core/utils/date_time_utils.dart';
+import 'package:comrade/core/utils/widget_utils.dart';
+import 'package:comrade/providers/focus/dated_focus_provider.dart';
+import 'package:comrade/providers/focus/monthly_focus_provider.dart';
+import 'package:comrade/ui/common/default_refresh_indicator.dart';
+import 'package:comrade/ui/common/content_section_header.dart';
+import 'package:comrade/ui/common/empty_list_indicator.dart';
+import 'package:comrade/ui/common/sliver_tabs_bottom_padding.dart';
+import 'package:comrade/ui/common/styled_text.dart';
+import 'package:comrade/ui/common/usage_glance_card.dart';
+import 'package:comrade/ui/screens/focus/focus_timeline/session_card.dart';
+import 'package:comrade/ui/screens/focus/focus_timeline/sliver_heatmap_calender.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class TabFocusTimeline extends ConsumerStatefulWidget {

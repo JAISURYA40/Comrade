@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?><!--
   ~ /*
   ~  *
-  ~  *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+  ~  *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
   ~  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
   ~  *  *
   ~  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -87,7 +87,7 @@
 
                 <data
                     android:host="open"
-                    android:scheme="com.mindful.android" />
+                    android:scheme="com.comrade.android" />
             </intent-filter>
 
             <!-- Default -->
@@ -142,7 +142,7 @@
             android:permission="android.permission.BIND_DEVICE_ADMIN">
             <meta-data
                 android:name="android.app.device_admin"
-                android:resource="@xml/mindful_admin_config" />
+                android:resource="@xml/comrade_admin_config" />
 
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
@@ -176,7 +176,7 @@
             android:name=".services.quickTiles.FocusQuickTileService"
             android:description="@string/shortcut_focus_mode_description"
             android:exported="true"
-            android:icon="@drawable/ic_focus_mode"
+            android:icon="@mipmap/ic_launcher"
             android:label="@string/shortcut_focus_mode_label"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
@@ -191,7 +191,7 @@
                 android:value="true" />
         </service>
         <service
-            android:name=".services.accessibility.MindfulAccessibilityService"
+            android:name=".services.accessibility.ComradeAccessibilityService"
             android:enabled="true"
             android:exported="false"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
@@ -201,10 +201,10 @@
 
             <meta-data
                 android:name="android.accessibilityservice"
-                android:resource="@xml/mindful_accessibility_config" />
+                android:resource="@xml/comrade_accessibility_config" />
         </service>
         <service
-            android:name=".services.notification.MindfulNotificationListenerService"
+            android:name=".services.notification.ComradeNotificationListenerService"
             android:enabled="true"
             android:exported="false"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
@@ -216,7 +216,7 @@
         <!-- ______________________________ APP SERVICES _____________________________________ -->
         <!-- _________________________________________________________________________________ -->
         <service
-            android:name=".services.vpn.MindfulVpnService"
+            android:name=".services.vpn.ComradeVpnService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="specialUse"
@@ -234,7 +234,7 @@
                 android:value="false" />
         </service>
         <service
-            android:name=".services.tracking.MindfulTrackerService"
+            android:name=".services.tracking.ComradeTrackerService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="specialUse" />
@@ -256,3 +256,4 @@
     </application>
 
 </manifest>
+

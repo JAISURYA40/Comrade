@@ -1,6 +1,6 @@
-# Mindful API
+# Comrade API
 
-Mindful supports **deep linking** for external apps, browsers, or command-line tools to interact with the app. Right now it only supports opening screen but in future we are planning to support integration with third party apps.
+Comrade supports **deep linking** for external apps, browsers, or command-line tools to interact with the app. Right now it only supports opening screen but in future we are planning to support integration with third party apps.
 
 ### Future plans -
 
@@ -16,12 +16,12 @@ Mindful supports **deep linking** for external apps, browsers, or command-line t
 
 ## 1. OPEN
 >  [!Tip]
-> ### _com.mindful.android://open_
+> ### _com.comrade.android://open_
 > Navigates user to a specific screen with the provided parameters.
           
   * ### `/home`  
     - **Description:** Opens the home screen on the specified tab.  
-    - **Example:** `com.mindful.android://open/home?tab=1`
+    - **Example:** `com.comrade.android://open/home?tab=1`
     - **Parameters:**  
       - `tab` (Optional)  
           - `0` → Dashboard (Default)  
@@ -31,7 +31,7 @@ Mindful supports **deep linking** for external apps, browsers, or command-line t
           
   * ### `/focus`  
     - **Description:** Opens the focus screen on the specified tab.  
-    - **Example:** `com.mindful.android://open/focus?tab=1`
+    - **Example:** `com.comrade.android://open/focus?tab=1`
     - **Parameters:**  
       - `tab` (Optional)  
           - `0` → Focus (Default)  
@@ -39,11 +39,11 @@ Mindful supports **deep linking** for external apps, browsers, or command-line t
           
   * ### `/activeSession`  
     - **Description:** Opens the active session screen.  
-    - **Example:** `com.mindful.android://open/activeSession`
+    - **Example:** `com.comrade.android://open/activeSession`
   
   * ### `/appDashboard`  
     - **Description:** Opens the app's dashboard screen with the specified parameters.  
-    - **Example:** `com.mindful.android://open/appDashboard?package=com.instagram.android&usageType=1&day=2025-06-28`
+    - **Example:** `com.comrade.android://open/appDashboard?package=com.instagram.android&usageType=1&day=2025-06-28`
     - **Parameters:**  
       - `package` (Required)
           - Package name of the targeted app  
@@ -59,7 +59,7 @@ Mindful supports **deep linking** for external apps, browsers, or command-line t
       
   * ### `/notifications`  
     - **Description:** Opens the batched notifications screen on the specified tab.  
-    - **Example:** `com.mindful.android://open/notifications?tab=1`
+    - **Example:** `com.comrade.android://open/notifications?tab=1`
     - **Parameters:**  
       - `tab` (Optional)  
           - `0` → Notifications (Default)  
@@ -68,23 +68,23 @@ Mindful supports **deep linking** for external apps, browsers, or command-line t
           
   * ### `/parentalControls`  
     - **Description:** Opens the parental and invincible mode controls screen.  
-    - **Example:** `com.mindful.android://open/parentalControls`
+    - **Example:** `com.comrade.android://open/parentalControls`
   
   * ### `/restrictionGroups`  
     - **Description:** Opens the restriction groups screen.  
-    - **Example:** `com.mindful.android://open/restrictionGroups`
+    - **Example:** `com.comrade.android://open/restrictionGroups`
 
   * ### `/shortsBlocking`  
     - **Description:** Opens the shorts blocking screen.  
-    - **Example:** `com.mindful.android://open/shortsBlocking`
+    - **Example:** `com.comrade.android://open/shortsBlocking`
    
   * ### `/websitesBlocking`  
     - **Description:** Opens the websites blocking screen.  
-    - **Example:** `com.mindful.android://open/websitesBlocking`
+    - **Example:** `com.comrade.android://open/websitesBlocking`
           
   * ### `/settings`  
     - **Description:** Opens the settings screen on the specified tab.  
-    - **Example:** `com.mindful.android://open/settings?tab=1`
+    - **Example:** `com.comrade.android://open/settings?tab=1`
     - **Parameters:**  
       - `tab` (Optional)  
           - `0` → General (Default)  
@@ -93,29 +93,29 @@ Mindful supports **deep linking** for external apps, browsers, or command-line t
   
   * ### `/changeLogs`  
     - **Description:** Opens the latest changelogs screen.  
-    - **Example:** `com.mindful.android://open/changeLogs`
+    - **Example:** `com.comrade.android://open/changeLogs`
 
 
 ---
 ## 2. EXECUTE (Under development)
 > [!Tip]
-> ### _com.mindful.android://execute_
+> ### _com.comrade.android://execute_
 > Navigate user to specific screen and perform some action automatically.
 
 ---
 
 ## Testing 
 
-Please ensure Mindful is installed before testing. To test deep links manually, you can use the following methods:  
+Please ensure Comrade is installed before testing. To test deep links manually, you can use the following methods:  
 
 ### **Using ADB Command:**  
 ```sh
-adb shell am start -a android.intent.action.VIEW -d "com.mindful.android://open/home?tab=1"
+adb shell am start -a android.intent.action.VIEW -d "com.comrade.android://open/home?tab=1"
 ```
 
 ### **Using the Browser:**  
 Create an HTML file with following content. Open the created HTML file in a browser and click on `Launch`
 ```HTML
-<a href="intent://open/home?tab=1#Intent;scheme=com.mindful.android;package=com.mindful.android;end">Launch</a>
+<a href="intent://open/home?tab=1#Intent;scheme=com.comrade.android;package=com.comrade.android;end">Launch</a>
 
 ```

@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
@@ -9,15 +9,15 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/ui/onboarding/onboarding_page.dart';
-import 'package:mindful/ui/permissions/alarm_permission_tile.dart';
-import 'package:mindful/ui/permissions/battery_permission_tile.dart';
-import 'package:mindful/ui/permissions/display_overlay_permission_tile.dart';
-import 'package:mindful/ui/permissions/notification_permission_tile.dart';
-import 'package:mindful/ui/permissions/usage_access_permission_tile.dart';
+import 'package:comrade/core/extensions/ext_build_context.dart';
+import 'package:comrade/core/extensions/ext_num.dart';
+import 'package:comrade/core/services/method_channel_service.dart';
+import 'package:comrade/ui/onboarding/onboarding_page.dart';
+import 'package:comrade/ui/permissions/alarm_permission_tile.dart';
+import 'package:comrade/ui/permissions/battery_permission_tile.dart';
+import 'package:comrade/ui/permissions/display_overlay_permission_tile.dart';
+import 'package:comrade/ui/permissions/notification_permission_tile.dart';
+import 'package:comrade/ui/permissions/usage_access_permission_tile.dart';
 
 class PermissionsPage extends StatelessWidget {
   const PermissionsPage({
