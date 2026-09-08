@@ -1,0 +1,137 @@
+/*
+ *
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
+ *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
+ *  *
+ *  * This source code is licensed under the GPL-2.0 license license found in the
+ *  * LICENSE file in the root directory of this source tree.
+ *
+ */
+
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:comrade/core/database/adapters/time_of_day_adapter.dart';
+import 'package:comrade/core/extensions/ext_num.dart';
+import 'package:comrade/ui/common/rounded_container.dart';
+import 'package:comrade/ui/common/styled_text.dart';
+import 'package:comrade/ui/dialogs/time_picker_dialog.dart';
+import 'package:comrade/ui/transitions/default_hero.dart';
+
+class TimeCard extends StatelessWidget {
+  const TimeCard({
+    super.key,
+    required this.label,
+    required this.heroTag,
+    required this.onChange,
+    required this.initialTime,
+    this.bgColor,
+    this.icon,
+    this.iconColor,
+    this.isModifiable,
+    this.iconSize = 32,
+    this.enabled = true,
+  });
+
+  final String label;
+  final Object heroTag;
+  final bool enabled;
+  final TimeOfDayAdapter initialTime;
+  final Function(TimeOfDayAdapter time) onChange;
+  final bool Function()? isModifiable;
+  final Color? bgColor;
+  final IconData? icon;
+  final Color? iconColor;
+  final double iconSize;
+
+  @override
+  Widget build(BuildContext context) {
+    final timeString = initialTime.format(context);
+    final timeParts = timeString.split(' ');
+
+    return DefaultHero(
+      tag: heroTag,
+      child: RoundedContainer(
+        color: bgColor,
+        padding: const EdgeInsets.all(20),
+        onPressed: enabled
+            ? () async {
+                if (!(isModifiable?.call() ?? true)) return;
+
+                final pickedTime = await showCustomTimePickerDialog(
+                  context: context,
+                  initialTime: initialTime,
+                  heroTag: heroTag,
+                  info: label,
+                );
+
+                await Future.delayed(50.ms);
+                onChange(pickedTime ?? initialTime);
+              }
+            : null,
+        child: Row(
+          children: [
+            /// Icon
+            if (icon != null)
+              Container(
+                padding: const EdgeInsets.all(12),
+                margin: const EdgeInsets.only(right: 16),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Icon(
+                  icon,
+                  size: iconSize,
+                  color: enabled ? iconColor : Theme.of(context).disabledColor,
+                ),
+              ),
+
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    /// Label
+                    StyledText(
+                      label,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      isSubtitle: !enabled,
+                    ),
+                    8.vBox,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        /// Time in hour and minutes
+                        StyledText(
+                          timeParts.firstOrNull ?? timeString,
+                          height: 1,
+                          fontSize: 36,
+                          fontWeight: FontWeight.bold,
+                          isSubtitle: !enabled,
+                        ),
+                        6.hBox,
+
+                        /// Time period AM/PM
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: StyledText(
+                            timeParts.elementAtOrNull(1) ?? "",
+                            height: 1.2,
+                            fontSize: 14,
+                            isSubtitle: !enabled,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

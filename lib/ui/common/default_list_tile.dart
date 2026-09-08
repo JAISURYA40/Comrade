@@ -1,0 +1,156 @@
+/*
+ *
+ *  * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
+ *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
+ *  *
+ *  * This source code is licensed under the GPL-2.0 license license found in the
+ *  * LICENSE file in the root directory of this source tree.
+ *
+ */
+
+import 'package:flutter/material.dart';
+import 'package:comrade/core/enums/item_position.dart';
+import 'package:comrade/core/extensions/ext_num.dart';
+import 'package:comrade/core/utils/widget_utils.dart';
+import 'package:comrade/ui/common/rounded_container.dart';
+import 'package:comrade/ui/common/styled_text.dart';
+
+/// Global list tile used throughout the app
+///
+/// Alternative to [ListTile] as the list tile widget have some artifact when scrolling while in focus state
+class DefaultListTile extends StatelessWidget {
+  const DefaultListTile({
+    super.key,
+    this.leading,
+    this.title,
+    this.subtitle,
+    this.trailing,
+    this.leadingIcon,
+    this.titleText,
+    this.subtitleText,
+    this.color,
+    this.accent,
+    this.onPressed,
+    this.switchValue,
+    this.isSelected,
+    this.position,
+    this.margin,
+    this.enabled = true,
+    this.isPrimary = false,
+  });
+
+  final Widget? leading;
+  final Widget? title;
+  final Widget? subtitle;
+  final Widget? trailing;
+  final IconData? leadingIcon;
+  final String? titleText;
+  final String? subtitleText;
+  final Color? color;
+  final Color? accent;
+  final bool? switchValue;
+  final bool? isSelected;
+  final ItemPosition? position;
+  final VoidCallback? onPressed;
+  final bool enabled;
+  final bool isPrimary;
+  final EdgeInsets? margin;
+
+  @override
+  Widget build(BuildContext context) {
+    return RoundedContainer(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      margin: margin ?? const EdgeInsets.only(top: 6),
+      borderRadius: getBorderRadiusFromPosition(position ?? ItemPosition.none),
+      color:
+          isPrimary 
+              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.15) 
+              : color,
+      onPressed: enabled ? onPressed : null,
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          /// Leading widget
+          leadingIcon != null
+              ? Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: (isPrimary 
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.secondaryContainer).withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    leadingIcon,
+                    size: 20,
+                    color: enabled
+                        ? (accent ?? Theme.of(context).colorScheme.onSecondaryContainer)
+                        : Theme.of(context).hintColor,
+                  ),
+                )
+              : leading ?? 0.hBox,
+
+          /// leading space
+          if (leading != null || leadingIcon != null) const SizedBox(width: 16),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  /// Title widget
+                  titleText != null
+                      ? StyledText(
+                          titleText!,
+                          fontSize: 16,
+                          fontWeight: isPrimary ? FontWeight.w600 : FontWeight.w500,
+                          color: enabled ? accent : Theme.of(context).hintColor,
+                        )
+                      : title ?? 0.vBox,
+
+                  /// Subtitle widget
+                  if (subtitleText != null || subtitle != null) ...[
+                    const SizedBox(height: 4),
+                    subtitleText != null
+                        ? StyledText(
+                            subtitleText!,
+                            fontSize: 13,
+                            isSubtitle: true,
+                          )
+                        : subtitle ?? 0.vBox,
+                  ],
+                ],
+              ),
+            ),
+          ),
+
+          if (switchValue != null || isSelected != null || trailing != null)
+            8.hBox,
+
+          /// Trailing widget
+          switchValue != null
+              ? IgnorePointer(
+                  child: Switch(
+                    value: switchValue ?? false,
+                    splashRadius: 0,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    onChanged: enabled ? (_) {} : null,
+                  ),
+                )
+              : isSelected != null
+                  ? IgnorePointer(
+                      child: Checkbox(
+                        value: isSelected,
+                        splashRadius: 0,
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        onChanged: enabled ? (_) {} : null,
+                      ),
+                    )
+                  : trailing ?? 0.hBox,
+        ],
+      ),
+    );
+  }
+}
