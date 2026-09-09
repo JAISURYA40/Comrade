@@ -72,7 +72,7 @@ class AppTheme {
       surfaceContainerHighest: AppColors.card,
       surfaceContainerHigh: AppColors.secondary,
       surfaceContainer: AppColors.accent,
-      surfaceVariant: AppColors.secondary,
+      surfaceContainerLow: AppColors.secondary,
       onSurfaceVariant: AppColors.mutedForeground,
       scrim: Colors.black,
       shadow: Colors.black,

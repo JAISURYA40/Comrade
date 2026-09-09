@@ -11,6 +11,8 @@
 import 'dart:math';
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -60,17 +62,22 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     _isAccessProtected =
         (await ref.read(parentalControlsProvider.notifier).init())
             .protectedAccess;
-    _haveAllEssentialPermissions = perms.haveUsageAccessPermission &&
-        perms.haveDisplayOverlayPermission &&
-        perms.haveAlarmsPermission &&
-        perms.haveNotificationPermission;
+            
+    if (Platform.isAndroid) {
+      _haveAllEssentialPermissions = perms.haveUsageAccessPermission &&
+          perms.haveDisplayOverlayPermission &&
+          perms.haveAlarmsPermission &&
+          perms.haveNotificationPermission;
+    } else {
+      _haveAllEssentialPermissions = perms.haveNotificationPermission;
+    }
 
     if (mounted) setState(() {});
     _isAccessProtected ? _authenticate() : _goToNextScreen(true);
   }
 
   void _goToNextScreen(bool shouldDelay) async {
-    if (shouldDelay) await Future.delayed(250.ms);
+    if (shouldDelay) await Future.delayed(2000.ms);
     if (!mounted) return;
 
     if (_haveAllEssentialPermissions && _isOnboardingDone) {

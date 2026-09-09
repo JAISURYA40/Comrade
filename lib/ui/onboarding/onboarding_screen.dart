@@ -8,6 +8,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -70,10 +72,12 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
     _subscription = ref.listenManual<PermissionsModel>(
       permissionProvider,
       (_, perms) {
-        final haveAllEssentialPermissions = perms.haveUsageAccessPermission &&
-            perms.haveDisplayOverlayPermission &&
-            perms.haveAlarmsPermission &&
-            perms.haveNotificationPermission;
+        final haveAllEssentialPermissions = Platform.isAndroid 
+            ? (perms.haveUsageAccessPermission &&
+               perms.haveDisplayOverlayPermission &&
+               perms.haveAlarmsPermission &&
+               perms.haveNotificationPermission)
+            : perms.haveNotificationPermission;
 
         if (!haveAllEssentialPermissions) return;
         _finishOnboarding();
@@ -125,10 +129,12 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
   Widget build(BuildContext context) {
     final isLastPage = _currentPage == _pages.length - 1;
     final perms = ref.watch(permissionProvider);
-    final haveAllEssentialPermissions = perms.haveUsageAccessPermission &&
-        perms.haveDisplayOverlayPermission &&
-        perms.haveAlarmsPermission &&
-        perms.haveNotificationPermission;
+    final haveAllEssentialPermissions = Platform.isAndroid 
+        ? (perms.haveUsageAccessPermission &&
+           perms.haveDisplayOverlayPermission &&
+           perms.haveAlarmsPermission &&
+           perms.haveNotificationPermission)
+        : perms.haveNotificationPermission;
 
     return PopScope(
       onPopInvokedWithResult: (didPop, _) => SystemNavigator.pop(),
