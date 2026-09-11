@@ -26,7 +26,10 @@ class SliverTabsBottomPadding extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 140, bottom: 240),
+      padding: EdgeInsets.only(
+        top: 140,
+        bottom: 120 + MediaQuery.paddingOf(context).bottom,
+      ),
       child: Center(
         child: Column(
           children: [

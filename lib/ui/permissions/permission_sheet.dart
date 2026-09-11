@@ -89,9 +89,7 @@ class PermissionSheet extends StatelessWidget {
               StyledText(
                 context.locale.permission_sheet_privacy_info,
                 fontSize: 13,
-                color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.green[900]
-                    : Colors.green[300],
+                color: Theme.of(context).colorScheme.primary,
               ),
               40.vBox,
 

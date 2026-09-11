@@ -17,12 +17,14 @@ import 'package:comrade/core/database/converters/bool_list_converter.dart';
 import 'package:comrade/core/database/converters/enum_list_converter.dart';
 import 'package:comrade/core/database/converters/notification_schedule_list_converter.dart';
 import 'package:comrade/core/database/converters/string_list_converter.dart';
+import 'package:comrade/core/database/daos/chat_records_dao.dart';
 import 'package:comrade/core/database/daos/dynamic_records_dao.dart';
 import 'package:comrade/core/database/daos/unique_records_dao.dart';
 import 'package:comrade/core/database/schemas/schema_versions.dart';
 import 'package:comrade/core/database/tables/app_restriction_table.dart';
 import 'package:comrade/core/database/tables/app_usage_table.dart';
 import 'package:comrade/core/database/tables/bedtime_schedule_table.dart';
+import 'package:comrade/core/database/tables/chat_tables.dart';
 import 'package:comrade/core/database/tables/crash_logs_table.dart';
 import 'package:comrade/core/database/tables/focus_mode_table.dart';
 import 'package:comrade/core/database/tables/focus_profile_table.dart';
@@ -64,8 +66,10 @@ part 'app_database.g.dart';
     AppUsageTable,
     NotificationSettingsTable,
     NotificationsTable,
+    ChatMessagesTable,
+    ChatMemoriesTable,
   ],
-  daos: [UniqueRecordsDao, DynamicRecordsDao],
+  daos: [UniqueRecordsDao, DynamicRecordsDao, ChatRecordsDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
@@ -82,7 +86,7 @@ class AppDatabase extends _$AppDatabase {
   //
   // STEP 6 => Add migration steps to migration strategy by create new file in migrations folder. See previous migrations for help
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   // Always use [runSafe()] for upgrades - why?
   // If a user imports a backup from a newer schema when they are on an older
@@ -94,20 +98,26 @@ class AppDatabase extends _$AppDatabase {
         onUpgrade: (m, from, to) async {
           debugPrint("Upgrading database from schema version $from to $to");
 
-          return m.runMigrationSteps(
-            from: from,
-            to: to,
-            steps: migrationSteps(
-              from1To2: from1To2,
-              from2To3: from2To3,
-              from3To4: from3To4,
-              from4To5: from4To5,
-              from5To6: from5To6,
-              from6To7: from6To7,
-              from7To8: from7To8,
-              from8To9: from8To9,
-            ),
-          );
+          if (from < 9) {
+            await m.runMigrationSteps(
+              from: from,
+              to: 9,
+              steps: migrationSteps(
+                from1To2: from1To2,
+                from2To3: from2To3,
+                from3To4: from3To4,
+                from4To5: from4To5,
+                from5To6: from5To6,
+                from6To7: from6To7,
+                from7To8: from7To8,
+                from8To9: from8To9,
+              ),
+            );
+          }
+
+          if (from < 10 && to >= 10) {
+            await from9To10(m, chatMessagesTable, chatMemoriesTable);
+          }
         },
       );
 }

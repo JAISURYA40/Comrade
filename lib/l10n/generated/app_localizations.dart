@@ -270,6 +270,72 @@ abstract class AppLocalizations {
   /// **'Permit usage access'**
   String get permission_usage_device_tile_label;
 
+  /// No description provided for @permission_screen_time_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen Time'**
+  String get permission_screen_time_title;
+
+  /// No description provided for @permission_screen_time_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Please allow Screen Time for Comrade. This lets you pick apps and websites to limit, apply focus and bedtime shields, and keep blocking in line with your iPhone settings.'**
+  String get permission_screen_time_info;
+
+  /// No description provided for @permission_screen_time_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Comrade needs Screen Time permission to limit apps and websites on iPhone.'**
+  String get permission_screen_time_required;
+
+  /// No description provided for @permission_screen_time_device_tile_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow Screen Time'**
+  String get permission_screen_time_device_tile_label;
+
+  /// No description provided for @ios_choose_apps_tile_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose apps with Screen Time'**
+  String get ios_choose_apps_tile_title;
+
+  /// No description provided for @ios_choose_apps_tile_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick the apps iPhone should actually block. Comrade cannot list every installed app the way Android does.'**
+  String get ios_choose_apps_tile_subtitle;
+
+  /// No description provided for @ios_notification_batching_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification grouping'**
+  String get ios_notification_batching_title;
+
+  /// No description provided for @ios_notification_batching_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Grouping notifications from other apps is an Android feature. On iPhone, Comrade still sends its own reminders for timers, focus, and bedtime.'**
+  String get ios_notification_batching_info;
+
+  /// No description provided for @permission_ios_limits_title.
+  ///
+  /// In en, this message translates to:
+  /// **'iPhone reminders'**
+  String get permission_ios_limits_title;
+
+  /// No description provided for @permission_ios_limits_info.
+  ///
+  /// In en, this message translates to:
+  /// **'iPhone does not allow apps to block other apps. Comrade still tracks your goals, timers, focus, and bedtime, and sends reminders. You can open Settings to manage notifications.'**
+  String get permission_ios_limits_info;
+
+  /// No description provided for @permission_open_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings'**
+  String get permission_open_settings;
+
   /// No description provided for @permission_overlay_title.
   ///
   /// In en, this message translates to:
@@ -2393,6 +2459,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Dark'**
   String get theme_mode_dark_label;
+
+  /// No description provided for @theme_mode_blast_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Blast — Flame Orange / Amber'**
+  String get theme_mode_blast_label;
+
+  /// No description provided for @theme_mode_focus_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus — Focus Blue / Sky Blue'**
+  String get theme_mode_focus_label;
+
+  /// No description provided for @theme_mode_calm_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Calm — Sage / Mint'**
+  String get theme_mode_calm_label;
+
+  /// No description provided for @theme_mode_mood_section_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Mood themes restyle the whole app. Accent color and dynamic colors apply only to System, Light, and Dark.'**
+  String get theme_mode_mood_section_hint;
+
+  /// No description provided for @theme_mood_section_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mood themes apply across the whole app.'**
+  String get theme_mood_section_subtitle;
 
   /// No description provided for @material_color_tile_title.
   ///

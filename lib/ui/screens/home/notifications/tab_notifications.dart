@@ -18,6 +18,7 @@ import 'package:comrade/core/extensions/ext_build_context.dart';
 import 'package:comrade/core/extensions/ext_date_time.dart';
 import 'package:comrade/core/extensions/ext_num.dart';
 import 'package:comrade/core/extensions/ext_widget.dart';
+import 'package:comrade/core/utils/platform_features.dart';
 import 'package:comrade/providers/notifications/dated_notifications_provider.dart';
 import 'package:comrade/providers/notifications/notification_settings_provider.dart';
 import 'package:comrade/providers/system/permissions_provider.dart';
@@ -32,6 +33,7 @@ import 'package:comrade/ui/common/styled_text.dart';
 import 'package:comrade/ui/common/usage_glance_card.dart';
 import 'package:comrade/ui/dialogs/modal_bottom_sheet.dart';
 import 'package:comrade/ui/permissions/notification_access_permission_card.dart';
+import 'package:comrade/ui/common/sliver_primary_action_container.dart';
 import 'package:comrade/ui/screens/home/notifications/sliver_batched_apps_list.dart';
 import 'package:comrade/ui/screens/home/notifications/sliver_schedules_list.dart';
 
@@ -117,7 +119,15 @@ class _TabNotificationsState extends ConsumerState<TabNotifications> {
           ).sliver,
 
           /// Permission card
-          const NotificationAccessPermissionCard(),
+          if (PlatformFeatures.hasNotificationListener)
+            const NotificationAccessPermissionCard()
+          else
+            SliverPrimaryActionContainer(
+              isVisible: true,
+              icon: FluentIcons.alert_20_regular,
+              title: context.locale.ios_notification_batching_title,
+              information: context.locale.ios_notification_batching_info,
+            ),
 
           /// Non-batched history
           DefaultListTile(

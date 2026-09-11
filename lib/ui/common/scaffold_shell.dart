@@ -107,66 +107,65 @@ class _ScaffoldShellState extends State<ScaffoldShell>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton:
-          widget.items[_selectedTabIndex].fab ?? const SizedBox.shrink(),
+      floatingActionButton: SafeArea(
+        minimum: const EdgeInsets.only(bottom: 8),
+        child: widget.items[_selectedTabIndex].fab ?? const SizedBox.shrink(),
+      ),
       floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
+      resizeToAvoidBottomInset: true,
       extendBody: true,
       extendBodyBehindAppBar: true,
       bottomNavigationBar: _haveMultiTabs ? _bottomNavBar() : null,
-          body: TabBarView(
-            controller: _tabController,
-            physics: const BouncingScrollPhysics(),
-            children: List.generate(
-              widget.items.length,
-              (i) => NotificationListener<ScrollNotification>(
-                onNotification: (notification) {
-                  if (notification is ScrollUpdateNotification) {
-                    /// Add app bar offset if current scroll offset is from body
-                    final currentOffset = notification.metrics.pixels +
-                        (notification.depth == 1 ? _appBarScrollOffSet.value : 0);
+      body: TabBarView(
+        controller: _tabController,
+        physics: const BouncingScrollPhysics(),
+        children: List.generate(
+          widget.items.length,
+          (i) => NotificationListener<ScrollNotification>(
+            onNotification: (notification) {
+              if (notification is ScrollUpdateNotification) {
+                final currentOffset = notification.metrics.pixels +
+                    (notification.depth == 1 ? _appBarScrollOffSet.value : 0);
 
-                    /// Show/Hide bottom bar
-                    if (currentOffset >= widget.appBarExpandedHeight &&
-                        (currentOffset >= _wholeScreenScrollOffSet + 1)) {
-                      _isBottomNavVisible.value = false;
-                    } else if (currentOffset <= _wholeScreenScrollOffSet - 1) {
-                      _isBottomNavVisible.value = true;
-                    }
+                if (currentOffset >= widget.appBarExpandedHeight &&
+                    (currentOffset >= _wholeScreenScrollOffSet + 1)) {
+                  _isBottomNavVisible.value = false;
+                } else if (currentOffset <= _wholeScreenScrollOffSet - 1) {
+                  _isBottomNavVisible.value = true;
+                }
 
-                    /// Cache offset for whole screen
-                    _wholeScreenScrollOffSet = currentOffset == 0
-                        ? _wholeScreenScrollOffSet
-                        : currentOffset;
+                _wholeScreenScrollOffSet = currentOffset == 0
+                    ? _wholeScreenScrollOffSet
+                    : currentOffset;
 
-                    /// Cache offset for just the app bar only
-                    if (notification.depth == 0) {
-                      _appBarScrollOffSet.value = currentOffset == 0
-                          ? _appBarScrollOffSet.value
-                          : currentOffset;
-                    }
-                  }
-                  return false;
-                },
-                child: NestedScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  headerSliverBuilder: (_, innerBoxIsScrolled) =>
-                      [_sliverAppBar(i, innerBoxIsScrolled)],
-                  body: TabControllerProvider(
-                    controller: _tabController,
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                        left: widget.bodyPadding.left,
-                        right: widget.bodyPadding.right,
-                        top: widget.bodyPadding.top,
-                        bottom: widget.bodyPadding.bottom,
-                      ),
-                      child: widget.items[i].sliverBody,
-                    ),
+                if (notification.depth == 0) {
+                  _appBarScrollOffSet.value = currentOffset == 0
+                      ? _appBarScrollOffSet.value
+                      : currentOffset;
+                }
+              }
+              return false;
+            },
+            child: NestedScrollView(
+              physics: const BouncingScrollPhysics(),
+              headerSliverBuilder: (_, innerBoxIsScrolled) =>
+                  [_sliverAppBar(i, innerBoxIsScrolled)],
+              body: TabControllerProvider(
+                controller: _tabController,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: widget.bodyPadding.left,
+                    right: widget.bodyPadding.right,
+                    top: widget.bodyPadding.top,
+                    bottom: widget.bodyPadding.bottom,
                   ),
+                  child: widget.items[i].sliverBody,
                 ),
               ),
             ),
           ),
+        ),
+      ),
     );
   }
 

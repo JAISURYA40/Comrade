@@ -77,6 +77,44 @@ class AppLocalizationsDa extends AppLocalizations {
   String get permission_usage_device_tile_label => 'Permit usage access';
 
   @override
+  String get permission_screen_time_title => 'Screen Time';
+
+  @override
+  String get permission_screen_time_info =>
+      'Please allow Screen Time for Comrade. This lets you pick apps and websites to limit, apply focus and bedtime shields, and keep blocking in line with your iPhone settings.';
+
+  @override
+  String get permission_screen_time_required =>
+      'Comrade needs Screen Time permission to limit apps and websites on iPhone.';
+
+  @override
+  String get permission_screen_time_device_tile_label => 'Allow Screen Time';
+
+  @override
+  String get ios_choose_apps_tile_title => 'Choose apps with Screen Time';
+
+  @override
+  String get ios_choose_apps_tile_subtitle =>
+      'Pick the apps iPhone should actually block. Comrade cannot list every installed app the way Android does.';
+
+  @override
+  String get ios_notification_batching_title => 'Notification grouping';
+
+  @override
+  String get ios_notification_batching_info =>
+      'Grouping notifications from other apps is an Android feature. On iPhone, Comrade still sends its own reminders for timers, focus, and bedtime.';
+
+  @override
+  String get permission_ios_limits_title => 'iPhone reminders';
+
+  @override
+  String get permission_ios_limits_info =>
+      'iPhone does not allow apps to block other apps. Comrade still tracks your goals, timers, focus, and bedtime, and sends reminders. You can open Settings to manage notifications.';
+
+  @override
+  String get permission_open_settings => 'Open Settings';
+
+  @override
   String get permission_overlay_title => 'Display Overlay';
 
   @override
@@ -1363,6 +1401,23 @@ class AppLocalizationsDa extends AppLocalizations {
 
   @override
   String get theme_mode_dark_label => 'Dark';
+
+  @override
+  String get theme_mode_blast_label => 'Blast — Flame Orange / Amber';
+
+  @override
+  String get theme_mode_focus_label => 'Focus — Focus Blue / Sky Blue';
+
+  @override
+  String get theme_mode_calm_label => 'Calm — Sage / Mint';
+
+  @override
+  String get theme_mode_mood_section_hint =>
+      'Mood themes restyle the whole app. Accent color and dynamic colors apply only to System, Light, and Dark.';
+
+  @override
+  String get theme_mood_section_subtitle =>
+      'Mood themes apply across the whole app.';
 
   @override
   String get material_color_tile_title => 'Material color';

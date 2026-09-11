@@ -170,6 +170,17 @@ class MethodChannelService {
     return [];
   }
 
+  /// Presents the iOS Screen Time app picker. No-op on Android.
+  Future<bool> presentScreenTimePicker() async {
+    if (!Platform.isIOS) return true;
+    try {
+      return await _methodChannel.invokeMethod('presentScreenTimePicker') ??
+          false;
+    } catch (_) {
+      return false;
+    }
+  }
+
   /// Loads Map of [String] package name and the respective [UsageModel] for the given interval
   ///
   /// The result map contains one [UsageModel] per app
@@ -329,16 +340,31 @@ class MethodChannelService {
   // ===========================================================================================
   // ==================================== PERMISSIONS ==========================================
   // ===========================================================================================
+
+  /// Safe bool invoke that never throws MissingPluginException to Flutter UI.
+  Future<bool> _invokeBool(
+    String method, [
+    dynamic arguments,
+  ]) async {
+    if (!_hasNativeBridge) return false;
+    try {
+      final value = await _methodChannel.invokeMethod(method, arguments);
+      return value == true;
+    } on MissingPluginException catch (e) {
+      debugPrint('MethodChannelService.$method MissingPluginException: $e');
+      return false;
+    } catch (e) {
+      debugPrint('MethodChannelService.$method error: $e');
+      return false;
+    }
+  }
+
   /// Checks if the admin permission is granted and optionally asks for it.
   ///
   /// Returns `true` if the permission is granted Otherwise, returns `false`.
   Future<bool> getAndAskAdminPermission(
           {bool askPermissionToo = false}) async {
-    if (!_hasNativeBridge) return false;
-    return await _methodChannel.invokeMethod(
-        'getAndAskAdminPermission',
-        askPermissionToo,
-      );
+    return _invokeBool('getAndAskAdminPermission', askPermissionToo);
   }
 
   /// Checks if the accessibility permission is granted and optionally asks for it.
@@ -346,11 +372,7 @@ class MethodChannelService {
   /// This method returns `true` if the permission is granted Otherwise, it returns `false`.
   Future<bool> getAndAskAccessibilityPermission(
           {bool askPermissionToo = false}) async {
-    if (!_hasNativeBridge) return false;
-    return await _methodChannel.invokeMethod(
-        'getAndAskAccessibilityPermission',
-        askPermissionToo,
-      );
+    return _invokeBool('getAndAskAccessibilityPermission', askPermissionToo);
   }
 
   /// Checks if the usage access permission is granted and optionally asks for it.
@@ -358,11 +380,7 @@ class MethodChannelService {
   /// Returns `true` if the permission is granted Otherwise, returns `false`.
   Future<bool> getAndAskUsageAccessPermission(
           {bool askPermissionToo = false}) async {
-    if (!_hasNativeBridge) return false;
-    return await _methodChannel.invokeMethod(
-        'getAndAskUsageAccessPermission',
-        askPermissionToo,
-      );
+    return _invokeBool('getAndAskUsageAccessPermission', askPermissionToo);
   }
 
   /// Checks if the display overlay permission is granted and optionally asks for it.
@@ -370,11 +388,7 @@ class MethodChannelService {
   /// Returns `true` if the permission is granted Otherwise, returns `false`.
   Future<bool> getAndAskDisplayOverlayPermission(
           {bool askPermissionToo = false}) async {
-    if (!_hasNativeBridge) return false;
-    return await _methodChannel.invokeMethod(
-        'getAndAskDisplayOverlayPermission',
-        askPermissionToo,
-      );
+    return _invokeBool('getAndAskDisplayOverlayPermission', askPermissionToo);
   }
 
   /// Checks if the set exact alarm permission is granted and optionally asks for it.
@@ -382,22 +396,14 @@ class MethodChannelService {
   /// Returns `true` if the permission is granted Otherwise, returns `false`.
   Future<bool> getAndAskExactAlarmPermission(
           {bool askPermissionToo = false}) async {
-    if (!_hasNativeBridge) return false;
-    return await _methodChannel.invokeMethod(
-        'getAndAskExactAlarmPermission',
-        askPermissionToo,
-      );
+    return _invokeBool('getAndAskExactAlarmPermission', askPermissionToo);
   }
 
   /// Checks if the VPN permission is granted and optionally asks for it.
   ///
   /// This method returns `true` if the permission is granted Otherwise, it returns `false`.
   Future<bool> getAndAskVpnPermission({bool askPermissionToo = false}) async {
-    if (!_hasNativeBridge) return false;
-    return await _methodChannel.invokeMethod(
-        'getAndAskVpnPermission',
-        askPermissionToo,
-      );
+    return _invokeBool('getAndAskVpnPermission', askPermissionToo);
   }
 
   /// Checks if the ignore battery optimization permission is granted and optionally asks for it.
@@ -405,31 +411,22 @@ class MethodChannelService {
   /// Returns `true` if the permission is granted Otherwise, returns `false`.
   Future<bool> getAndAskIgnoreBatteryOptimizationPermission(
           {bool askPermissionToo = false}) async {
-    if (!_hasNativeBridge) return false;
-    return await _methodChannel.invokeMethod(
-        'getAndAskIgnoreBatteryOptimizationPermission',
-        askPermissionToo,
-      );
+    return _invokeBool(
+      'getAndAskIgnoreBatteryOptimizationPermission',
+      askPermissionToo,
+    );
   }
 
   Future<bool> getAndAskNotificationPermission(
           {bool askPermissionToo = false}) async {
-    if (!_hasNativeBridge) return false;
-    return await _methodChannel.invokeMethod(
-        'getAndAskNotificationPermission',
-        askPermissionToo,
-      );
+    return _invokeBool('getAndAskNotificationPermission', askPermissionToo);
   }
 
   /// Checks if the Do Not Disturb (DND) permission is granted and optionally asks for it.
   ///
   /// Returns `true` if the permission is granted Otherwise, returns `false`.
   Future<bool> getAndAskDndPermission({bool askPermissionToo = false}) async {
-    if (!_hasNativeBridge) return false;
-    return await _methodChannel.invokeMethod(
-        'getAndAskDndPermission',
-        askPermissionToo,
-      );
+    return _invokeBool('getAndAskDndPermission', askPermissionToo);
   }
 
   /// Checks if the Notification Access permission is granted and optionally asks for it.
@@ -437,17 +434,15 @@ class MethodChannelService {
   /// Returns `true` if the permission is granted Otherwise, returns `false`.
   Future<bool> getAndAskNotificationAccessPermission(
           {bool askPermissionToo = false}) async {
-    if (!_hasNativeBridge) return false;
-    return await _methodChannel.invokeMethod(
-        'getAndAskNotificationAccessPermission',
-        askPermissionToo,
-      );
+    return _invokeBool(
+      'getAndAskNotificationAccessPermission',
+      askPermissionToo,
+    );
   }
 
   /// Disable device Admin if active.
   Future<bool> disableDeviceAdmin() async {
-    if (!_hasNativeBridge) return false;
-    return await _methodChannel.invokeMethod('disableDeviceAdmin');
+    return _invokeBool('disableDeviceAdmin');
   }
 
   // ===========================================================================================
@@ -456,38 +451,30 @@ class MethodChannelService {
 
   /// Opens the device's Do Not Disturb (DND) settings.
   Future<bool> openDeviceDndSettings() async {
-    if (!_hasNativeBridge) return false;
-    return await _methodChannel.invokeMethod('openDeviceDndSettings');
+    return _invokeBool('openDeviceDndSettings');
   }
 
   /// Opens the device specific settings to whitelist comrade.
   Future<bool> openAutoStartSettings() async {
-    if (!_hasNativeBridge) return false;
-    return await _methodChannel.invokeMethod('openAutoStartSettings');
+    return _invokeBool('openAutoStartSettings');
   }
 
   /// Opens an app with the specified package name.
   Future<bool> openAppWithPackage(String appPackage) async {
-    if (!_hasNativeBridge) return false;
-    return await _methodChannel.invokeMethod('openAppWithPackage', appPackage);
+    return _invokeBool('openAppWithPackage', appPackage);
   }
 
   /// Opens an app with notification thread.
   Future<bool> openAppWithNotificationThread(Notification notification) async {
-    if (!_hasNativeBridge) return false;
-    return await _methodChannel.invokeMethod(
-        'openAppWithNotificationThread',
-        jsonEncode(notification),
-      );
+    return _invokeBool(
+      'openAppWithNotificationThread',
+      jsonEncode(notification),
+    );
   }
 
   /// Opens the app settings for the specified app package.
   Future<bool> openAppSettingsForPackage(String appPackage) async {
-    if (!_hasNativeBridge) return false;
-    return await _methodChannel.invokeMethod(
-        'openAppSettingsForPackage',
-        appPackage,
-      );
+    return _invokeBool('openAppSettingsForPackage', appPackage);
   }
 
   // ===========================================================================================
@@ -496,8 +483,7 @@ class MethodChannelService {
 
   /// Pop animates and close the app
   Future<bool> restartApp() async {
-    if (!_hasNativeBridge) return false;
-    return await _methodChannel.invokeMethod('restartApp');
+    return _invokeBool('restartApp');
   }
 
   /// Parses the host name from a given URL string.
@@ -505,20 +491,23 @@ class MethodChannelService {
   /// This method sends the URL to the native side and retrieves the parsed host name.
   Future<String> parseHostFromUrl(String url) async {
     if (!_hasNativeBridge) return '';
-    return await _methodChannel.invokeMethod('parseHostFromUrl', url);
+    try {
+      return await _methodChannel.invokeMethod('parseHostFromUrl', url) ?? '';
+    } catch (e) {
+      debugPrint('MethodChannelService.parseHostFromUrl error: $e');
+      return '';
+    }
   }
 
   /// Launches a specified URL in the user's preferred web browser.
   ///
   /// This method takes the URL string and sends it to the native side for launching in the browser.
   Future<bool> launchUrl(String siteUrl) async {
-    if (!_hasNativeBridge) return false;
-    return await _methodChannel.invokeMethod('launchUrl', siteUrl);
+    return _invokeBool('launchUrl', siteUrl);
   }
 
   /// Prompts the user to add Quick Focus Tile to the status bar
   Future<bool> promptForQuickTile() async {
-    if (!_hasNativeBridge) return false;
-    return await _methodChannel.invokeMethod('promptForQuickTile');
+    return _invokeBool('promptForQuickTile');
   }
 }

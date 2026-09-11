@@ -9,19 +9,17 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:comrade/config/app_colors.dart';
+import 'package:comrade/config/app_theme_tokens.dart';
+import 'package:comrade/core/enums/app_theme_mode.dart';
 import 'package:comrade/ui/transitions/default_page_transition_builder.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class AppTheme {
-  static const _kSeedColor = Colors.indigo;
-
   static final _kShimmerEffect = ShimmerEffect(
     highlightColor: Colors.white.withValues(alpha: 0.6),
     baseColor: Colors.grey.withValues(alpha: 0.3),
   );
 
-  /// Custom transition for page routes
   static const _kPageTransitionTheme = PageTransitionsTheme(
     builders: {TargetPlatform.android: DefaultPageTransitionsBuilder()},
   );
@@ -48,104 +46,149 @@ class AppTheme {
     'Yellow': Colors.yellow,
   };
 
-  static ThemeData darkTheme({Color? seedColor, required bool isAmoled}) {
-    // Use custom color scheme with premium navy/indigo palette
-    final colorScheme = ColorScheme.dark(
-      surface: isAmoled ? Colors.black : AppColors.background,
-      onSurface: AppColors.foreground,
-      primary: AppColors.primary,
-      onPrimary: Colors.white,
-      primaryContainer: AppColors.secondary,
-      onPrimaryContainer: AppColors.foreground,
-      secondary: AppColors.secondary,
-      onSecondary: AppColors.foreground,
-      secondaryContainer: AppColors.accent,
-      onSecondaryContainer: AppColors.foreground,
-      tertiary: AppColors.accent,
-      onTertiary: AppColors.foreground,
-      error: AppColors.destructive,
-      onError: Colors.white,
-      errorContainer: AppColors.destructive.withValues(alpha: 0.2),
-      onErrorContainer: AppColors.destructive,
-      outline: AppColors.primary.withValues(alpha: 0.15),
-      outlineVariant: AppColors.primary.withValues(alpha: 0.1),
-      surfaceContainerHighest: AppColors.card,
-      surfaceContainerHigh: AppColors.secondary,
-      surfaceContainer: AppColors.accent,
-      surfaceContainerLow: AppColors.secondary,
-      onSurfaceVariant: AppColors.mutedForeground,
-      scrim: Colors.black,
-      shadow: Colors.black,
-      inverseSurface: AppColors.foreground,
-      onInverseSurface: AppColors.background,
-      inversePrimary: AppColors.primary,
+  /// Resolve the active [ThemeData] for the selected app theme mode.
+  static ThemeData resolve({
+    required AppThemeMode mode,
+    required Brightness platformBrightness,
+    required bool isAmoled,
+    Color? seedColor,
+    bool useDynamicColors = false,
+  }) {
+    final tokens = AppThemeTokens.forMode(
+      mode,
+      platformBrightness: platformBrightness,
+      amoledDark: isAmoled && !mode.isMoodTheme,
     );
+
+    // Accent / dynamic color only applies to classic system/light/dark.
+    final seed = mode.isMoodTheme
+        ? null
+        : (useDynamicColors ? seedColor : seedColor);
+
+    return fromTokens(
+      tokens: tokens,
+      mode: mode,
+      seedOverride: mode.isMoodTheme ? null : seed,
+    );
+  }
+
+  static ThemeData darkTheme({Color? seedColor, required bool isAmoled}) {
+    final tokens = isAmoled
+        ? AppThemeTokens.classicDark
+            .copyWith(background: Colors.black, card: const Color(0xFF0A0A0A))
+        : AppThemeTokens.classicDark;
+    return fromTokens(
+      tokens: tokens,
+      mode: AppThemeMode.dark,
+      seedOverride: seedColor,
+    );
+  }
+
+  static ThemeData lightTheme({Color? seedColor}) {
+    if (seedColor != null) {
+      final scheme = ColorScheme.fromSeed(
+        seedColor: seedColor,
+        brightness: Brightness.light,
+      );
+      return _themeFromScheme(
+        scheme: scheme,
+        tokens: AppThemeTokens.classicLight.copyWith(
+          primary: scheme.primary,
+          background: scheme.surface,
+          card: scheme.surfaceContainerHighest,
+          foreground: scheme.onSurface,
+          mutedForeground: scheme.onSurfaceVariant,
+          secondary: scheme.secondaryContainer,
+          accent: scheme.tertiaryContainer,
+          inputBackground: scheme.surfaceContainerHighest,
+        ),
+        mode: AppThemeMode.light,
+      );
+    }
+    return fromTokens(
+      tokens: AppThemeTokens.classicLight,
+      mode: AppThemeMode.light,
+    );
+  }
+
+  static ThemeData fromTokens({
+    required AppThemeTokens tokens,
+    required AppThemeMode mode,
+    Color? seedOverride,
+  }) {
+    final scheme = tokens.toColorScheme(seedOverride: seedOverride);
+    return _themeFromScheme(scheme: scheme, tokens: tokens, mode: mode);
+  }
+
+  static ThemeData _themeFromScheme({
+    required ColorScheme scheme,
+    required AppThemeTokens tokens,
+    required AppThemeMode mode,
+  }) {
+    final isDark = scheme.brightness == Brightness.dark;
 
     return ThemeData(
       useMaterial3: true,
-      brightness: Brightness.dark,
-      colorScheme: colorScheme,
-      scaffoldBackgroundColor: isAmoled ? Colors.black : AppColors.background,
-      
-      // Card Theme
+      brightness: scheme.brightness,
+      colorScheme: scheme,
+      scaffoldBackgroundColor: tokens.background,
       cardTheme: CardThemeData(
         elevation: 0,
-        color: AppColors.card,
+        color: tokens.card,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
         margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
       ),
-
-      // Typography (Base Layer)
-      textTheme: const TextTheme(
+      textTheme: TextTheme(
         displayLarge: TextStyle(
           fontSize: 24,
           fontWeight: FontWeight.w500,
-          color: AppColors.foreground,
+          color: tokens.foreground,
           letterSpacing: -0.5,
         ),
         displayMedium: TextStyle(
           fontSize: 22,
           fontWeight: FontWeight.w500,
-          color: AppColors.foreground,
+          color: tokens.foreground,
           letterSpacing: -0.5,
         ),
         titleLarge: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.w500,
-          color: AppColors.foreground,
+          color: tokens.foreground,
           letterSpacing: -0.3,
         ),
         titleMedium: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.w600,
-          color: AppColors.foreground,
+          color: tokens.foreground,
           letterSpacing: -0.3,
         ),
         bodyLarge: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w400,
-          color: AppColors.foreground,
+          color: tokens.foreground,
         ),
         bodyMedium: TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w400,
-          color: AppColors.foreground,
+          color: tokens.foreground,
         ),
         labelLarge: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w500,
-          color: AppColors.foreground,
+          color: tokens.foreground,
         ),
         bodySmall: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w400,
-          color: AppColors.mutedForeground,
+          color: tokens.mutedForeground,
         ),
-      ).apply(bodyColor: AppColors.foreground, displayColor: AppColors.foreground),
-
-      // Button Themes
+      ).apply(
+        bodyColor: tokens.foreground,
+        displayColor: tokens.foreground,
+      ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           elevation: 0,
@@ -153,8 +196,8 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          backgroundColor: AppColors.primary,
-          foregroundColor: Colors.white,
+          backgroundColor: tokens.primary,
+          foregroundColor: tokens.onPrimary,
         ),
       ),
       filledButtonTheme: FilledButtonThemeData(
@@ -164,116 +207,97 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          backgroundColor: AppColors.primary,
-          foregroundColor: Colors.white,
+          backgroundColor: tokens.primary,
+          foregroundColor: tokens.onPrimary,
         ),
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: AppColors.primary,
+          foregroundColor: tokens.primary,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
         ),
       ),
-
-      // Input Decoration (Input Layer)
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.inputBackground,
+        fillColor: tokens.inputBackground,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(
-            color: AppColors.primary.withValues(alpha: 0.1),
-            width: 1,
-          ),
+          borderSide: BorderSide(color: tokens.outline, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(
-            color: AppColors.primary.withValues(alpha: 0.5),
+            color: tokens.primary.withValues(alpha: 0.7),
             width: 2,
           ),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(
-            color: AppColors.destructive.withValues(alpha: 0.5),
+            color: tokens.destructive.withValues(alpha: 0.5),
             width: 1,
           ),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(
-            color: AppColors.destructive,
-            width: 2,
-          ),
+          borderSide: BorderSide(color: tokens.destructive, width: 2),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         hintStyle: TextStyle(
-          color: AppColors.mutedForeground,
+          color: tokens.mutedForeground,
           fontSize: 16,
         ),
       ),
-
-      // App Bar Theme
       appBarTheme: AppBarTheme(
         elevation: 0,
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
-        foregroundColor: AppColors.foreground,
-        titleTextStyle: const TextStyle(
+        foregroundColor: tokens.foreground,
+        titleTextStyle: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.w600,
-          color: AppColors.foreground,
+          color: tokens.foreground,
           letterSpacing: -0.3,
         ),
       ),
-
-      // Navigation Bar Theme
       navigationBarTheme: NavigationBarThemeData(
         elevation: 0,
-        backgroundColor: AppColors.card,
-        indicatorColor: AppColors.primary.withValues(alpha: 0.2),
+        backgroundColor: tokens.card,
+        indicatorColor: tokens.primary.withValues(alpha: 0.2),
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return const TextStyle(
+            return TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: AppColors.primary,
+              color: tokens.primary,
             );
           }
           return TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w400,
-            color: AppColors.mutedForeground,
+            color: tokens.mutedForeground,
           );
         }),
         iconTheme: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return const IconThemeData(
-              color: AppColors.primary,
-              size: 24,
-            );
+            return IconThemeData(color: tokens.primary, size: 24);
           }
-          return IconThemeData(
-            color: AppColors.mutedForeground,
-            size: 24,
-          );
+          return IconThemeData(color: tokens.mutedForeground, size: 24);
         }),
       ),
-
-      // Bottom Navigation Bar Theme
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         elevation: 0,
-        backgroundColor: AppColors.card,
-        selectedItemColor: AppColors.primary,
-        unselectedItemColor: AppColors.mutedForeground,
+        backgroundColor: tokens.card,
+        selectedItemColor: tokens.primary,
+        unselectedItemColor: tokens.mutedForeground,
         selectedLabelStyle: const TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w600,
@@ -281,86 +305,77 @@ class AppTheme {
         unselectedLabelStyle: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w400,
-          color: AppColors.mutedForeground,
+          color: tokens.mutedForeground,
         ),
       ),
-
-      // Dialog Theme
       dialogTheme: DialogThemeData(
-        backgroundColor: AppColors.card,
+        backgroundColor: tokens.card,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        titleTextStyle: const TextStyle(
+        titleTextStyle: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.w600,
-          color: AppColors.foreground,
+          color: tokens.foreground,
         ),
-        contentTextStyle: const TextStyle(
+        contentTextStyle: TextStyle(
           fontSize: 16,
-          color: AppColors.foreground,
+          color: tokens.foreground,
         ),
       ),
-
-      // Divider Theme
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: tokens.card,
+        modalBackgroundColor: tokens.card,
+        surfaceTintColor: Colors.transparent,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+      ),
       dividerTheme: DividerThemeData(
-        color: AppColors.primary.withValues(alpha: 0.1),
+        color: tokens.outline,
         thickness: 1,
         space: 1,
       ),
-
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: tokens.primary,
+        linearTrackColor: tokens.secondary,
+        circularTrackColor: tokens.secondary,
+      ),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: tokens.secondary,
+        contentTextStyle: TextStyle(color: tokens.foreground),
+        actionTextColor: tokens.primary,
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: tokens.secondary,
+        selectedColor: tokens.primary.withValues(alpha: 0.25),
+        labelStyle: TextStyle(color: tokens.foreground),
+        secondaryLabelStyle: TextStyle(color: tokens.onPrimary),
+        side: BorderSide(color: tokens.outline),
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) return tokens.onPrimary;
+          return tokens.mutedForeground;
+        }),
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) return tokens.primary;
+          return tokens.secondary;
+        }),
+      ),
+      iconTheme: IconThemeData(color: tokens.foreground),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: tokens.primary,
+        foregroundColor: tokens.onPrimary,
+      ),
       pageTransitionsTheme: _kPageTransitionTheme,
-      extensions: [SkeletonizerConfigData.dark(effect: _kShimmerEffect)],
-    );
-  }
-
-  static ThemeData lightTheme({Color? seedColor}) {
-    final colorScheme = ColorScheme.fromSeed(
-      seedColor: seedColor ?? _kSeedColor,
-      brightness: Brightness.light,
-    );
-
-    return ThemeData.from(
-      useMaterial3: true,
-      colorScheme: colorScheme,
-    ).copyWith(
-      pageTransitionsTheme: _kPageTransitionTheme,
-      cardTheme: CardThemeData(
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        color: colorScheme.surfaceContainerHighest,
-        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-        ),
-      ),
-      filledButtonTheme: FilledButtonThemeData(
-        style: FilledButton.styleFrom(
-          elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-        ),
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide.none,
-        ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      ),
-      extensions: [SkeletonizerConfigData(effect: _kShimmerEffect)],
+      extensions: [
+        isDark
+            ? SkeletonizerConfigData.dark(effect: _kShimmerEffect)
+            : SkeletonizerConfigData(effect: _kShimmerEffect),
+        ComradeThemeExtension(tokens: tokens, mode: mode),
+      ],
     );
   }
 }

@@ -66,13 +66,51 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSCameraUsageDescription</key>
-	<string>This app requires access to the camera to capture photos.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>This app requires access to the microphone for audio recording.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app uses your location to provide location-based features.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>This app needs access to the photo library to save images.</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>tel</string>
+		<string>sms</string>
+		<string>mailto</string>
+		<string>http</string>
+		<string>https</string>
+		<string>photos-redirect</string>
+		<string>music</string>
+		<string>itms-apps</string>
+		<string>maps</string>
+		<string>calshow</string>
+		<string>clock-worldclock</string>
+		<string>facetime</string>
+		<string>instagram</string>
+		<string>whatsapp</string>
+		<string>tg</string>
+		<string>snapchat</string>
+		<string>youtube</string>
+		<string>fb</string>
+		<string>fb-messenger</string>
+		<string>twitter</string>
+		<string>tiktok</string>
+		<string>nflx</string>
+		<string>spotify</string>
+		<string>discord</string>
+		<string>linkedin</string>
+		<string>pinterest</string>
+		<string>twitch</string>
+		<string>zoomus</string>
+		<string>slack</string>
+		<string>sgnl</string>
+		<string>uber</string>
+		<string>googlechrome</string>
+		<string>googlegmail</string>
+		<string>comgooglemaps</string>
+		<string>reddit</string>
+		<string>amazon</string>
+		<string>aiv</string>
+		<string>youtubemusic</string>
+		<string>googlephotos</string>
+		<string>capcut</string>
+		<string>threads</string>
+		<string>barcelona</string>
+		<string>googleyoutube</string>
+	</array>
 </dict>
 </plist>

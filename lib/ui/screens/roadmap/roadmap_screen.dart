@@ -10,7 +10,6 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:comrade/core/extensions/ext_build_context.dart';
 import 'package:comrade/core/extensions/ext_num.dart';
 import 'package:comrade/ui/common/content_section_header.dart';
 import 'package:comrade/ui/common/rounded_container.dart';

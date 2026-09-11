@@ -9,6 +9,7 @@
  */
 
 
+import 'package:flutter/foundation.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:comrade/core/database/app_database.dart';
 
@@ -41,7 +42,8 @@ class DriftDbService {
         driftWorker: Uri.parse('drift_worker.js'),
         onResult: (result) {
           if (result.missingFeatures.isNotEmpty) {
-            print('Using fallback web database because of missing features: ${result.missingFeatures}');
+            debugPrint(
+                'Using fallback web database because of missing features: ${result.missingFeatures}');
           }
         },
       ),

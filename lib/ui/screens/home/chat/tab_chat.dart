@@ -1,27 +1,81 @@
 import 'package:flutter/material.dart';
-import 'package:comrade/core/services/chat_engine.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:comrade/core/enums/app_theme_mode.dart';
+import 'package:comrade/core/services/chat/chat_agent.dart';
+import 'package:comrade/core/services/chat/chat_tool_base.dart';
+import 'package:comrade/core/utils/platform_features.dart';
+import 'package:comrade/models/app_info.dart';
+import 'package:comrade/providers/apps/apps_info_provider.dart';
+import 'package:comrade/providers/focus/focus_mode_provider.dart';
+import 'package:comrade/providers/restrictions/apps_restrictions_provider.dart';
+import 'package:comrade/providers/system/comrade_settings_provider.dart';
+import 'package:comrade/providers/system/permissions_provider.dart';
 
-class TabChat extends StatefulWidget {
+class TabChat extends ConsumerStatefulWidget {
   const TabChat({super.key});
 
   @override
-  State<TabChat> createState() => _TabChatState();
+  ConsumerState<TabChat> createState() => _TabChatState();
 }
 
-class _TabChatState extends State<TabChat> {
+class _TabChatState extends ConsumerState<TabChat> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  final ChatEngine _chatEngine = ChatEngine();
+  final ChatAgent _agent = ChatAgent();
 
-  bool _isTyping = false;
+  bool _isBusy = false;
+  String? _statusLabel;
+  bool _historyLoaded = false;
 
-  final List<ChatMessage> _messages = [
-    ChatMessage(
-      text: "Hello! I'm Comrade. How can I help you?",
-      isUser: false,
-      timestamp: DateTime.now(),
-    ),
-  ];
+  final List<ChatMessage> _messages = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadHistory();
+  }
+
+  Future<void> _loadHistory() async {
+    try {
+      final userId = await _agent.memory.resolveUserId();
+      final rows =
+          await _agent.memory.loadRecentMessages(userId: userId, limit: 50);
+      if (!mounted) return;
+      setState(() {
+        if (rows.isEmpty) {
+          _messages.add(
+            ChatMessage(
+              text:
+                  "Hello! I'm Comrade. I remember our chats and can change themes or limit apps when you ask.",
+              isUser: false,
+              timestamp: DateTime.now(),
+            ),
+          );
+        } else {
+          _messages.addAll(rows.map((r) => ChatMessage(
+                text: r.content,
+                isUser: r.role == 'user',
+                timestamp: r.createdAt,
+              )));
+        }
+        _historyLoaded = true;
+      });
+      _scrollToBottom();
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _messages.add(
+          ChatMessage(
+            text: "Hello! I'm Comrade. How can I help you?",
+            isUser: false,
+            timestamp: DateTime.now(),
+          ),
+        );
+        _historyLoaded = true;
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -30,9 +84,51 @@ class _TabChatState extends State<TabChat> {
     super.dispose();
   }
 
+  ChatToolContext _buildToolContext() {
+    return ChatToolContext(
+      changeThemeMode: (AppThemeMode mode) async {
+        ref.read(comradeSettingsProvider.notifier).changeThemeMode(mode);
+      },
+      currentThemeMode: () => ref.read(comradeSettingsProvider).themeMode,
+      updateAppTimer: (package, timerSec) async {
+        await ref
+            .read(appsRestrictionsProvider.notifier)
+            .updateAppTimer(package, timerSec);
+      },
+      resolveInstalledApps: () async {
+        final async = ref.read(appsInfoProvider);
+        return async.value ?? <String, AppInfo>{};
+      },
+      isAndroid: PlatformFeatures.isAndroid,
+      openSystemSettings: () async {
+        await openAppSettings();
+      },
+      hasUsagePermission: () async {
+        final perm = ref.read(permissionProvider);
+        return perm.haveUsageAccessPermission;
+      },
+      getAppTimer: (package) {
+        final restrictions = ref.read(appsRestrictionsProvider);
+        return restrictions[package]?.timerSec ?? 0;
+      },
+      startFocusSession: () async {
+        await ref.read(focusModeProvider.notifier).startNewSession();
+      },
+      stopFocusSession: () async {
+        await ref.read(focusModeProvider.notifier).giveUpOrFinishFocusSession(
+              isTheSessionSuccessful: true,
+              isFiniteSession: false,
+            );
+      },
+      isFocusSessionActive: () {
+        return ref.read(focusModeProvider).activeSession.value != null;
+      },
+    );
+  }
+
   Future<void> _sendMessage() async {
     final text = _messageController.text.trim();
-    if (text.isEmpty || _isTyping) return;
+    if (text.isEmpty || _isBusy) return;
 
     setState(() {
       _messages.add(ChatMessage(
@@ -40,22 +136,33 @@ class _TabChatState extends State<TabChat> {
         isUser: true,
         timestamp: DateTime.now(),
       ));
-      _isTyping = true;
+      _isBusy = true;
+      _statusLabel = 'Understanding…';
     });
 
     _messageController.clear();
     _scrollToBottom();
 
-    final response = await _chatEngine.processMessage(text, _messages);
+    final response = await _agent.handle(
+      message: text,
+      toolContext: _buildToolContext(),
+      onProgress: (p) {
+        if (!mounted) return;
+        setState(() => _statusLabel = p.label ?? _statusLabel);
+      },
+    );
 
     if (!mounted) return;
 
     setState(() {
-      _isTyping = false;
+      _isBusy = false;
+      _statusLabel = null;
       _messages.add(ChatMessage(
-        text: response,
+        text: response.text,
         isUser: false,
         timestamp: DateTime.now(),
+        actionSucceeded: response.actionSucceeded,
+        toolName: response.toolName,
       ));
     });
 
@@ -79,37 +186,37 @@ class _TabChatState extends State<TabChat> {
       body: SafeArea(
         child: Column(
           children: [
+            if (!_historyLoaded)
+              const LinearProgressIndicator(minHeight: 2)
+            else
+              const SizedBox(height: 2),
             Expanded(
               child: ListView.builder(
                 controller: _scrollController,
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                itemCount: _messages.length + (_isTyping ? 1 : 0),
+                itemCount: _messages.length + (_isBusy ? 1 : 0),
                 itemBuilder: (context, index) {
                   if (index < _messages.length) {
                     return _ChatBubble(message: _messages[index]);
-                  } else {
-                    return const _TypingIndicator();
                   }
+                  return _TypingIndicator(label: _statusLabel ?? 'Working…');
                 },
               ),
             ),
             Container(
-              padding: EdgeInsets.only(
-                left: 12,
-                right: 12,
-                top: 8,
-                bottom: MediaQuery.of(context).viewInsets.bottom + 8,
-              ),
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
-                border: const Border(
-                  top: BorderSide(color: Colors.black12),
+                border: Border(
+                  top: BorderSide(
+                    color: Theme.of(context).colorScheme.outlineVariant,
+                  ),
                 ),
               ),
               child: _ChatInput(
                 controller: _messageController,
                 onSend: _sendMessage,
-                isEnabled: !_isTyping,
+                isEnabled: !_isBusy && _historyLoaded,
               ),
             ),
           ],
@@ -119,21 +226,21 @@ class _TabChatState extends State<TabChat> {
   }
 }
 
-// ---------------- MODEL ----------------
-
 class ChatMessage {
   final String text;
   final bool isUser;
   final DateTime timestamp;
+  final bool? actionSucceeded;
+  final String? toolName;
 
   ChatMessage({
     required this.text,
     required this.isUser,
     required this.timestamp,
+    this.actionSucceeded,
+    this.toolName,
   });
 }
-
-// ---------------- CHAT BUBBLE ----------------
 
 class _ChatBubble extends StatelessWidget {
   const _ChatBubble({required this.message});
@@ -142,6 +249,7 @@ class _ChatBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isAction = message.actionSucceeded != null;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -153,16 +261,59 @@ class _ChatBubble extends StatelessWidget {
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: message.isUser
-                ? theme.colorScheme.primaryContainer
-                : theme.colorScheme.surfaceContainerHighest,
+                ? theme.colorScheme.primary
+                : isAction
+                    ? (message.actionSucceeded == true
+                        ? theme.colorScheme.tertiaryContainer
+                        : theme.colorScheme.errorContainer)
+                    : theme.colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(16),
           ),
-          child: Text(
-            message.text,
-            style: TextStyle(
-              color: theme.colorScheme.onSurface,
-              fontSize: 15,
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (isAction && message.toolName != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        message.actionSucceeded == true
+                            ? Icons.check_circle_rounded
+                            : Icons.cancel_rounded,
+                        size: 14,
+                        color: message.actionSucceeded == true
+                            ? theme.colorScheme.onTertiaryContainer
+                            : theme.colorScheme.onErrorContainer,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        message.actionSucceeded == true
+                            ? 'Action completed'
+                            : 'Action failed',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: message.actionSucceeded == true
+                              ? theme.colorScheme.onTertiaryContainer
+                              : theme.colorScheme.onErrorContainer,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              Text(
+                message.text,
+                style: TextStyle(
+                  color: message.isUser
+                      ? theme.colorScheme.onPrimary
+                      : isAction && message.actionSucceeded == false
+                          ? theme.colorScheme.onErrorContainer
+                          : theme.colorScheme.onSurface,
+                  fontSize: 15,
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -170,25 +321,28 @@ class _ChatBubble extends StatelessWidget {
   }
 }
 
-// ---------------- TYPING ----------------
-
 class _TypingIndicator extends StatelessWidget {
-  const _TypingIndicator();
+  const _TypingIndicator({required this.label});
+  final String label;
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.all(12),
+    return Padding(
+      padding: const EdgeInsets.all(12),
       child: Row(
         children: [
-          Text("Typing..."),
+          const SizedBox(
+            width: 16,
+            height: 16,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
+          const SizedBox(width: 10),
+          Text(label),
         ],
       ),
     );
   }
 }
-
-// ---------------- INPUT ----------------
 
 class _ChatInput extends StatelessWidget {
   const _ChatInput({
@@ -214,12 +368,15 @@ class _ChatInput extends StatelessWidget {
             ),
             child: TextField(
               controller: controller,
+              enabled: isEnabled,
               maxLines: null,
               decoration: const InputDecoration(
                 hintText: "Message Comrade...",
                 border: InputBorder.none,
               ),
-              onSubmitted: (_) => onSend(),
+              onSubmitted: (_) {
+                if (isEnabled) onSend();
+              },
             ),
           ),
         ),
@@ -230,7 +387,10 @@ class _ChatInput extends StatelessWidget {
             shape: BoxShape.circle,
           ),
           child: IconButton(
-            icon: const Icon(Icons.send, color: Colors.white),
+            icon: Icon(
+              Icons.send,
+              color: Theme.of(context).colorScheme.onPrimary,
+            ),
             onPressed: isEnabled ? onSend : null,
           ),
         ),

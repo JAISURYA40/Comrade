@@ -1,11 +1,9 @@
 import Flutter
 import UIKit
 import UserNotifications
-import SwiftUI
-import FamilyControls
-import ManagedSettings
 
-/// Native iOS implementation of the same method channel used on Android.
+/// Public-API iOS bridge for the same method channel Android uses.
+/// Does not use Family Controls, Managed Settings, or private APIs.
 final class FgMethodChannelHandler: NSObject, FlutterPlugin {
   static let channelName = "com.comrade.android.methodchannel.fg"
 
@@ -16,8 +14,9 @@ final class FgMethodChannelHandler: NSObject, FlutterPlugin {
   private let restrictionsKey = "comrade.ios.appRestrictions"
   private let wellbeingKey = "comrade.ios.wellbeing"
   private let bedtimeKey = "comrade.ios.bedtime"
-  private let familyUnavailableKey = "comrade.ios.familyControlsUnavailable"
   private let pendingOpenPackageKey = "comrade.ios.pendingOpenPackage"
+  private let focusUntilKey = "comrade.ios.focusUntil"
+  private let emergencyUntilKey = "comrade.ios.emergencyUntil"
 
   private var pendingOpenStartedAt: Date?
 
@@ -55,7 +54,7 @@ final class FgMethodChannelHandler: NSObject, FlutterPlugin {
 
   @objc private func appBecameActive() {
     finalizePendingOpenUsage()
-    applyBedtimeIfNeeded()
+    remindIfLimitsActive()
   }
 
   @objc private func appWillResignActive() {
@@ -83,25 +82,23 @@ final class FgMethodChannelHandler: NSObject, FlutterPlugin {
       result("[]")
     case "clearNativeCrashLogs":
       result(true)
+    case "presentScreenTimePicker":
+      result(false)
     case "updateAppRestrictions":
       defaults.set(call.arguments as? String, forKey: restrictionsKey)
-      applyManagedSettings()
       result(true)
     case "updateRestrictionsGroups":
       defaults.set(call.arguments as? String, forKey: "comrade.ios.restrictionGroups")
-      applyManagedSettings()
       result(true)
     case "updateInternetBlockedApps":
       defaults.set(call.arguments as? String, forKey: "comrade.ios.internetBlocked")
-      applyManagedSettings()
       result(true)
     case "updateWellBeingSettings":
       defaults.set(call.arguments as? String, forKey: wellbeingKey)
-      applyManagedSettings()
       result(true)
     case "updateBedtimeSchedule":
       defaults.set(call.arguments as? String, forKey: bedtimeKey)
-      applyBedtimeIfNeeded()
+      remindIfLimitsActive()
       result(true)
     case "updateNotificationSettings":
       defaults.set(call.arguments as? String, forKey: "comrade.ios.notificationSettings")
@@ -113,36 +110,25 @@ final class FgMethodChannelHandler: NSObject, FlutterPlugin {
       finishFocusSession()
       result(true)
     case "activeEmergencyPause":
-      ManagedSettingsStore().clearAllSettings()
-      scheduleNotification(
-        title: "Comrade",
-        body: "Emergency pause is active. Restrictions will resume when you turn them back on.",
-        after: 1
-      )
+      beginEmergencyPause()
       result(true)
     case "getAndAskNotificationPermission":
       notificationPermission(ask: boolArg(call), result: result)
-    case "getAndAskUsageAccessPermission":
-      screenTimePermission(ask: boolArg(call), presentPicker: false, result: result)
-    case "getAndAskAccessibilityPermission":
-      screenTimePermission(ask: boolArg(call), presentPicker: boolArg(call), result: result)
-    case "getAndAskVpnPermission":
-      screenTimePermission(ask: boolArg(call), presentPicker: false, result: result)
-    case "getAndAskAdminPermission":
-      screenTimePermission(ask: boolArg(call), presentPicker: false, result: result)
-    case "getAndAskDisplayOverlayPermission":
+    case "getAndAskUsageAccessPermission",
+         "getAndAskAccessibilityPermission",
+         "getAndAskVpnPermission",
+         "getAndAskDisplayOverlayPermission",
+         "getAndAskExactAlarmPermission",
+         "getAndAskIgnoreBatteryOptimizationPermission",
+         "getAndAskDndPermission":
       result(true)
-    case "getAndAskExactAlarmPermission":
-      result(true)
-    case "getAndAskIgnoreBatteryOptimizationPermission":
-      result(true)
-    case "getAndAskDndPermission":
-      dndPermission(ask: boolArg(call), result: result)
-    case "getAndAskNotificationAccessPermission":
-      notificationPermission(ask: boolArg(call), result: result)
+    case "getAndAskAdminPermission",
+         "getAndAskNotificationAccessPermission":
+      result(false)
     case "disableDeviceAdmin":
       result(true)
-    case "openDeviceDndSettings":
+    case "openDeviceDndSettings",
+         "openAppSettingsForPackage":
       openSettings()
       result(true)
     case "openAutoStartSettings":
@@ -151,11 +137,7 @@ final class FgMethodChannelHandler: NSObject, FlutterPlugin {
       result(openApp(package: call.arguments as? String ?? ""))
     case "openAppWithNotificationThread":
       result(true)
-    case "openAppSettingsForPackage":
-      openSettings()
-      result(true)
     case "restartApp":
-      DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { exit(0) }
       result(true)
     case "parseHostFromUrl":
       result(Self.host(from: call.arguments as? String ?? ""))
@@ -164,11 +146,9 @@ final class FgMethodChannelHandler: NSObject, FlutterPlugin {
     case "promptForQuickTile":
       result(false)
     default:
-      result(FlutterMethodNotImplemented)
+      result(false)
     }
   }
-
-  // MARK: - Device
 
   private func deviceInfo() -> [String: Any] {
     let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
@@ -181,8 +161,6 @@ final class FgMethodChannelHandler: NSObject, FlutterPlugin {
     ]
   }
 
-  // MARK: - Permissions
-
   private func boolArg(_ call: FlutterMethodCall) -> Bool {
     if let value = call.arguments as? Bool { return value }
     return false
@@ -194,92 +172,58 @@ final class FgMethodChannelHandler: NSObject, FlutterPlugin {
       let granted = settings.authorizationStatus == .authorized
         || settings.authorizationStatus == .provisional
         || settings.authorizationStatus == .ephemeral
-      if ask && !granted {
+      if !ask {
+        DispatchQueue.main.async { result(granted) }
+        return
+      }
+      if settings.authorizationStatus == .notDetermined {
         center.requestAuthorization(options: [.alert, .badge, .sound]) { ok, _ in
           DispatchQueue.main.async { result(ok) }
         }
-      } else {
-        DispatchQueue.main.async { result(granted) }
-      }
-    }
-  }
-
-  private func screenTimePermission(
-    ask: Bool,
-    presentPicker: Bool,
-    result: @escaping FlutterResult
-  ) {
-    if defaults.bool(forKey: familyUnavailableKey) {
-      result(true)
-      return
-    }
-    if #available(iOS 16.0, *) {
-      if !ask {
-        result(AuthorizationCenter.shared.authorizationStatus == .approved)
         return
       }
-      Task {
-        do {
-          try await AuthorizationCenter.shared.requestAuthorization(for: .individual)
-          let ok = AuthorizationCenter.shared.authorizationStatus == .approved
-          if ok && presentPicker {
-            await MainActor.run { self.presentFamilyPicker() }
-          }
-          await MainActor.run { result(ok) }
-        } catch {
-          self.defaults.set(true, forKey: self.familyUnavailableKey)
-          await MainActor.run { result(true) }
+      if !granted {
+        DispatchQueue.main.async {
+          self.openSettings()
+          result(false)
         }
+        return
       }
-    } else {
-      result(true)
+      DispatchQueue.main.async { result(true) }
     }
   }
-
-  private func dndPermission(ask: Bool, result: @escaping FlutterResult) {
-    if ask { openSettings() }
-    result(true)
-  }
-
-  @available(iOS 16.0, *)
-  private func presentFamilyPicker() {
-    guard let root = Self.keyWindow()?.rootViewController else { return }
-    let hosting = UIHostingController(rootView: FamilyAppPickerSheet { selection in
-      IosScreenTimeStore.shared.save(selection)
-      self.applyManagedSettings()
-    })
-    hosting.modalPresentationStyle = .formSheet
-    root.present(hosting, animated: true)
-  }
-
-  // MARK: - Apps / URLs
 
   private func openApp(package: String) -> Bool {
     incrementLaunchCount(package)
     defaults.set(package, forKey: pendingOpenPackageKey)
     pendingOpenStartedAt = Date()
 
+    if package == "com.apple.Preferences" {
+      openSettings()
+      return true
+    }
+
     if let timer = timerSeconds(for: package), timer > 0 {
       scheduleNotification(
-        title: "Time limit reached",
+        title: "Time limit reminder",
         body: "Your Comrade timer for this app is up.",
         after: TimeInterval(timer)
       )
     }
 
     if let scheme = IosAppCatalog.scheme(for: package),
-       let url = URL(string: scheme) {
-      if UIApplication.shared.canOpenURL(url) {
-        UIApplication.shared.open(url)
-        return true
-      }
+       let url = URL(string: scheme),
+       UIApplication.shared.canOpenURL(url) {
+      UIApplication.shared.open(url)
+      return true
     }
-    return openUrlString("https://apps.apple.com")
+    return false
   }
 
   private func openUrlString(_ raw: String) -> Bool {
-    guard let url = URL(string: raw) else { return false }
-    guard UIApplication.shared.canOpenURL(url) else { return false }
+    guard let url = URL(string: raw), UIApplication.shared.canOpenURL(url) else {
+      return false
+    }
     UIApplication.shared.open(url)
     return true
   }
@@ -296,8 +240,6 @@ final class FgMethodChannelHandler: NSObject, FlutterPlugin {
     }
     return URL(string: value)?.host ?? ""
   }
-
-  // MARK: - Usage
 
   private func incrementLaunchCount(_ package: String) {
     var counts = defaults.dictionary(forKey: launchCountKey) as? [String: Int] ?? [:]
@@ -355,99 +297,73 @@ final class FgMethodChannelHandler: NSObject, FlutterPlugin {
   private func timerSeconds(for package: String) -> Int? {
     guard let raw = defaults.string(forKey: restrictionsKey),
           let data = raw.data(using: .utf8),
-          let json = try? JSONSerialization.jsonObject(with: data) else { return nil }
-    if let list = json as? [[String: Any]] {
-      return list.first { $0["appPackage"] as? String == package }?["timerSec"] as? Int
+          let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else {
+      return nil
     }
-    return nil
+    return json.first { $0["appPackage"] as? String == package }?["timerSec"] as? Int
   }
 
-  // MARK: - Screen Time / Managed Settings
-
-  private func applyManagedSettings() {
-    guard #available(iOS 16.0, *) else { return }
-    guard AuthorizationCenter.shared.authorizationStatus == .approved else { return }
-    let store = ManagedSettingsStore()
-    let selection = IosScreenTimeStore.shared.selection
-
-    let restrictionsEmpty = (defaults.string(forKey: restrictionsKey) ?? "[]").count <= 2
-    if restrictionsEmpty && selection.applicationTokens.isEmpty {
-      store.shield.applications = nil
-    } else if !selection.applicationTokens.isEmpty {
-      store.shield.applications = selection.applicationTokens
-      store.shield.applicationCategories = .specific(selection.categoryTokens)
-    }
-
-    if let raw = defaults.string(forKey: wellbeingKey),
-       let data = raw.data(using: .utf8),
-       let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
-      let blocked = json["blockedWebsites"] as? [String] ?? []
-      let nsfw = json["nsfwWebsites"] as? [String] ?? []
-      let blockAdult = json["blockNsfwSites"] as? Bool ?? false
-      let domains = Set((blocked + nsfw).map { WebDomain(domain: $0) })
-      if blockAdult {
-        store.webContent.blockedByFilter = .auto()
-      } else if !domains.isEmpty {
-        store.webContent.blockedByFilter = .specific(domains)
-      } else {
-        store.webContent.blockedByFilter = nil
-      }
-    }
-  }
-
-  private func applyBedtimeIfNeeded() {
-    guard let raw = defaults.string(forKey: bedtimeKey),
-          let data = raw.data(using: .utf8),
-          let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-          (json["isScheduleOn"] as? Bool) == true else { return }
-
-    applyManagedSettings()
+  private func beginEmergencyPause() {
+    defaults.set(Date().timeIntervalSince1970 + 5 * 60, forKey: emergencyUntilKey)
     scheduleNotification(
-      title: "Bedtime",
-      body: "Comrade bedtime schedule is on. Distracting apps stay limited until morning.",
+      title: "Comrade",
+      body: "Emergency pause is active. Reminders will resume when you turn limits back on.",
       after: 1
     )
   }
 
   private func startFocusSession(_ json: String?) {
-    applyManagedSettings()
     var duration = 25 * 60
     if let raw = json, let data = raw.data(using: .utf8),
        let map = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
       duration = map["durationSeconds"] as? Int ?? duration
     }
+    defaults.set(Date().timeIntervalSince1970 + Double(max(1, duration)), forKey: focusUntilKey)
     scheduleNotification(
       title: "Focus session complete",
       body: "Nice work. Your Comrade focus session has finished.",
-      after: TimeInterval(max(1, duration))
+      after: TimeInterval(max(1, duration)),
+      identifier: "comrade.focus"
     )
   }
 
   private func finishFocusSession() {
+    defaults.removeObject(forKey: focusUntilKey)
     UNUserNotificationCenter.current().removePendingNotificationRequests(
       withIdentifiers: ["comrade.focus"]
     )
   }
 
-  private func scheduleNotification(title: String, body: String, after: TimeInterval) {
+  private func remindIfLimitsActive() {
+    guard let raw = defaults.string(forKey: bedtimeKey),
+          let data = raw.data(using: .utf8),
+          let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+          (json["isScheduleOn"] as? Bool) == true else { return }
+    scheduleNotification(
+      title: "Bedtime",
+      body: "Your Comrade bedtime schedule is on. Stay off distracting apps until morning.",
+      after: 1,
+      identifier: "comrade.bedtime.active"
+    )
+  }
+
+  private func scheduleNotification(
+    title: String,
+    body: String,
+    after: TimeInterval,
+    identifier: String? = nil
+  ) {
     let content = UNMutableNotificationContent()
     content.title = title
     content.body = body
     content.sound = .default
     let trigger = UNTimeIntervalNotificationTrigger(timeInterval: max(1, after), repeats: false)
     let request = UNNotificationRequest(
-      identifier: "comrade.\(title).\(Int(Date().timeIntervalSince1970))",
+      identifier: identifier ?? "comrade.\(title).\(Int(Date().timeIntervalSince1970))",
       content: content,
       trigger: trigger
     )
     UNUserNotificationCenter.current().add(request)
-  }
-
-  static func keyWindow() -> UIWindow? {
-    UIApplication.shared.connectedScenes
-      .compactMap { $0 as? UIWindowScene }
-      .flatMap { $0.windows }
-      .first { $0.isKeyWindow }
   }
 
   static func dayStamp(_ date: Date) -> String {
@@ -457,56 +373,6 @@ final class FgMethodChannelHandler: NSObject, FlutterPlugin {
     return formatter.string(from: date)
   }
 }
-
-// MARK: - Family picker
-
-@available(iOS 16.0, *)
-private struct FamilyAppPickerSheet: View {
-  var onSave: (FamilyActivitySelection) -> Void
-  @State private var selection = IosScreenTimeStore.shared.selection
-  @Environment(\.dismiss) private var dismiss
-
-  var body: some View {
-    NavigationView {
-      FamilyActivityPicker(selection: $selection)
-        .navigationTitle("Apps & sites")
-        .toolbar {
-          ToolbarItem(placement: .cancellationAction) {
-            Button("Close") { dismiss() }
-          }
-          ToolbarItem(placement: .confirmationAction) {
-            Button("Save") {
-              onSave(selection)
-              dismiss()
-            }
-          }
-        }
-    }
-  }
-}
-
-@available(iOS 16.0, *)
-final class IosScreenTimeStore {
-  static let shared = IosScreenTimeStore()
-  private let key = "comrade.ios.familySelection"
-  var selection = FamilyActivitySelection()
-
-  private init() {
-    if let data = UserDefaults.standard.data(forKey: key),
-       let decoded = try? JSONDecoder().decode(FamilyActivitySelection.self, from: data) {
-      selection = decoded
-    }
-  }
-
-  func save(_ value: FamilyActivitySelection) {
-    selection = value
-    if let data = try? JSONEncoder().encode(value) {
-      UserDefaults.standard.set(data, forKey: key)
-    }
-  }
-}
-
-// MARK: - Installed-app catalog (URL-scheme detection; not a fake static list)
 
 enum IosAppCatalog {
   struct Item {
@@ -521,17 +387,15 @@ enum IosAppCatalog {
 
   static let items: [Item] = [
     Item(name: "Phone", bundleId: "com.apple.mobilephone", scheme: "tel://", system: true, alwaysPresent: true, symbol: "phone.fill", color: .systemGreen),
-    Item(name: "Messages", bundleId: "com.apple.MobileSMS", scheme: "messages://", system: true, alwaysPresent: true, symbol: "message.fill", color: .systemGreen),
+    Item(name: "Messages", bundleId: "com.apple.MobileSMS", scheme: "sms://", system: true, alwaysPresent: true, symbol: "message.fill", color: .systemGreen),
     Item(name: "Mail", bundleId: "com.apple.mobilemail", scheme: "mailto://", system: true, alwaysPresent: true, symbol: "envelope.fill", color: .systemBlue),
-    Item(name: "Safari", bundleId: "com.apple.mobilesafari", scheme: "x-web-search://", system: false, alwaysPresent: true, symbol: "safari.fill", color: .systemBlue),
-    Item(name: "Camera", bundleId: "com.apple.camera", scheme: "camera://", system: true, alwaysPresent: true, symbol: "camera.fill", color: .systemGray),
+    Item(name: "Safari", bundleId: "com.apple.mobilesafari", scheme: "http://", system: false, alwaysPresent: true, symbol: "safari.fill", color: .systemBlue),
     Item(name: "Photos", bundleId: "com.apple.mobileslideshow", scheme: "photos-redirect://", system: false, alwaysPresent: true, symbol: "photo.fill", color: .systemOrange),
     Item(name: "Music", bundleId: "com.apple.Music", scheme: "music://", system: false, alwaysPresent: true, symbol: "music.note", color: .systemPink),
-    Item(name: "Settings", bundleId: "com.apple.Preferences", scheme: "App-prefs:", system: true, alwaysPresent: true, symbol: "gearshape.fill", color: .systemGray),
+    Item(name: "Settings", bundleId: "com.apple.Preferences", scheme: "app-settings:", system: true, alwaysPresent: true, symbol: "gearshape.fill", color: .systemGray),
     Item(name: "App Store", bundleId: "com.apple.AppStore", scheme: "itms-apps://", system: true, alwaysPresent: true, symbol: "bag.fill", color: .systemBlue),
     Item(name: "Maps", bundleId: "com.apple.Maps", scheme: "maps://", system: false, alwaysPresent: true, symbol: "map.fill", color: .systemGreen),
     Item(name: "Calendar", bundleId: "com.apple.mobilecal", scheme: "calshow://", system: false, alwaysPresent: true, symbol: "calendar", color: .systemRed),
-    Item(name: "Clock", bundleId: "com.apple.mobiletimer", scheme: "clock-worldclock://", system: false, alwaysPresent: true, symbol: "clock.fill", color: .black),
     Item(name: "FaceTime", bundleId: "com.apple.facetime", scheme: "facetime://", system: false, alwaysPresent: true, symbol: "video.fill", color: .systemGreen),
     Item(name: "Instagram", bundleId: "com.burbn.instagram", scheme: "instagram://", system: false, alwaysPresent: false, symbol: "camera.fill", color: .systemPurple),
     Item(name: "WhatsApp", bundleId: "net.whatsapp.WhatsApp", scheme: "whatsapp://", system: false, alwaysPresent: false, symbol: "phone.fill", color: .systemGreen),
@@ -546,21 +410,10 @@ enum IosAppCatalog {
     Item(name: "Spotify", bundleId: "com.spotify.client", scheme: "spotify://", system: false, alwaysPresent: false, symbol: "music.note.list", color: .systemGreen),
     Item(name: "Discord", bundleId: "com.hammerandchisel.discord", scheme: "discord://", system: false, alwaysPresent: false, symbol: "bubble.left.and.bubble.right.fill", color: .systemIndigo),
     Item(name: "LinkedIn", bundleId: "com.linkedin.LinkedIn", scheme: "linkedin://", system: false, alwaysPresent: false, symbol: "briefcase.fill", color: .systemBlue),
-    Item(name: "Pinterest", bundleId: "pinterest", scheme: "pinterest://", system: false, alwaysPresent: false, symbol: "pin.fill", color: .systemRed),
-    Item(name: "Twitch", bundleId: "tv.twitch", scheme: "twitch://", system: false, alwaysPresent: false, symbol: "play.tv.fill", color: .systemPurple),
-    Item(name: "Zoom", bundleId: "us.zoom.videomeetings", scheme: "zoomus://", system: false, alwaysPresent: false, symbol: "video.fill", color: .systemBlue),
-    Item(name: "Slack", bundleId: "com.tinyspeck.chatlyio", scheme: "slack://", system: false, alwaysPresent: false, symbol: "number", color: .systemPurple),
-    Item(name: "Signal", bundleId: "org.whispersystems.signal", scheme: "sgnl://", system: false, alwaysPresent: false, symbol: "lock.fill", color: .systemBlue),
-    Item(name: "Uber", bundleId: "com.ubercab.UberClient", scheme: "uber://", system: false, alwaysPresent: false, symbol: "car.fill", color: .black),
+    Item(name: "Reddit", bundleId: "com.reddit.Reddit", scheme: "reddit://", system: false, alwaysPresent: false, symbol: "text.bubble.fill", color: .systemOrange),
     Item(name: "Chrome", bundleId: "com.google.chrome.ios", scheme: "googlechrome://", system: false, alwaysPresent: false, symbol: "globe", color: .systemGreen),
     Item(name: "Gmail", bundleId: "com.google.Gmail", scheme: "googlegmail://", system: false, alwaysPresent: false, symbol: "envelope.fill", color: .systemRed),
-    Item(name: "Google Maps", bundleId: "com.google.Maps", scheme: "comgooglemaps://", system: false, alwaysPresent: false, symbol: "map.fill", color: .systemGreen),
-    Item(name: "Reddit", bundleId: "com.reddit.Reddit", scheme: "reddit://", system: false, alwaysPresent: false, symbol: "text.bubble.fill", color: .systemOrange),
-    Item(name: "Amazon", bundleId: "com.amazon.Amazon", scheme: "amazon://", system: false, alwaysPresent: false, symbol: "cart.fill", color: .systemOrange),
-    Item(name: "Prime Video", bundleId: "com.amazon.aiv.AIVApp", scheme: "aiv://", system: false, alwaysPresent: false, symbol: "play.rectangle.fill", color: .systemBlue),
-    Item(name: "YouTube Music", bundleId: "com.google.ios.youtubemusic", scheme: "youtubemusic://", system: false, alwaysPresent: false, symbol: "play.circle.fill", color: .systemRed),
-    Item(name: "Google Photos", bundleId: "com.google.photos", scheme: "googlephotos://", system: false, alwaysPresent: false, symbol: "photo.fill", color: .systemYellow),
-    Item(name: "CapCut", bundleId: "com.lemon.lvoverseas", scheme: "capcut://", system: false, alwaysPresent: false, symbol: "scissors", color: .black),
+    Item(name: "Threads", bundleId: "com.burbn.barcelona", scheme: "barcelona://", system: false, alwaysPresent: false, symbol: "at", color: .black),
   ]
 
   static func scheme(for bundleId: String) -> String? {
@@ -593,7 +446,12 @@ enum IosAppCatalog {
       if let symbolImage = UIImage(systemName: symbol, withConfiguration: config)?
         .withTintColor(.white, renderingMode: .alwaysOriginal) {
         let side: CGFloat = 64
-        let rect = CGRect(x: (size.width - side) / 2, y: (size.height - side) / 2, width: side, height: side)
+        let rect = CGRect(
+          x: (size.width - side) / 2,
+          y: (size.height - side) / 2,
+          width: side,
+          height: side
+        )
         symbolImage.draw(in: rect)
       }
     }

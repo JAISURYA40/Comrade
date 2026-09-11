@@ -57,12 +57,17 @@ class ComradeSettingsNotifier extends StateNotifier<ComradeSettings> {
   void changeUsername(String username) =>
       state = state.copyWith(username: username);
 
-  /// Changes the application's theme mode.
-  void changeThemeMode(AppThemeMode mode) =>
-      state = state.copyWith(themeMode: mode);
+  /// Changes the application's theme mode and persists immediately.
+  void changeThemeMode(AppThemeMode mode) {
+    state = state.copyWith(themeMode: mode);
+    DriftDbService.instance.driftDb.uniqueRecordsDao.saveComradeSettings(state);
+  }
 
-  /// Changes the application's color theme.
-  void changeColor(String color) => state = state.copyWith(accentColor: color);
+  /// Changes the application's color theme and persists immediately.
+  void changeColor(String color) {
+    state = state.copyWith(accentColor: color);
+    DriftDbService.instance.driftDb.uniqueRecordsDao.saveComradeSettings(state);
+  }
 
   /// Switch AMOLED dark mode
   void switchAmoledDark() =>

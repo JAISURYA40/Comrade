@@ -36,11 +36,12 @@ class AppInfo {
 
   /// Creates an `AndroidApp` instance from a JSON-like map representation.
   factory AppInfo.fromMap(Map<dynamic, dynamic> map) {
+    final icon = map['appIcon'] as String? ?? '';
     return AppInfo(
-      name: map['appName'] as String,
-      packageName: map['packageName'] as String,
-      icon: base64Decode(map['appIcon'] as String),
-      isImpSysApp: map['isImpSysApp'] as bool,
+      name: map['appName'] as String? ?? '',
+      packageName: map['packageName'] as String? ?? '',
+      icon: icon.isEmpty ? Uint8List(0) : base64Decode(icon),
+      isImpSysApp: map['isImpSysApp'] == true,
     );
   }
 

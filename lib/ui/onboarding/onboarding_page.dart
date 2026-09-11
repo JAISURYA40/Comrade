@@ -28,46 +28,59 @@ class OnboardingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
+    final shortScreen = size.height < 700;
+    final titleSize = shortScreen ? 26.0 : 32.0;
+
     return Padding(
       padding: EdgeInsets.only(bottom: bottomPadding),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          0.vBox,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final maxArt = shortScreen
+              ? constraints.maxHeight * 0.42
+              : constraints.maxHeight * 0.55;
 
-          /// Illustration
-          AspectRatio(
-            aspectRatio: 1,
-            child: Image.asset(
-              imgArtPath,
-              fit: BoxFit.contain,
-            ),
-          ),
-
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              /// Title
-              StyledText(
-                title,
-                fontSize: 32,
-                fontWeight: FontWeight.w600,
-                textAlign: TextAlign.center,
-                color: Theme.of(context).colorScheme.primary,
+              0.vBox,
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: maxArt.clamp(160.0, 420.0),
+                ),
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: Image.asset(
+                    imgArtPath,
+                    fit: BoxFit.contain,
+                  ),
+                ),
               ),
-              4.vBox,
-
-              /// Description
-              StyledText(
-                description,
-                fontSize: 16,
-                color: Theme.of(context).hintColor,
-                textAlign: TextAlign.left,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  StyledText(
+                    title,
+                    fontSize: titleSize,
+                    fontWeight: FontWeight.w600,
+                    textAlign: TextAlign.center,
+                    color: Theme.of(context).colorScheme.primary,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  4.vBox,
+                  StyledText(
+                    description,
+                    fontSize: shortScreen ? 14 : 16,
+                    color: Theme.of(context).hintColor,
+                    textAlign: TextAlign.left,
+                  ),
+                ],
               ),
             ],
-          ),
-        ],
+          );
+        },
       ),
     );
   }

@@ -34,27 +34,49 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
 
   /// Create [PermissionsModel] and initializes with permission state by fetching initial permission status then updated state.
   Future<PermissionsModel> fetchPermissionsStatus() async {
+    Future<bool> safe(Future<bool> Function() call) async {
+      try {
+        return await call();
+      } catch (e) {
+        debugPrint('PermissionNotifier.fetchPermissionsStatus: $e');
+        return false;
+      }
+    }
+
     final cache = PermissionsModel(
-      haveNotificationPermission:
-          await MethodChannelService.instance.getAndAskNotificationPermission(),
-      haveUsageAccessPermission:
-          await MethodChannelService.instance.getAndAskUsageAccessPermission(),
-      haveDisplayOverlayPermission: await MethodChannelService.instance
-          .getAndAskDisplayOverlayPermission(),
-      haveDndPermission:
-          await MethodChannelService.instance.getAndAskDndPermission(),
-      haveAccessibilityPermission: await MethodChannelService.instance
-          .getAndAskAccessibilityPermission(),
-      haveVpnPermission:
-          await MethodChannelService.instance.getAndAskVpnPermission(),
-      haveAlarmsPermission:
-          await MethodChannelService.instance.getAndAskExactAlarmPermission(),
-      haveIgnoreOptimizationPermission: await MethodChannelService.instance
-          .getAndAskIgnoreBatteryOptimizationPermission(),
-      haveAdminPermission:
-          await MethodChannelService.instance.getAndAskAdminPermission(),
-      haveNotificationAccessPermission: await MethodChannelService.instance
-          .getAndAskNotificationAccessPermission(),
+      haveNotificationPermission: await safe(
+        () => MethodChannelService.instance.getAndAskNotificationPermission(),
+      ),
+      haveUsageAccessPermission: await safe(
+        () => MethodChannelService.instance.getAndAskUsageAccessPermission(),
+      ),
+      haveDisplayOverlayPermission: await safe(
+        () =>
+            MethodChannelService.instance.getAndAskDisplayOverlayPermission(),
+      ),
+      haveDndPermission: await safe(
+        () => MethodChannelService.instance.getAndAskDndPermission(),
+      ),
+      haveAccessibilityPermission: await safe(
+        () => MethodChannelService.instance.getAndAskAccessibilityPermission(),
+      ),
+      haveVpnPermission: await safe(
+        () => MethodChannelService.instance.getAndAskVpnPermission(),
+      ),
+      haveAlarmsPermission: await safe(
+        () => MethodChannelService.instance.getAndAskExactAlarmPermission(),
+      ),
+      haveIgnoreOptimizationPermission: await safe(
+        () => MethodChannelService.instance
+            .getAndAskIgnoreBatteryOptimizationPermission(),
+      ),
+      haveAdminPermission: await safe(
+        () => MethodChannelService.instance.getAndAskAdminPermission(),
+      ),
+      haveNotificationAccessPermission: await safe(
+        () => MethodChannelService.instance
+            .getAndAskNotificationAccessPermission(),
+      ),
     );
 
     state = cache;
@@ -125,64 +147,77 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
   /// Requests the notification permission and updates the internal state.
   void askNotificationPermission() async {
     _askedPermission = PermissionType.notification;
-    await MethodChannelService.instance
+    final granted = await MethodChannelService.instance
         .getAndAskNotificationPermission(askPermissionToo: true);
+    state = state.copyWith(haveNotificationPermission: granted);
   }
 
   /// Requests the usage access permission and updates the internal state.
   void askUsageAccessPermission() async {
     _askedPermission = PermissionType.usageAccess;
-    await MethodChannelService.instance
+    final granted = await MethodChannelService.instance
         .getAndAskUsageAccessPermission(askPermissionToo: true);
+    state = state.copyWith(haveUsageAccessPermission: granted);
   }
 
   /// Requests the display overlay permission and updates the internal state.
   void askDisplayOverlayPermission() async {
     _askedPermission = PermissionType.displayOverlay;
-    await MethodChannelService.instance
+    final granted = await MethodChannelService.instance
         .getAndAskDisplayOverlayPermission(askPermissionToo: true);
+    state = state.copyWith(haveDisplayOverlayPermission: granted);
   }
 
   /// Requests the accessibility permission and updates the internal state.
   void askAccessibilityPermission() async {
     _askedPermission = PermissionType.accessibility;
-    await MethodChannelService.instance
+    final granted = await MethodChannelService.instance
         .getAndAskAccessibilityPermission(askPermissionToo: true);
+    state = state.copyWith(haveAccessibilityPermission: granted);
   }
 
   /// Requests the VPN permission and updates the internal state.
   void askVpnPermission() async {
     _askedPermission = PermissionType.vpn;
-    await MethodChannelService.instance
+    final granted = await MethodChannelService.instance
         .getAndAskVpnPermission(askPermissionToo: true);
+    state = state.copyWith(haveVpnPermission: granted);
   }
 
   /// Requests the Do Not Disturb permission and updates the internal state.
   void askDndPermission() async {
     _askedPermission = PermissionType.doNotDisturb;
-    await MethodChannelService.instance
+    final granted = await MethodChannelService.instance
         .getAndAskDndPermission(askPermissionToo: true);
+    state = state.copyWith(haveDndPermission: granted);
   }
 
   /// Requests the Set Exact Alarm permission and updates the internal state.
   void askExactAlarmPermission() async {
     _askedPermission = PermissionType.exactAlarm;
-    await MethodChannelService.instance
+    final granted = await MethodChannelService.instance
         .getAndAskExactAlarmPermission(askPermissionToo: true);
+    state = state.copyWith(haveAlarmsPermission: granted);
   }
 
   /// Requests the Ignore Battery Optimization permission and updates the internal state.
   void askIgnoreBatteryOptimizationPermission() async {
     _askedPermission = PermissionType.ignoreOptimization;
-    await MethodChannelService.instance
+    final granted = await MethodChannelService.instance
         .getAndAskIgnoreBatteryOptimizationPermission(askPermissionToo: true);
+    state = state.copyWith(
+      haveIgnoreOptimizationPermission: granted,
+      haveAlarmsPermission: await MethodChannelService.instance
+          .getAndAskExactAlarmPermission(),
+    );
   }
 
   /// Requests the Admin permission and updates the internal state.
   void askAdminPermission() async {
     _askedPermission = PermissionType.admin;
-    await MethodChannelService.instance
+    final granted = await MethodChannelService.instance
         .getAndAskAdminPermission(askPermissionToo: true);
+    state = state.copyWith(haveAdminPermission: granted);
   }
 
   /// Request the device to disable admin if already enabled
@@ -198,7 +233,8 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
   /// Requests the Admin permission and updates the internal state.
   void askNotificationAccessPermission() async {
     _askedPermission = PermissionType.notificationAccess;
-    await MethodChannelService.instance
+    final granted = await MethodChannelService.instance
         .getAndAskNotificationAccessPermission(askPermissionToo: true);
+    state = state.copyWith(haveNotificationAccessPermission: granted);
   }
 }
