@@ -16,4 +16,30 @@ mixin _$DynamicRecordsDaoMixin on DatabaseAccessor<AppDatabase> {
   $AppUsageTableTable get appUsageTable => attachedDatabase.appUsageTable;
   $NotificationsTableTable get notificationsTable =>
       attachedDatabase.notificationsTable;
+  DynamicRecordsDaoManager get managers => DynamicRecordsDaoManager(this);
+}
+
+class DynamicRecordsDaoManager {
+  final _$DynamicRecordsDaoMixin _db;
+  DynamicRecordsDaoManager(this._db);
+  $$AppRestrictionTableTableTableManager get appRestrictionTable =>
+      $$AppRestrictionTableTableTableManager(
+          _db.attachedDatabase, _db.appRestrictionTable);
+  $$CrashLogsTableTableTableManager get crashLogsTable =>
+      $$CrashLogsTableTableTableManager(
+          _db.attachedDatabase, _db.crashLogsTable);
+  $$FocusSessionsTableTableTableManager get focusSessionsTable =>
+      $$FocusSessionsTableTableTableManager(
+          _db.attachedDatabase, _db.focusSessionsTable);
+  $$FocusProfileTableTableTableManager get focusProfileTable =>
+      $$FocusProfileTableTableTableManager(
+          _db.attachedDatabase, _db.focusProfileTable);
+  $$RestrictionGroupsTableTableTableManager get restrictionGroupsTable =>
+      $$RestrictionGroupsTableTableTableManager(
+          _db.attachedDatabase, _db.restrictionGroupsTable);
+  $$AppUsageTableTableTableManager get appUsageTable =>
+      $$AppUsageTableTableTableManager(_db.attachedDatabase, _db.appUsageTable);
+  $$NotificationsTableTableTableManager get notificationsTable =>
+      $$NotificationsTableTableTableManager(
+          _db.attachedDatabase, _db.notificationsTable);
 }

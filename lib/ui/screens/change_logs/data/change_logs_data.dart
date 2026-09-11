@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:comrade/config/navigation/app_routes.dart';
 import 'package:comrade/core/extensions/ext_build_context.dart';
 import 'package:comrade/core/services/method_channel_service.dart';
+import 'package:comrade/core/utils/platform_features.dart';
 
 @immutable
 class ChangeLog {
@@ -46,6 +47,13 @@ class ChangeLogsData {
       icon: FluentIcons.target_arrow_20_filled,
       label: "Quick Focus Tile",
       onTap: (ctx) async {
+        if (!PlatformFeatures.hasQuickFocusTile) {
+          ctx.showSnackAlert(
+            "Quick Focus Tile is available on Android.",
+            icon: FluentIcons.target_arrow_20_filled,
+          );
+          return;
+        }
         final isSuccess =
             await MethodChannelService.instance.promptForQuickTile();
 

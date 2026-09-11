@@ -11,8 +11,12 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'dart:io';
+
+
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
+
 import 'package:flutter/services.dart';
 import 'package:comrade/core/database/app_database.dart';
 import 'package:comrade/models/usage_model.dart';
@@ -34,6 +38,9 @@ class MethodChannelService {
     'com.comrade.android.methodchannel.fg',
   );
 
+  /// Android and iOS both implement this channel natively.
+  bool get _hasNativeBridge => Platform.isAndroid || Platform.isIOS;
+
   /// Flag indicating if the app is restarted by itself (after importing database).
   bool get isSelfRestart => _isSelfRestart;
   bool _isSelfRestart = false;
@@ -44,16 +51,29 @@ class MethodChannelService {
 
   /// Initializes the method channel by setting a handler for incoming method calls from the native side.
   Future<void> init() async {
-    _methodChannel.setMethodCallHandler(
-      (call) async {
-        if (call.method == "updateSelfStartStatus") {
-          _isSelfRestart = call.arguments as bool? ?? false;
-        }
-      },
-    );
+    if (_hasNativeBridge) {
+      _methodChannel.setMethodCallHandler(
+        (call) async {
+          if (call.method == "updateSelfStartStatus") {
+            _isSelfRestart = call.arguments as bool? ?? false;
+          }
+        },
+      );
+    }
 
     /// Load information about the device
-    _deviceInfo = await MethodChannelService.instance.getDeviceInfo();
+    try {
+      _deviceInfo = await MethodChannelService.instance.getDeviceInfo();
+    } catch (e) {
+      debugPrint("Method channel not available: $e");
+      _deviceInfo = const DeviceInfoModel(
+        manufacturer: 'Unknown',
+        model: 'Unknown',
+        androidVersion: 'Unknown',
+        sdkVersion: 0,
+        comradeVersion: 'Unknown',
+      );
+    }
   }
 
   // ===========================================================================================
@@ -61,30 +81,39 @@ class MethodChannelService {
   // ===========================================================================================
 
   /// Update locale on the native side
-  Future<bool> updateLocale({required String languageCode}) async =>
-      await _methodChannel.invokeMethod('updateLocale', languageCode);
+  Future<bool> updateLocale({required String languageCode}) async {
+    if (!_hasNativeBridge) return false;
+    return await _methodChannel.invokeMethod('updateLocale', languageCode);
+  }
 
   /// Update excluded apps for widget purpose
-  Future<bool> updateExcludedApps(List<String> excludedApps) async =>
-      await _methodChannel.invokeMethod(
+  Future<bool> updateExcludedApps(List<String> excludedApps) async {
+    if (!_hasNativeBridge) return false;
+    return await _methodChannel.invokeMethod(
         'updateExcludedApps',
         jsonEncode(excludedApps),
       );
+  }
 
   /// Gets the map of device info and create and returns [DeviceInfoModel] .
-  Future<DeviceInfoModel> getDeviceInfo() async => DeviceInfoModel.fromMap(
-      await _methodChannel.invokeMapMethod('getDeviceInfo') ?? {});
+  Future<DeviceInfoModel> getDeviceInfo() async {
+    if (!_hasNativeBridge) return DeviceInfoModel.fromMap({});
+    return DeviceInfoModel.fromMap(await _methodChannel.invokeMapMethod('getDeviceInfo') ?? {});
+  }
 
   /// Gets the launch counts of apps mapped to their package name.
-  Future<Map<String, int>> getAppsLaunchCount() async =>
-      await _methodChannel.invokeMapMethod<String, int>('getAppsLaunchCount') ??
+  Future<Map<String, int>> getAppsLaunchCount() async {
+    if (!_hasNativeBridge) return {};
+    return await _methodChannel.invokeMapMethod<String, int>('getAppsLaunchCount') ??
       {};
+  }
 
   /// Gets the total short screen time for the device in milliseconds.
   ///
   /// This method retrieves the total screen time spent on short-form video apps
   /// and converts it to seconds before returning the value.
   Future<int> getShortsScreenTimeSec() async {
+    if (!_hasNativeBridge) return 0;
     int time = await _methodChannel.invokeMethod('getShortsScreenTimeMs');
     return time ~/ 1000;
   }
@@ -92,6 +121,7 @@ class MethodChannelService {
   /// Gets all the stored native crash logs and clears them afterward.
   Future<List<CrashLogsTableCompanion>> getNativeCrashLogs() async {
     List<CrashLogsTableCompanion> crashLogs = [];
+    if (!_hasNativeBridge) return crashLogs;
 
     try {
       String jsonString =
@@ -122,11 +152,14 @@ class MethodChannelService {
   }
 
   /// Clears all the crash logs on the native side.
-  Future<bool> clearNativeCrashLogs() async =>
-      await _methodChannel.invokeMethod('clearNativeCrashLogs');
+  Future<bool> clearNativeCrashLogs() async {
+    if (!_hasNativeBridge) return false;
+    return await _methodChannel.invokeMethod('clearNativeCrashLogs');
+  }
 
   /// Retrieves a list of all launchable apps installed on the user's device.
   Future<List<AppInfo>> fetchDeviceAppsInfo() async {
+    if (!_hasNativeBridge) return [];
     try {
       List<Map> result =
           await _methodChannel.invokeListMethod<Map>('getDeviceAppsInfo') ?? [];
@@ -137,6 +170,17 @@ class MethodChannelService {
     return [];
   }
 
+  /// Presents the iOS Screen Time app picker. No-op on Android.
+  Future<bool> presentScreenTimePicker() async {
+    if (!Platform.isIOS) return true;
+    try {
+      return await _methodChannel.invokeMethod('presentScreenTimePicker') ??
+          false;
+    } catch (_) {
+      return false;
+    }
+  }
+
   /// Loads Map of [String] package name and the respective [UsageModel] for the given interval
   ///
   /// The result map contains one [UsageModel] per app
@@ -145,6 +189,7 @@ class MethodChannelService {
     required DateTime end,
   }) async {
     Map<String, UsageModel> usagesMap = {};
+    if (!_hasNativeBridge) return usagesMap;
     try {
       List<Map> results = await _methodChannel
               .invokeListMethod<Map>('getAppsUsageForInterval', {
@@ -172,11 +217,13 @@ class MethodChannelService {
   /// otherwise only start service if list is not empty
   Future<void> updateAppRestrictions(
     List<AppRestriction> appRestrictions,
-  ) async =>
-      _methodChannel.invokeMethod(
+  ) async {
+    if (!_hasNativeBridge) return;
+    return _methodChannel.invokeMethod(
         'updateAppRestrictions',
         jsonEncode(appRestrictions),
       );
+  }
 
   /// Safe method to update restriction groups list in the TRACKER service.
   ///
@@ -184,21 +231,25 @@ class MethodChannelService {
   /// otherwise only start service if list is not empty
   Future<void> updateRestrictionsGroups(
     List<RestrictionGroup> restrictionGroups,
-  ) async =>
-      _methodChannel.invokeMethod(
+  ) async {
+    if (!_hasNativeBridge) return;
+    return _methodChannel.invokeMethod(
         'updateRestrictionsGroups',
         jsonEncode(restrictionGroups),
       );
+  }
 
   /// Safe method to update internet blocked apps in the VPN service.
   ///
   /// This method push the updated list to the service if it is already running
   /// otherwise only start service if list is not empty
-  Future<void> updateInternetBlockedApps(List<String> blockedApps) async =>
-      _methodChannel.invokeMethod(
+  Future<void> updateInternetBlockedApps(List<String> blockedApps) async {
+    if (!_hasNativeBridge) return;
+    return _methodChannel.invokeMethod(
         'updateInternetBlockedApps',
         jsonEncode(blockedApps),
       );
+  }
 
   /// Safe method to update settings in Notification Listener service if provided.
   /// Also Updates the notification batching schedule if provided.
@@ -207,17 +258,20 @@ class MethodChannelService {
   /// otherwise try to bind to service if needed
   Future<void> updateNotificationSettings(
     NotificationSettings settings,
-  ) async =>
-      _methodChannel.invokeMethod(
+  ) async {
+    if (!_hasNativeBridge) return;
+    return _methodChannel.invokeMethod(
         'updateNotificationSettings',
         jsonEncode(settings),
       );
+  }
 
   /// Updates the well-being settings for the foreground service.
   ///
   /// This method takes a [Wellbeing] object and sends it to the native side
-  Future<void> updateWellBeingSettings(Wellbeing wellBeingSettings) async =>
-      _methodChannel.invokeMethod(
+  Future<void> updateWellBeingSettings(Wellbeing wellBeingSettings) async {
+    if (!_hasNativeBridge) return;
+    return _methodChannel.invokeMethod(
         'updateWellBeingSettings',
         jsonEncode(
           {
@@ -230,21 +284,26 @@ class MethodChannelService {
           },
         ),
       );
+  }
 
   /// Updates the bedtime schedule.
   ///
   /// This method takes a [BedtimeSchedule] object and sends it to the native side
-  Future<bool> updateBedtimeSchedule(BedtimeSchedule bedtimeSettings) async =>
-      await _methodChannel.invokeMethod(
+  Future<bool> updateBedtimeSchedule(BedtimeSchedule bedtimeSettings) async {
+    if (!_hasNativeBridge) return false;
+    return await _methodChannel.invokeMethod(
         'updateBedtimeSchedule',
         jsonEncode(bedtimeSettings),
       );
+  }
 
   /// Uses an emergency pass and pause the tracking service.
   ///
   /// This method sends a request to the native side to use an emergency pass.
-  Future<bool> activeEmergencyPause() async =>
-      await _methodChannel.invokeMethod('activeEmergencyPause');
+  Future<bool> activeEmergencyPause() async {
+    if (!_hasNativeBridge) return false;
+    return await _methodChannel.invokeMethod('activeEmergencyPause');
+  }
 
   /// Start new focus session or only updates the list of distracting apps if already running.
   ///
@@ -252,8 +311,9 @@ class MethodChannelService {
   Future<void> updateFocusSession({
     required FocusSession session,
     required FocusProfile profile,
-  }) async =>
-      await _methodChannel.invokeMethod(
+  }) async {
+    if (!_hasNativeBridge) return;
+    return await _methodChannel.invokeMethod(
         'updateFocusSession',
         jsonEncode({
           'startTimeMsEpoch': session.startDateTime.millisecondsSinceEpoch,
@@ -262,174 +322,192 @@ class MethodChannelService {
           'distractingApps': profile.distractingApps,
         }),
       );
+  }
 
   /// Giveup or Finish running focus session with success or failure.
   ///
   /// This method sends a request to the native side to stop already running focus session.
   Future<bool> giveUpOrFinishFocusSession({
     required bool isTheSessionSuccessful,
-  }) async =>
-      await _methodChannel.invokeMethod(
+  }) async {
+    if (!_hasNativeBridge) return false;
+    return await _methodChannel.invokeMethod(
         'giveUpOrFinishFocusSession',
         isTheSessionSuccessful,
       );
+  }
 
   // ===========================================================================================
   // ==================================== PERMISSIONS ==========================================
   // ===========================================================================================
+
+  /// Safe bool invoke that never throws MissingPluginException to Flutter UI.
+  Future<bool> _invokeBool(
+    String method, [
+    dynamic arguments,
+  ]) async {
+    if (!_hasNativeBridge) return false;
+    try {
+      final value = await _methodChannel.invokeMethod(method, arguments);
+      return value == true;
+    } on MissingPluginException catch (e) {
+      debugPrint('MethodChannelService.$method MissingPluginException: $e');
+      return false;
+    } catch (e) {
+      debugPrint('MethodChannelService.$method error: $e');
+      return false;
+    }
+  }
+
   /// Checks if the admin permission is granted and optionally asks for it.
   ///
   /// Returns `true` if the permission is granted Otherwise, returns `false`.
   Future<bool> getAndAskAdminPermission(
-          {bool askPermissionToo = false}) async =>
-      await _methodChannel.invokeMethod(
-        'getAndAskAdminPermission',
-        askPermissionToo,
-      );
+          {bool askPermissionToo = false}) async {
+    return _invokeBool('getAndAskAdminPermission', askPermissionToo);
+  }
 
   /// Checks if the accessibility permission is granted and optionally asks for it.
   ///
   /// This method returns `true` if the permission is granted Otherwise, it returns `false`.
   Future<bool> getAndAskAccessibilityPermission(
-          {bool askPermissionToo = false}) async =>
-      await _methodChannel.invokeMethod(
-        'getAndAskAccessibilityPermission',
-        askPermissionToo,
-      );
+          {bool askPermissionToo = false}) async {
+    return _invokeBool('getAndAskAccessibilityPermission', askPermissionToo);
+  }
 
   /// Checks if the usage access permission is granted and optionally asks for it.
   ///
   /// Returns `true` if the permission is granted Otherwise, returns `false`.
   Future<bool> getAndAskUsageAccessPermission(
-          {bool askPermissionToo = false}) async =>
-      await _methodChannel.invokeMethod(
-        'getAndAskUsageAccessPermission',
-        askPermissionToo,
-      );
+          {bool askPermissionToo = false}) async {
+    return _invokeBool('getAndAskUsageAccessPermission', askPermissionToo);
+  }
 
   /// Checks if the display overlay permission is granted and optionally asks for it.
   ///
   /// Returns `true` if the permission is granted Otherwise, returns `false`.
   Future<bool> getAndAskDisplayOverlayPermission(
-          {bool askPermissionToo = false}) async =>
-      await _methodChannel.invokeMethod(
-        'getAndAskDisplayOverlayPermission',
-        askPermissionToo,
-      );
+          {bool askPermissionToo = false}) async {
+    return _invokeBool('getAndAskDisplayOverlayPermission', askPermissionToo);
+  }
 
   /// Checks if the set exact alarm permission is granted and optionally asks for it.
   ///
   /// Returns `true` if the permission is granted Otherwise, returns `false`.
   Future<bool> getAndAskExactAlarmPermission(
-          {bool askPermissionToo = false}) async =>
-      await _methodChannel.invokeMethod(
-        'getAndAskExactAlarmPermission',
-        askPermissionToo,
-      );
+          {bool askPermissionToo = false}) async {
+    return _invokeBool('getAndAskExactAlarmPermission', askPermissionToo);
+  }
 
   /// Checks if the VPN permission is granted and optionally asks for it.
   ///
   /// This method returns `true` if the permission is granted Otherwise, it returns `false`.
-  Future<bool> getAndAskVpnPermission({bool askPermissionToo = false}) async =>
-      await _methodChannel.invokeMethod(
-        'getAndAskVpnPermission',
-        askPermissionToo,
-      );
+  Future<bool> getAndAskVpnPermission({bool askPermissionToo = false}) async {
+    return _invokeBool('getAndAskVpnPermission', askPermissionToo);
+  }
 
   /// Checks if the ignore battery optimization permission is granted and optionally asks for it.
   ///
   /// Returns `true` if the permission is granted Otherwise, returns `false`.
   Future<bool> getAndAskIgnoreBatteryOptimizationPermission(
-          {bool askPermissionToo = false}) async =>
-      await _methodChannel.invokeMethod(
-        'getAndAskIgnoreBatteryOptimizationPermission',
-        askPermissionToo,
-      );
+          {bool askPermissionToo = false}) async {
+    return _invokeBool(
+      'getAndAskIgnoreBatteryOptimizationPermission',
+      askPermissionToo,
+    );
+  }
 
-  /// Checks if the notification permission is granted and optionally asks for it.
-  ///
-  /// This method returns `true` if the permission is granted Otherwise, it returns `false`.
   Future<bool> getAndAskNotificationPermission(
-          {bool askPermissionToo = false}) async =>
-      await _methodChannel.invokeMethod(
-        'getAndAskNotificationPermission',
-        askPermissionToo,
-      );
+          {bool askPermissionToo = false}) async {
+    return _invokeBool('getAndAskNotificationPermission', askPermissionToo);
+  }
 
   /// Checks if the Do Not Disturb (DND) permission is granted and optionally asks for it.
   ///
   /// Returns `true` if the permission is granted Otherwise, returns `false`.
-  Future<bool> getAndAskDndPermission({bool askPermissionToo = false}) async =>
-      await _methodChannel.invokeMethod(
-        'getAndAskDndPermission',
-        askPermissionToo,
-      );
+  Future<bool> getAndAskDndPermission({bool askPermissionToo = false}) async {
+    return _invokeBool('getAndAskDndPermission', askPermissionToo);
+  }
 
   /// Checks if the Notification Access permission is granted and optionally asks for it.
   ///
   /// Returns `true` if the permission is granted Otherwise, returns `false`.
   Future<bool> getAndAskNotificationAccessPermission(
-          {bool askPermissionToo = false}) async =>
-      await _methodChannel.invokeMethod(
-        'getAndAskNotificationAccessPermission',
-        askPermissionToo,
-      );
+          {bool askPermissionToo = false}) async {
+    return _invokeBool(
+      'getAndAskNotificationAccessPermission',
+      askPermissionToo,
+    );
+  }
 
   /// Disable device Admin if active.
-  Future<bool> disableDeviceAdmin() async =>
-      await _methodChannel.invokeMethod('disableDeviceAdmin');
+  Future<bool> disableDeviceAdmin() async {
+    return _invokeBool('disableDeviceAdmin');
+  }
 
   // ===========================================================================================
   // ============================== EXTERNAL ACTIVITIES ========================================
   // ===========================================================================================
 
   /// Opens the device's Do Not Disturb (DND) settings.
-  Future<bool> openDeviceDndSettings() async =>
-      await _methodChannel.invokeMethod('openDeviceDndSettings');
+  Future<bool> openDeviceDndSettings() async {
+    return _invokeBool('openDeviceDndSettings');
+  }
 
   /// Opens the device specific settings to whitelist comrade.
-  Future<bool> openAutoStartSettings() async =>
-      await _methodChannel.invokeMethod('openAutoStartSettings');
+  Future<bool> openAutoStartSettings() async {
+    return _invokeBool('openAutoStartSettings');
+  }
 
   /// Opens an app with the specified package name.
-  Future<bool> openAppWithPackage(String appPackage) async =>
-      await _methodChannel.invokeMethod('openAppWithPackage', appPackage);
+  Future<bool> openAppWithPackage(String appPackage) async {
+    return _invokeBool('openAppWithPackage', appPackage);
+  }
 
   /// Opens an app with notification thread.
-  Future<bool> openAppWithNotificationThread(Notification notification) async =>
-      await _methodChannel.invokeMethod(
-        'openAppWithNotificationThread',
-        jsonEncode(notification),
-      );
+  Future<bool> openAppWithNotificationThread(Notification notification) async {
+    return _invokeBool(
+      'openAppWithNotificationThread',
+      jsonEncode(notification),
+    );
+  }
 
   /// Opens the app settings for the specified app package.
-  Future<bool> openAppSettingsForPackage(String appPackage) async =>
-      await _methodChannel.invokeMethod(
-        'openAppSettingsForPackage',
-        appPackage,
-      );
+  Future<bool> openAppSettingsForPackage(String appPackage) async {
+    return _invokeBool('openAppSettingsForPackage', appPackage);
+  }
 
   // ===========================================================================================
   // ==================================== UTILS ================================================
   // ===========================================================================================
 
   /// Pop animates and close the app
-  Future<bool> restartApp() async =>
-      await _methodChannel.invokeMethod('restartApp');
+  Future<bool> restartApp() async {
+    return _invokeBool('restartApp');
+  }
 
   /// Parses the host name from a given URL string.
   ///
   /// This method sends the URL to the native side and retrieves the parsed host name.
-  Future<String> parseHostFromUrl(String url) async =>
-      await _methodChannel.invokeMethod('parseHostFromUrl', url);
+  Future<String> parseHostFromUrl(String url) async {
+    if (!_hasNativeBridge) return '';
+    try {
+      return await _methodChannel.invokeMethod('parseHostFromUrl', url) ?? '';
+    } catch (e) {
+      debugPrint('MethodChannelService.parseHostFromUrl error: $e');
+      return '';
+    }
+  }
 
   /// Launches a specified URL in the user's preferred web browser.
   ///
   /// This method takes the URL string and sends it to the native side for launching in the browser.
-  Future<bool> launchUrl(String siteUrl) async =>
-      await _methodChannel.invokeMethod('launchUrl', siteUrl);
+  Future<bool> launchUrl(String siteUrl) async {
+    return _invokeBool('launchUrl', siteUrl);
+  }
 
   /// Prompts the user to add Quick Focus Tile to the status bar
-  Future<bool> promptForQuickTile() async =>
-      await _methodChannel.invokeMethod('promptForQuickTile');
+  Future<bool> promptForQuickTile() async {
+    return _invokeBool('promptForQuickTile');
+  }
 }

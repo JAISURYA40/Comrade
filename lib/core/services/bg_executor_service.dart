@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
@@ -29,31 +30,33 @@ class BgExecutorService {
   /// Initializes the method channel by setting a handler for incoming method calls from the native side.
   Future<void> init() async {
     /// Every task must complete under 5 minutes
-    _methodChannel.setMethodCallHandler(
-      (call) async {
-        try {
-          /// Handle tasks
-          switch (call.method) {
-            case "onBootOrAppUpdate":
-              await _onBootOrAppUpdate();
-              break;
-            case "onMidnightReset":
-              await _onMidnightReset();
-              break;
-            default:
+    if (Platform.isAndroid) {
+      _methodChannel.setMethodCallHandler(
+        (call) async {
+          try {
+            /// Handle tasks
+            switch (call.method) {
+              case "onBootOrAppUpdate":
+                await _onBootOrAppUpdate();
+                break;
+              case "onMidnightReset":
+                await _onMidnightReset();
+                break;
+              default:
+            }
+
+            // Task is completed with success
+            _signalTaskCompletion();
+          } catch (e) {
+            final error = "${call.method}(): $e";
+            debugPrint("BgExecutorService.MethodCall: $error");
+
+            // Task failed with exception
+            _signalTaskCompletion(error: error);
           }
-
-          // Task is completed with success
-          _signalTaskCompletion();
-        } catch (e) {
-          final error = "${call.method}(): $e";
-          debugPrint("BgExecutorService.MethodCall: $error");
-
-          // Task failed with exception
-          _signalTaskCompletion(error: error);
-        }
-      },
-    );
+        },
+      );
+    }
 
     debugPrint('BgExecutorService.init(): Service initialized');
   }
@@ -65,7 +68,9 @@ class BgExecutorService {
       debugPrint(
         'BgExecutorService._signalTaskCompletion(): Background task completed',
       );
-      _methodChannel.invokeMethod("signalTaskCompleted", error);
+      if (Platform.isAndroid) {
+        _methodChannel.invokeMethod("signalTaskCompleted", error);
+      }
       // ignore: empty_catches
     } catch (e) {}
   }

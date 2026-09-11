@@ -8,6 +8,8 @@
  *
  */
 
+import 'dart:math' as math;
+
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +19,7 @@ import 'package:comrade/config/navigation/navigation_service.dart';
 import 'package:comrade/core/extensions/ext_build_context.dart';
 import 'package:comrade/core/extensions/ext_num.dart';
 import 'package:comrade/config/app_constants.dart';
+import 'package:comrade/core/utils/platform_features.dart';
 import 'package:comrade/models/permissions_model.dart';
 import 'package:comrade/providers/system/comrade_settings_provider.dart';
 import 'package:comrade/providers/system/permissions_provider.dart';
@@ -39,6 +42,7 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 class _OnboardingState extends ConsumerState<OnboardingScreen> {
   int _currentPage = 0;
   ProviderSubscription? _subscription;
+  bool _isFinishing = false;
   final PageController _controller = PageController();
   final _animCurve = Curves.easeInOut;
   final _animDuration = AppConstants.defaultAnimDuration;
@@ -65,24 +69,19 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
   void initState() {
     super.initState();
 
-    /// Listen to permission changes an finish onboarding when
-    /// user have granted all essential permissions
-    _subscription = ref.listenManual<PermissionsModel>(
-      permissionProvider,
-      (_, perms) {
-        final haveAllEssentialPermissions = perms.haveUsageAccessPermission &&
-            perms.haveDisplayOverlayPermission &&
-            perms.haveAlarmsPermission &&
-            perms.haveNotificationPermission;
+    // Android: auto-finish when all essential permissions are granted.
+    // iOS: require explicit Finish Setup so the setup flow is never skipped.
+    if (PlatformFeatures.isAndroid) {
+      _subscription = ref.listenManual<PermissionsModel>(
+        permissionProvider,
+        (_, perms) {
+          if (!PlatformFeatures.haveEssentialPermissions(perms)) return;
+          _finishOnboarding();
+          _subscription?.close();
+        },
+      );
+    }
 
-        if (!haveAllEssentialPermissions) return;
-        _finishOnboarding();
-        _subscription?.close();
-      },
-    );
-
-    /// Go to permissions page if already done onboarding
-    /// but user removed some essential permissions
     if (widget.isOnboardingDone) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _skipToLastPage();
@@ -92,84 +91,84 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     _subscription?.close();
+    _controller.dispose();
+    super.dispose();
   }
 
   void _finishOnboarding() async {
-    if (mounted) {
-      ref.read(comradeSettingsProvider.notifier).markOnboardingDone();
+    if (!mounted || _isFinishing) return;
+    _isFinishing = true;
 
-      Future.delayed(
-        200.ms,
-        () {
-          if (!mounted) return;
-          NavigationService.instance
-              .init(showChangeLogsToo: !widget.isOnboardingDone);
-        },
-      );
-    }
+    ref.read(comradeSettingsProvider.notifier).markOnboardingDone();
+
+    await Future.delayed(200.ms);
+    if (!mounted) return;
+    NavigationService.instance
+        .init(showChangeLogsToo: !widget.isOnboardingDone);
   }
 
   void _skipToLastPage() {
-    if (mounted) {
-      _controller.animateToPage(
-        _pages.length - 1,
-        duration: _animDuration,
-        curve: _animCurve,
-      );
+    if (!mounted) return;
+    _controller.animateToPage(
+      _pages.length - 1,
+      duration: _animDuration,
+      curve: _animCurve,
+    );
+  }
+
+  bool _canFinishSetup(PermissionsModel perms) {
+    if (PlatformFeatures.isIOS) {
+      // iOS: user can finish after reviewing permissions; notification is
+      // encouraged via the tile but may be skipped.
+      return true;
     }
+    return PlatformFeatures.haveEssentialPermissions(perms);
   }
 
   @override
   Widget build(BuildContext context) {
     final isLastPage = _currentPage == _pages.length - 1;
     final perms = ref.watch(permissionProvider);
-    final haveAllEssentialPermissions = perms.haveUsageAccessPermission &&
-        perms.haveDisplayOverlayPermission &&
-        perms.haveAlarmsPermission &&
-        perms.haveNotificationPermission;
+    final canFinish = _canFinishSetup(perms);
+    final bottomInset = MediaQuery.paddingOf(context).bottom;
 
     return PopScope(
       onPopInvokedWithResult: (didPop, _) => SystemNavigator.pop(),
       child: Scaffold(
-        body: Stack(
-          children: [
-            /// Onboarding Page
-            PageView.builder(
-              controller: _controller,
-              physics: const BouncingScrollPhysics(),
-              itemCount: _pages.length,
-              onPageChanged: (i) => setState(() => _currentPage = i),
-              itemBuilder: (context, index) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: _pages[index],
+        body: SafeArea(
+          child: Stack(
+            children: [
+              PageView.builder(
+                controller: _controller,
+                physics: const BouncingScrollPhysics(),
+                itemCount: _pages.length,
+                onPageChanged: (i) => setState(() => _currentPage = i),
+                itemBuilder: (context, index) => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: _pages[index],
+                ),
               ),
-            ),
-
-            /// Overlay controls
-            SafeArea(
-              child: Padding(
+              Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    /// Skip button
                     TextButton(
                       onPressed: _skipToLastPage,
                       child: Text(context.locale.onboarding_skip_btn_label),
                     )
                         .animate(target: isLastPage ? 0 : 1)
                         .scale(duration: 100.ms),
-
-                    /// Bottom controls
                     Container(
                       color: Theme.of(context).colorScheme.surface,
-                      padding: const EdgeInsets.only(bottom: 32, top: 4),
+                      padding: EdgeInsets.only(
+                        bottom: math.max(16.0, bottomInset),
+                        top: 4,
+                      ),
                       child: Row(
                         children: [
-                          /// Page Dots
                           SmoothPageIndicator(
                             controller: _controller,
                             count: _pages.length,
@@ -186,8 +185,6 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
                             ),
                           ),
                           const Spacer(),
-
-                          /// Go to previous page
                           IconButton.filledTonal(
                             onPressed: () => _controller.previousPage(
                               curve: _animCurve,
@@ -201,12 +198,9 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
                               )
                               .scale(duration: 150.ms),
                           4.hBox,
-
                           isLastPage
-
-                              /// Finish setup
                               ? FilledButton(
-                                  onPressed: haveAllEssentialPermissions
+                                  onPressed: canFinish && !_isFinishing
                                       ? () => _finishOnboarding()
                                       : null,
                                   child: Text(
@@ -217,8 +211,6 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
                                     duration: 250.ms,
                                     alignment: Alignment.centerRight,
                                   )
-
-                              /// Go to next page
                               : IconButton.filled(
                                   padding: const EdgeInsets.all(10),
                                   onPressed: () => _controller.nextPage(
@@ -226,20 +218,19 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
                                     duration: _animDuration,
                                   ),
                                   icon: const Icon(
-                                      FluentIcons.caret_right_20_filled),
+                                    FluentIcons.caret_right_20_filled,
+                                  ),
                                 )
                                   .animate(target: isLastPage ? 0 : 1)
                                   .scale(duration: 150.ms),
-
-                          /// Finish setup
                         ],
                       ),
                     ),
                   ],
                 ),
               ),
-            )
-          ],
+            ],
+          ),
         ),
       ),
     );

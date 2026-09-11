@@ -5,9 +5,11 @@
 *.swp
 .DS_Store
 .atom/
+.build/
 .buildlog/
 .history
 .svn/
+.swiftpm/
 migrate_working_dir/
 .vscode
 temp/
@@ -47,3 +49,14 @@ app.*.map.json
 /android/app/release
 /android/app/.cxx/
 /android/build
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.jks
+*.keystore
+secrets.json
+

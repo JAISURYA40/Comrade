@@ -5983,6 +5983,639 @@ class NotificationsTableCompanion extends UpdateCompanion<Notification> {
   }
 }
 
+class $ChatMessagesTableTable extends ChatMessagesTable
+    with TableInfo<$ChatMessagesTableTable, ChatMessageRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ChatMessagesTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+      'user_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant("local"));
+  static const VerificationMeta _roleMeta = const VerificationMeta('role');
+  @override
+  late final GeneratedColumn<String> role = GeneratedColumn<String>(
+      'role', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _contentMeta =
+      const VerificationMeta('content');
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+      'content', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  @override
+  List<GeneratedColumn> get $columns => [id, userId, role, content, createdAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'chat_messages_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<ChatMessageRow> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(_userIdMeta,
+          userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta));
+    }
+    if (data.containsKey('role')) {
+      context.handle(
+          _roleMeta, role.isAcceptableOrUnknown(data['role']!, _roleMeta));
+    } else if (isInserting) {
+      context.missing(_roleMeta);
+    }
+    if (data.containsKey('content')) {
+      context.handle(_contentMeta,
+          content.isAcceptableOrUnknown(data['content']!, _contentMeta));
+    } else if (isInserting) {
+      context.missing(_contentMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ChatMessageRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ChatMessageRow(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      userId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}user_id'])!,
+      role: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}role'])!,
+      content: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+    );
+  }
+
+  @override
+  $ChatMessagesTableTable createAlias(String alias) {
+    return $ChatMessagesTableTable(attachedDatabase, alias);
+  }
+}
+
+class ChatMessageRow extends DataClass implements Insertable<ChatMessageRow> {
+  final int id;
+
+  /// Local profile key (single-device user / username).
+  final String userId;
+
+  /// `user` or `assistant`
+  final String role;
+  final String content;
+  final DateTime createdAt;
+  const ChatMessageRow(
+      {required this.id,
+      required this.userId,
+      required this.role,
+      required this.content,
+      required this.createdAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['user_id'] = Variable<String>(userId);
+    map['role'] = Variable<String>(role);
+    map['content'] = Variable<String>(content);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  ChatMessagesTableCompanion toCompanion(bool nullToAbsent) {
+    return ChatMessagesTableCompanion(
+      id: Value(id),
+      userId: Value(userId),
+      role: Value(role),
+      content: Value(content),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory ChatMessageRow.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ChatMessageRow(
+      id: serializer.fromJson<int>(json['id']),
+      userId: serializer.fromJson<String>(json['userId']),
+      role: serializer.fromJson<String>(json['role']),
+      content: serializer.fromJson<String>(json['content']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'userId': serializer.toJson<String>(userId),
+      'role': serializer.toJson<String>(role),
+      'content': serializer.toJson<String>(content),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  ChatMessageRow copyWith(
+          {int? id,
+          String? userId,
+          String? role,
+          String? content,
+          DateTime? createdAt}) =>
+      ChatMessageRow(
+        id: id ?? this.id,
+        userId: userId ?? this.userId,
+        role: role ?? this.role,
+        content: content ?? this.content,
+        createdAt: createdAt ?? this.createdAt,
+      );
+  ChatMessageRow copyWithCompanion(ChatMessagesTableCompanion data) {
+    return ChatMessageRow(
+      id: data.id.present ? data.id.value : this.id,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      role: data.role.present ? data.role.value : this.role,
+      content: data.content.present ? data.content.value : this.content,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ChatMessageRow(')
+          ..write('id: $id, ')
+          ..write('userId: $userId, ')
+          ..write('role: $role, ')
+          ..write('content: $content, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, userId, role, content, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ChatMessageRow &&
+          other.id == this.id &&
+          other.userId == this.userId &&
+          other.role == this.role &&
+          other.content == this.content &&
+          other.createdAt == this.createdAt);
+}
+
+class ChatMessagesTableCompanion extends UpdateCompanion<ChatMessageRow> {
+  final Value<int> id;
+  final Value<String> userId;
+  final Value<String> role;
+  final Value<String> content;
+  final Value<DateTime> createdAt;
+  const ChatMessagesTableCompanion({
+    this.id = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.role = const Value.absent(),
+    this.content = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  ChatMessagesTableCompanion.insert({
+    this.id = const Value.absent(),
+    this.userId = const Value.absent(),
+    required String role,
+    required String content,
+    this.createdAt = const Value.absent(),
+  })  : role = Value(role),
+        content = Value(content);
+  static Insertable<ChatMessageRow> custom({
+    Expression<int>? id,
+    Expression<String>? userId,
+    Expression<String>? role,
+    Expression<String>? content,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (userId != null) 'user_id': userId,
+      if (role != null) 'role': role,
+      if (content != null) 'content': content,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  ChatMessagesTableCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? userId,
+      Value<String>? role,
+      Value<String>? content,
+      Value<DateTime>? createdAt}) {
+    return ChatMessagesTableCompanion(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      role: role ?? this.role,
+      content: content ?? this.content,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (role.present) {
+      map['role'] = Variable<String>(role.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ChatMessagesTableCompanion(')
+          ..write('id: $id, ')
+          ..write('userId: $userId, ')
+          ..write('role: $role, ')
+          ..write('content: $content, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ChatMemoriesTableTable extends ChatMemoriesTable
+    with TableInfo<$ChatMemoriesTableTable, ChatMemoryRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ChatMemoriesTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+      'user_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant("local"));
+  static const VerificationMeta _contentMeta =
+      const VerificationMeta('content');
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+      'content', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _tagsMeta = const VerificationMeta('tags');
+  @override
+  late final GeneratedColumn<String> tags = GeneratedColumn<String>(
+      'tags', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(""));
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, userId, content, tags, createdAt, updatedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'chat_memories_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<ChatMemoryRow> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(_userIdMeta,
+          userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta));
+    }
+    if (data.containsKey('content')) {
+      context.handle(_contentMeta,
+          content.isAcceptableOrUnknown(data['content']!, _contentMeta));
+    } else if (isInserting) {
+      context.missing(_contentMeta);
+    }
+    if (data.containsKey('tags')) {
+      context.handle(
+          _tagsMeta, tags.isAcceptableOrUnknown(data['tags']!, _tagsMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ChatMemoryRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ChatMemoryRow(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      userId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}user_id'])!,
+      content: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
+      tags: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}tags'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+    );
+  }
+
+  @override
+  $ChatMemoriesTableTable createAlias(String alias) {
+    return $ChatMemoriesTableTable(attachedDatabase, alias);
+  }
+}
+
+class ChatMemoryRow extends DataClass implements Insertable<ChatMemoryRow> {
+  final int id;
+  final String userId;
+
+  /// Short factual memory suitable for long-term recall.
+  final String content;
+
+  /// Optional tags for retrieval (comma-separated keywords).
+  final String tags;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const ChatMemoryRow(
+      {required this.id,
+      required this.userId,
+      required this.content,
+      required this.tags,
+      required this.createdAt,
+      required this.updatedAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['user_id'] = Variable<String>(userId);
+    map['content'] = Variable<String>(content);
+    map['tags'] = Variable<String>(tags);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  ChatMemoriesTableCompanion toCompanion(bool nullToAbsent) {
+    return ChatMemoriesTableCompanion(
+      id: Value(id),
+      userId: Value(userId),
+      content: Value(content),
+      tags: Value(tags),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory ChatMemoryRow.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ChatMemoryRow(
+      id: serializer.fromJson<int>(json['id']),
+      userId: serializer.fromJson<String>(json['userId']),
+      content: serializer.fromJson<String>(json['content']),
+      tags: serializer.fromJson<String>(json['tags']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'userId': serializer.toJson<String>(userId),
+      'content': serializer.toJson<String>(content),
+      'tags': serializer.toJson<String>(tags),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  ChatMemoryRow copyWith(
+          {int? id,
+          String? userId,
+          String? content,
+          String? tags,
+          DateTime? createdAt,
+          DateTime? updatedAt}) =>
+      ChatMemoryRow(
+        id: id ?? this.id,
+        userId: userId ?? this.userId,
+        content: content ?? this.content,
+        tags: tags ?? this.tags,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+      );
+  ChatMemoryRow copyWithCompanion(ChatMemoriesTableCompanion data) {
+    return ChatMemoryRow(
+      id: data.id.present ? data.id.value : this.id,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      content: data.content.present ? data.content.value : this.content,
+      tags: data.tags.present ? data.tags.value : this.tags,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ChatMemoryRow(')
+          ..write('id: $id, ')
+          ..write('userId: $userId, ')
+          ..write('content: $content, ')
+          ..write('tags: $tags, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, userId, content, tags, createdAt, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ChatMemoryRow &&
+          other.id == this.id &&
+          other.userId == this.userId &&
+          other.content == this.content &&
+          other.tags == this.tags &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class ChatMemoriesTableCompanion extends UpdateCompanion<ChatMemoryRow> {
+  final Value<int> id;
+  final Value<String> userId;
+  final Value<String> content;
+  final Value<String> tags;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const ChatMemoriesTableCompanion({
+    this.id = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.content = const Value.absent(),
+    this.tags = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  ChatMemoriesTableCompanion.insert({
+    this.id = const Value.absent(),
+    this.userId = const Value.absent(),
+    required String content,
+    this.tags = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  }) : content = Value(content);
+  static Insertable<ChatMemoryRow> custom({
+    Expression<int>? id,
+    Expression<String>? userId,
+    Expression<String>? content,
+    Expression<String>? tags,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (userId != null) 'user_id': userId,
+      if (content != null) 'content': content,
+      if (tags != null) 'tags': tags,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  ChatMemoriesTableCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? userId,
+      Value<String>? content,
+      Value<String>? tags,
+      Value<DateTime>? createdAt,
+      Value<DateTime>? updatedAt}) {
+    return ChatMemoriesTableCompanion(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      content: content ?? this.content,
+      tags: tags ?? this.tags,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (tags.present) {
+      map['tags'] = Variable<String>(tags.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ChatMemoriesTableCompanion(')
+          ..write('id: $id, ')
+          ..write('userId: $userId, ')
+          ..write('content: $content, ')
+          ..write('tags: $tags, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -6010,10 +6643,16 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $NotificationSettingsTableTable(this);
   late final $NotificationsTableTable notificationsTable =
       $NotificationsTableTable(this);
+  late final $ChatMessagesTableTable chatMessagesTable =
+      $ChatMessagesTableTable(this);
+  late final $ChatMemoriesTableTable chatMemoriesTable =
+      $ChatMemoriesTableTable(this);
   late final UniqueRecordsDao uniqueRecordsDao =
       UniqueRecordsDao(this as AppDatabase);
   late final DynamicRecordsDao dynamicRecordsDao =
       DynamicRecordsDao(this as AppDatabase);
+  late final ChatRecordsDao chatRecordsDao =
+      ChatRecordsDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -6032,7 +6671,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         sharedUniqueDataTable,
         appUsageTable,
         notificationSettingsTable,
-        notificationsTable
+        notificationsTable,
+        chatMessagesTable,
+        chatMemoriesTable
       ];
 }
 
@@ -6269,7 +6910,12 @@ class $$AppRestrictionTableTableTableManager extends RootTableManager<
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable<$AppRestrictionTableTable, AppRestriction>(
+                        table),
+                    BaseReferences<_$AppDatabase, $AppRestrictionTableTable,
+                        AppRestriction>(db, table, e)
+                  ))
               .toList(),
           prefetchHooksCallback: null,
         ));
@@ -6505,7 +7151,12 @@ class $$BedtimeScheduleTableTableTableManager extends RootTableManager<
             distractingApps: distractingApps,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable<$BedtimeScheduleTableTable, BedtimeSchedule>(
+                        table),
+                    BaseReferences<_$AppDatabase, $BedtimeScheduleTableTable,
+                        BedtimeSchedule>(db, table, e)
+                  ))
               .toList(),
           prefetchHooksCallback: null,
         ));
@@ -6672,7 +7323,11 @@ class $$CrashLogsTableTableTableManager extends RootTableManager<
             stackTrace: stackTrace,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable<$CrashLogsTableTable, CrashLog>(table),
+                    BaseReferences<_$AppDatabase, $CrashLogsTableTable,
+                        CrashLog>(db, table, e)
+                  ))
               .toList(),
           prefetchHooksCallback: null,
         ));
@@ -6841,7 +7496,11 @@ class $$FocusModeTableTableTableManager extends RootTableManager<
             lastTimeStreakUpdated: lastTimeStreakUpdated,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable<$FocusModeTableTable, FocusMode>(table),
+                    BaseReferences<_$AppDatabase, $FocusModeTableTable,
+                        FocusMode>(db, table, e)
+                  ))
               .toList(),
           prefetchHooksCallback: null,
         ));
@@ -7020,7 +7679,11 @@ class $$FocusProfileTableTableTableManager extends RootTableManager<
             distractingApps: distractingApps,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable<$FocusProfileTableTable, FocusProfile>(table),
+                    BaseReferences<_$AppDatabase, $FocusProfileTableTable,
+                        FocusProfile>(db, table, e)
+                  ))
               .toList(),
           prefetchHooksCallback: null,
         ));
@@ -7210,7 +7873,11 @@ class $$FocusSessionsTableTableTableManager extends RootTableManager<
             reflection: reflection,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable<$FocusSessionsTableTable, FocusSession>(table),
+                    BaseReferences<_$AppDatabase, $FocusSessionsTableTable,
+                        FocusSession>(db, table, e)
+                  ))
               .toList(),
           prefetchHooksCallback: null,
         ));
@@ -7517,7 +8184,12 @@ class $$ComradeSettingsTableTableTableManager extends RootTableManager<
             appVersion: appVersion,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable<$ComradeSettingsTableTable, ComradeSettings>(
+                        table),
+                    BaseReferences<_$AppDatabase, $ComradeSettingsTableTable,
+                        ComradeSettings>(db, table, e)
+                  ))
               .toList(),
           prefetchHooksCallback: null,
         ));
@@ -7822,7 +8494,12 @@ class $$ParentalControlsTableTableTableManager extends RootTableManager<
             includeBedtimeSchedule: includeBedtimeSchedule,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable<$ParentalControlsTableTable, ParentalControls>(
+                        table),
+                    BaseReferences<_$AppDatabase, $ParentalControlsTableTable,
+                        ParentalControls>(db, table, e)
+                  ))
               .toList(),
           prefetchHooksCallback: null,
         ));
@@ -8040,7 +8717,12 @@ class $$RestrictionGroupsTableTableTableManager extends RootTableManager<
             distractingApps: distractingApps,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable<$RestrictionGroupsTableTable, RestrictionGroup>(
+                        table),
+                    BaseReferences<_$AppDatabase, $RestrictionGroupsTableTable,
+                        RestrictionGroup>(db, table, e)
+                  ))
               .toList(),
           prefetchHooksCallback: null,
         ));
@@ -8241,7 +8923,11 @@ class $$WellbeingTableTableTableManager extends RootTableManager<
             nsfwWebsites: nsfwWebsites,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable<$WellbeingTableTable, Wellbeing>(table),
+                    BaseReferences<_$AppDatabase, $WellbeingTableTable,
+                        Wellbeing>(db, table, e)
+                  ))
               .toList(),
           prefetchHooksCallback: null,
         ));
@@ -8369,7 +9055,12 @@ class $$SharedUniqueDataTableTableTableManager extends RootTableManager<
             excludedApps: excludedApps,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable<$SharedUniqueDataTableTable, SharedUniqueData>(
+                        table),
+                    BaseReferences<_$AppDatabase, $SharedUniqueDataTableTable,
+                        SharedUniqueData>(db, table, e)
+                  ))
               .toList(),
           prefetchHooksCallback: null,
         ));
@@ -8541,7 +9232,11 @@ class $$AppUsageTableTableTableManager extends RootTableManager<
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable<$AppUsageTableTable, AppUsage>(table),
+                    BaseReferences<_$AppDatabase, $AppUsageTableTable,
+                        AppUsage>(db, table, e)
+                  ))
               .toList(),
           prefetchHooksCallback: null,
         ));
@@ -8738,7 +9433,14 @@ class $$NotificationSettingsTableTableTableManager extends RootTableManager<
             schedules: schedules,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable<$NotificationSettingsTableTable,
+                        NotificationSettings>(table),
+                    BaseReferences<
+                        _$AppDatabase,
+                        $NotificationSettingsTableTable,
+                        NotificationSettings>(db, table, e)
+                  ))
               .toList(),
           prefetchHooksCallback: null,
         ));
@@ -8954,7 +9656,11 @@ class $$NotificationsTableTableTableManager extends RootTableManager<
             isRead: isRead,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable<$NotificationsTableTable, Notification>(table),
+                    BaseReferences<_$AppDatabase, $NotificationsTableTable,
+                        Notification>(db, table, e)
+                  ))
               .toList(),
           prefetchHooksCallback: null,
         ));
@@ -8974,6 +9680,367 @@ typedef $$NotificationsTableTableProcessedTableManager = ProcessedTableManager<
       BaseReferences<_$AppDatabase, $NotificationsTableTable, Notification>
     ),
     Notification,
+    PrefetchHooks Function()>;
+typedef $$ChatMessagesTableTableCreateCompanionBuilder
+    = ChatMessagesTableCompanion Function({
+  Value<int> id,
+  Value<String> userId,
+  required String role,
+  required String content,
+  Value<DateTime> createdAt,
+});
+typedef $$ChatMessagesTableTableUpdateCompanionBuilder
+    = ChatMessagesTableCompanion Function({
+  Value<int> id,
+  Value<String> userId,
+  Value<String> role,
+  Value<String> content,
+  Value<DateTime> createdAt,
+});
+
+class $$ChatMessagesTableTableFilterComposer
+    extends Composer<_$AppDatabase, $ChatMessagesTableTable> {
+  $$ChatMessagesTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get userId => $composableBuilder(
+      column: $table.userId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get role => $composableBuilder(
+      column: $table.role, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get content => $composableBuilder(
+      column: $table.content, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$ChatMessagesTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $ChatMessagesTableTable> {
+  $$ChatMessagesTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get userId => $composableBuilder(
+      column: $table.userId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get role => $composableBuilder(
+      column: $table.role, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get content => $composableBuilder(
+      column: $table.content, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$ChatMessagesTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ChatMessagesTableTable> {
+  $$ChatMessagesTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<String> get role =>
+      $composableBuilder(column: $table.role, builder: (column) => column);
+
+  GeneratedColumn<String> get content =>
+      $composableBuilder(column: $table.content, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$ChatMessagesTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $ChatMessagesTableTable,
+    ChatMessageRow,
+    $$ChatMessagesTableTableFilterComposer,
+    $$ChatMessagesTableTableOrderingComposer,
+    $$ChatMessagesTableTableAnnotationComposer,
+    $$ChatMessagesTableTableCreateCompanionBuilder,
+    $$ChatMessagesTableTableUpdateCompanionBuilder,
+    (
+      ChatMessageRow,
+      BaseReferences<_$AppDatabase, $ChatMessagesTableTable, ChatMessageRow>
+    ),
+    ChatMessageRow,
+    PrefetchHooks Function()> {
+  $$ChatMessagesTableTableTableManager(
+      _$AppDatabase db, $ChatMessagesTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ChatMessagesTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ChatMessagesTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ChatMessagesTableTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> userId = const Value.absent(),
+            Value<String> role = const Value.absent(),
+            Value<String> content = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+          }) =>
+              ChatMessagesTableCompanion(
+            id: id,
+            userId: userId,
+            role: role,
+            content: content,
+            createdAt: createdAt,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> userId = const Value.absent(),
+            required String role,
+            required String content,
+            Value<DateTime> createdAt = const Value.absent(),
+          }) =>
+              ChatMessagesTableCompanion.insert(
+            id: id,
+            userId: userId,
+            role: role,
+            content: content,
+            createdAt: createdAt,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable<$ChatMessagesTableTable, ChatMessageRow>(table),
+                    BaseReferences<_$AppDatabase, $ChatMessagesTableTable,
+                        ChatMessageRow>(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$ChatMessagesTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $ChatMessagesTableTable,
+    ChatMessageRow,
+    $$ChatMessagesTableTableFilterComposer,
+    $$ChatMessagesTableTableOrderingComposer,
+    $$ChatMessagesTableTableAnnotationComposer,
+    $$ChatMessagesTableTableCreateCompanionBuilder,
+    $$ChatMessagesTableTableUpdateCompanionBuilder,
+    (
+      ChatMessageRow,
+      BaseReferences<_$AppDatabase, $ChatMessagesTableTable, ChatMessageRow>
+    ),
+    ChatMessageRow,
+    PrefetchHooks Function()>;
+typedef $$ChatMemoriesTableTableCreateCompanionBuilder
+    = ChatMemoriesTableCompanion Function({
+  Value<int> id,
+  Value<String> userId,
+  required String content,
+  Value<String> tags,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+});
+typedef $$ChatMemoriesTableTableUpdateCompanionBuilder
+    = ChatMemoriesTableCompanion Function({
+  Value<int> id,
+  Value<String> userId,
+  Value<String> content,
+  Value<String> tags,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+});
+
+class $$ChatMemoriesTableTableFilterComposer
+    extends Composer<_$AppDatabase, $ChatMemoriesTableTable> {
+  $$ChatMemoriesTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get userId => $composableBuilder(
+      column: $table.userId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get content => $composableBuilder(
+      column: $table.content, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get tags => $composableBuilder(
+      column: $table.tags, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$ChatMemoriesTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $ChatMemoriesTableTable> {
+  $$ChatMemoriesTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get userId => $composableBuilder(
+      column: $table.userId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get content => $composableBuilder(
+      column: $table.content, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get tags => $composableBuilder(
+      column: $table.tags, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$ChatMemoriesTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ChatMemoriesTableTable> {
+  $$ChatMemoriesTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<String> get content =>
+      $composableBuilder(column: $table.content, builder: (column) => column);
+
+  GeneratedColumn<String> get tags =>
+      $composableBuilder(column: $table.tags, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$ChatMemoriesTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $ChatMemoriesTableTable,
+    ChatMemoryRow,
+    $$ChatMemoriesTableTableFilterComposer,
+    $$ChatMemoriesTableTableOrderingComposer,
+    $$ChatMemoriesTableTableAnnotationComposer,
+    $$ChatMemoriesTableTableCreateCompanionBuilder,
+    $$ChatMemoriesTableTableUpdateCompanionBuilder,
+    (
+      ChatMemoryRow,
+      BaseReferences<_$AppDatabase, $ChatMemoriesTableTable, ChatMemoryRow>
+    ),
+    ChatMemoryRow,
+    PrefetchHooks Function()> {
+  $$ChatMemoriesTableTableTableManager(
+      _$AppDatabase db, $ChatMemoriesTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ChatMemoriesTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ChatMemoriesTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ChatMemoriesTableTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> userId = const Value.absent(),
+            Value<String> content = const Value.absent(),
+            Value<String> tags = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updatedAt = const Value.absent(),
+          }) =>
+              ChatMemoriesTableCompanion(
+            id: id,
+            userId: userId,
+            content: content,
+            tags: tags,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> userId = const Value.absent(),
+            required String content,
+            Value<String> tags = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updatedAt = const Value.absent(),
+          }) =>
+              ChatMemoriesTableCompanion.insert(
+            id: id,
+            userId: userId,
+            content: content,
+            tags: tags,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable<$ChatMemoriesTableTable, ChatMemoryRow>(table),
+                    BaseReferences<_$AppDatabase, $ChatMemoriesTableTable,
+                        ChatMemoryRow>(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$ChatMemoriesTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $ChatMemoriesTableTable,
+    ChatMemoryRow,
+    $$ChatMemoriesTableTableFilterComposer,
+    $$ChatMemoriesTableTableOrderingComposer,
+    $$ChatMemoriesTableTableAnnotationComposer,
+    $$ChatMemoriesTableTableCreateCompanionBuilder,
+    $$ChatMemoriesTableTableUpdateCompanionBuilder,
+    (
+      ChatMemoryRow,
+      BaseReferences<_$AppDatabase, $ChatMemoriesTableTable, ChatMemoryRow>
+    ),
+    ChatMemoryRow,
     PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
@@ -9009,4 +10076,8 @@ class $AppDatabaseManager {
           _db, _db.notificationSettingsTable);
   $$NotificationsTableTableTableManager get notificationsTable =>
       $$NotificationsTableTableTableManager(_db, _db.notificationsTable);
+  $$ChatMessagesTableTableTableManager get chatMessagesTable =>
+      $$ChatMessagesTableTableTableManager(_db, _db.chatMessagesTable);
+  $$ChatMemoriesTableTableTableManager get chatMemoriesTable =>
+      $$ChatMemoriesTableTableTableManager(_db, _db.chatMemoriesTable);
 }
