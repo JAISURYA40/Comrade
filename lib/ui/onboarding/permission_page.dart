@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:comrade/core/extensions/ext_build_context.dart';
 import 'package:comrade/core/extensions/ext_num.dart';
 import 'package:comrade/core/services/method_channel_service.dart';
+import 'package:comrade/core/utils/platform_features.dart';
 import 'package:comrade/ui/onboarding/onboarding_page.dart';
 import 'package:comrade/ui/permissions/alarm_permission_tile.dart';
 import 'package:comrade/ui/permissions/battery_permission_tile.dart';
@@ -44,15 +45,17 @@ class PermissionsPage extends StatelessWidget {
 
           /// Permission tiles
           const NotificationPermissionTile(),
-          const BatteryPermissionTile(),
 
-          // Only SDK version Android(S [31]) and above need this permission
-          if (sdkVersion >= 31) const AlarmPermissionTile(),
+          if (PlatformFeatures.isAndroid) ...[
+            const BatteryPermissionTile(),
+            // Only SDK version Android(S [31]) and above need this permission
+            if (sdkVersion >= 31) const AlarmPermissionTile(),
+            const UsageAccessPermissionTile(),
+            if (PlatformFeatures.hasDisplayOverlay)
+              const DisplayOverlayPermissionTile(),
+          ],
 
-          const UsageAccessPermissionTile(),
-          const DisplayOverlayPermissionTile(),
-
-          108.vBox,
+          SizedBox(height: 108 + MediaQuery.paddingOf(context).bottom),
         ],
       ),
     );

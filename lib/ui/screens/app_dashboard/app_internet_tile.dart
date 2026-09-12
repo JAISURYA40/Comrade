@@ -14,6 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:comrade/core/enums/item_position.dart';
 import 'package:comrade/core/extensions/ext_build_context.dart';
 import 'package:comrade/models/app_info.dart';
+import 'package:comrade/core/utils/platform_features.dart';
 import 'package:comrade/providers/system/permissions_provider.dart';
 import 'package:comrade/providers/restrictions/apps_restrictions_provider.dart';
 import 'package:comrade/ui/common/default_list_tile.dart';
@@ -38,7 +39,7 @@ class AppInternetTile extends ConsumerWidget {
             (value) => value[appInfo.packageName]?.canAccessInternet)) ??
         true;
 
-    onPressed() => havePermission
+    onPressed() => havePermission || !PlatformFeatures.hasVpnPermissionPrompt
         ? _switchInternet(context, ref, !haveInternetAccess)
         : _showSheet(context, ref);
 
@@ -65,7 +66,7 @@ class AppInternetTile extends ConsumerWidget {
                 : FluentIcons.globe_prohibited_16_filled,
             accent:
                 haveInternetAccess ? null : Theme.of(context).colorScheme.error,
-            isSelected: havePermission,
+            isSelected: havePermission || !PlatformFeatures.hasVpnPermissionPrompt,
             onPressed: onPressed,
           );
   }

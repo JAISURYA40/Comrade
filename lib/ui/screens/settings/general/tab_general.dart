@@ -12,6 +12,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:comrade/config/app_themes.dart';
+import 'package:comrade/config/app_theme_tokens.dart';
 import 'package:comrade/core/enums/app_theme_mode.dart';
 import 'package:comrade/core/enums/default_home_tab.dart';
 import 'package:comrade/core/enums/item_position.dart';
@@ -29,6 +30,7 @@ import 'package:comrade/ui/common/default_dropdown_tile.dart';
 import 'package:comrade/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:comrade/ui/common/styled_text.dart';
 import 'package:comrade/ui/permissions/battery_permission_tile.dart';
+import 'package:comrade/core/utils/platform_features.dart';
 
 class TabGeneral extends ConsumerWidget {
   const TabGeneral({super.key});
@@ -40,6 +42,23 @@ class TabGeneral extends ConsumerWidget {
       context.showSnackAlert(
         context.locale.whitelist_app_unsupported_snack_alert,
       );
+    }
+  }
+
+  Color _swatchFor(AppThemeMode? mode) {
+    switch (mode) {
+      case AppThemeMode.blast:
+        return AppThemeTokens.blast.primary;
+      case AppThemeMode.focus:
+        return AppThemeTokens.focus.primary;
+      case AppThemeMode.calm:
+        return AppThemeTokens.calm.primary;
+      case AppThemeMode.light:
+        return AppThemeTokens.classicLight.primary;
+      case AppThemeMode.dark:
+      case AppThemeMode.system:
+      case null:
+        return AppThemeTokens.classicDark.primary;
     }
   }
 
@@ -55,7 +74,7 @@ class TabGeneral extends ConsumerWidget {
           title: context.locale.appearance_heading,
         ).sliver,
 
-        /// Theme mode
+        /// Theme mode (System / Light / Dark + mood themes)
         DefaultDropdownTile<AppThemeMode>(
           position: ItemPosition.top,
           value: comradeSettings.themeMode,
@@ -63,6 +82,12 @@ class TabGeneral extends ConsumerWidget {
           titleText: context.locale.theme_mode_tile_title,
           onSelected:
               ref.read(comradeSettingsProvider.notifier).changeThemeMode,
+          trailingBuilder: (mode) => RoundedContainer(
+            height: 18,
+            width: 18,
+            circularRadius: 18,
+            color: _swatchFor(mode),
+          ),
           items: [
             DefaultDropdownItem(
               label: context.locale.theme_mode_system_label,
@@ -76,12 +101,35 @@ class TabGeneral extends ConsumerWidget {
               label: context.locale.theme_mode_dark_label,
               value: AppThemeMode.dark,
             ),
+            DefaultDropdownItem(
+              label: context.locale.theme_mode_blast_label,
+              value: AppThemeMode.blast,
+            ),
+            DefaultDropdownItem(
+              label: context.locale.theme_mode_focus_label,
+              value: AppThemeMode.focus,
+            ),
+            DefaultDropdownItem(
+              label: context.locale.theme_mode_calm_label,
+              value: AppThemeMode.calm,
+            ),
           ],
         ).sliver,
 
-        /// Material Color
+        if (comradeSettings.themeMode.isMoodTheme)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(4, 4, 4, 8),
+            child: StyledText(
+              context.locale.theme_mode_mood_section_hint,
+              fontSize: 12,
+              isSubtitle: true,
+            ),
+          ).sliver,
+
+        /// Material Color (classic themes only)
         DefaultDropdownTile<String>(
           position: ItemPosition.mid,
+          enabled: !comradeSettings.themeMode.isMoodTheme,
           titleText: context.locale.material_color_tile_title,
           dialogIcon: FluentIcons.color_20_filled,
           value: comradeSettings.accentColor,
@@ -94,7 +142,6 @@ class TabGeneral extends ConsumerWidget {
           ),
           items: AppTheme.materialColors.entries
               .map((e) => DefaultDropdownItem(
-                    // using key for both label and value as we are storing color name in database
                     label: e.key,
                     value: e.key,
                   ))
@@ -104,6 +151,8 @@ class TabGeneral extends ConsumerWidget {
         /// Amoled dark
         DefaultListTile(
           position: ItemPosition.mid,
+          enabled: !comradeSettings.themeMode.isMoodTheme &&
+              comradeSettings.themeMode != AppThemeMode.light,
           switchValue: comradeSettings.useAmoledDark,
           titleText: context.locale.amoled_dark_tile_title,
           subtitleText: context.locale.amoled_dark_tile_subtitle,
@@ -111,9 +160,10 @@ class TabGeneral extends ConsumerWidget {
               ref.read(comradeSettingsProvider.notifier).switchAmoledDark,
         ).sliver,
 
-        /// Amoled dark
+        /// Dynamic colors
         DefaultListTile(
           position: ItemPosition.bottom,
+          enabled: !comradeSettings.themeMode.isMoodTheme,
           switchValue: comradeSettings.useDynamicColors,
           titleText: context.locale.dynamic_colors_tile_title,
           subtitleText: context.locale.dynamic_colors_tile_subtitle,
@@ -211,20 +261,22 @@ class TabGeneral extends ConsumerWidget {
         ).sliver,
 
         /// Service
-        ContentSectionHeader(title: context.locale.service_heading).sliver,
+        if (PlatformFeatures.hasBatteryOptimization) ...[
+          ContentSectionHeader(title: context.locale.service_heading).sliver,
 
-        /// Battery permission
-        StyledText(context.locale.service_stopping_warning).sliver,
-        6.vSliverBox,
-        const SliverBatteryPermissionSwitchTile(),
-        DefaultListTile(
-          position: ItemPosition.bottom,
-          leadingIcon: FluentIcons.leaf_three_20_regular,
-          titleText: context.locale.whitelist_app_tile_title,
-          subtitleText: context.locale.whitelist_app_tile_subtitle,
-          trailing: const Icon(FluentIcons.chevron_right_20_regular),
-          onPressed: () => _openAutoStartSettings(context),
-        ).sliver,
+          /// Battery permission
+          StyledText(context.locale.service_stopping_warning).sliver,
+          6.vSliverBox,
+          const SliverBatteryPermissionSwitchTile(),
+          DefaultListTile(
+            position: ItemPosition.bottom,
+            leadingIcon: FluentIcons.leaf_three_20_regular,
+            titleText: context.locale.whitelist_app_tile_title,
+            subtitleText: context.locale.whitelist_app_tile_subtitle,
+            trailing: const Icon(FluentIcons.chevron_right_20_regular),
+            onPressed: () => _openAutoStartSettings(context),
+          ).sliver,
+        ],
 
         const SliverTabsBottomPadding(),
       ],

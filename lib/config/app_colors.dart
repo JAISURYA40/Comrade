@@ -9,24 +9,22 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:comrade/config/app_theme_tokens.dart';
 
-/// Premium dark theme color palette with navy and indigo colors
+/// Backward-compatible aliases for classic dark palette.
+/// Prefer [Theme.of(context).colorScheme] or [context.themeTokens] in new code.
 class AppColors {
-  // Premium dark theme palette
-  static const Color background = Color(0xFF0A0E27);
-  static const Color card = Color(0xFF0F1433);
-  static const Color primary = Color(0xFF5B7FFF);
-  static const Color secondary = Color(0xFF1A2047);
-  static const Color accent = Color(0xFF2D3A6E);
-  static const Color foreground = Color(0xFFE8EAF2);
-  static const Color mutedForeground = Color(0xFF8D92B3);
-  static const Color destructive = Color(0xFFFF6B9D);
-  static const Color inputBackground = Color(0xFF131837);
-  
-  // Gradients
-  static const List<Color> primaryGradient = [
-    Color(0xFF5B7FFF),
-    Color(0xFF8B5CF6),
-    Color(0xFF3B82F6),
-  ];
+  static Color get background => AppThemeTokens.classicDark.background;
+  static Color get card => AppThemeTokens.classicDark.card;
+  static Color get primary => AppThemeTokens.classicDark.primary;
+  static Color get secondary => AppThemeTokens.classicDark.secondary;
+  static Color get accent => AppThemeTokens.classicDark.accent;
+  static Color get foreground => AppThemeTokens.classicDark.foreground;
+  static Color get mutedForeground => AppThemeTokens.classicDark.mutedForeground;
+  static Color get destructive => AppThemeTokens.classicDark.destructive;
+  static Color get inputBackground => AppThemeTokens.classicDark.inputBackground;
+
+  /// Prefer [AppThemeTokens.primaryGradient] via context when possible.
+  static List<Color> get primaryGradient =>
+      AppThemeTokens.classicDark.primaryGradient;
 }

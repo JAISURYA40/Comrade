@@ -16,6 +16,7 @@ import 'package:comrade/core/enums/item_position.dart';
 import 'package:comrade/core/extensions/ext_build_context.dart';
 import 'package:comrade/core/extensions/ext_widget.dart';
 import 'package:comrade/core/services/auth_service.dart';
+import 'package:comrade/core/utils/platform_features.dart';
 import 'package:comrade/providers/system/parental_controls_provider.dart';
 import 'package:comrade/providers/system/permissions_provider.dart';
 import 'package:comrade/ui/common/content_section_header.dart';
@@ -106,8 +107,9 @@ class ParentalControlsScreen extends ConsumerWidget {
                 ),
               ).sliver,
 
-              /// Tamper protection
-              const AdminPermissionTile().sliver,
+              /// Tamper protection (Android device admin)
+              if (PlatformFeatures.hasDeviceAdmin)
+                const AdminPermissionTile().sliver,
 
               /// Uninstall window
               DefaultHero(

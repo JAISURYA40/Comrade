@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:comrade/core/extensions/ext_build_context.dart';
 import 'package:comrade/core/services/method_channel_service.dart';
+import 'package:comrade/core/utils/platform_features.dart';
 import 'package:comrade/config/app_constants.dart';
 import 'package:comrade/providers/system/permissions_provider.dart';
 import 'package:comrade/ui/common/sliver_primary_action_container.dart';
@@ -29,19 +30,35 @@ class AccessibilityPermissionCard extends ConsumerWidget {
         .watch(permissionProvider.select((v) => v.haveAccessibilityPermission));
 
     return SliverPrimaryActionContainer(
-      isVisible: !havePermission,
+      isVisible: PlatformFeatures.usesInAppReminders || !havePermission,
       margin: const EdgeInsets.symmetric(vertical: 4),
-      icon: FluentIcons.accessibility_20_regular,
-      title: context.locale.permission_accessibility_title,
-      information: context.locale.permission_accessibility_required,
+      icon: PlatformFeatures.usesInAppReminders
+          ? FluentIcons.alert_20_regular
+          : FluentIcons.accessibility_20_regular,
+      title: PlatformFeatures.usesInAppReminders
+          ? context.locale.permission_ios_limits_title
+          : context.locale.permission_accessibility_title,
+      information: PlatformFeatures.usesInAppReminders
+          ? context.locale.permission_ios_limits_info
+          : context.locale.permission_accessibility_required,
       negativeBtn: TextButton(
         onPressed: () =>
             MethodChannelService.instance.launchUrl(AppConstants.faqsUrl),
         child: Text(context.locale.permission_button_help),
       ),
       positiveBtn: FilledButton(
-        child: Text(context.locale.permission_button_grant_permission),
-        onPressed: () => showAccessibilityPermissionSheet(context, ref),
+        child: Text(
+          PlatformFeatures.usesInAppReminders
+              ? context.locale.permission_open_settings
+              : context.locale.permission_button_grant_permission,
+        ),
+        onPressed: () {
+          if (PlatformFeatures.usesInAppReminders) {
+            MethodChannelService.instance.openAppSettingsForPackage('');
+            return;
+          }
+          showAccessibilityPermissionSheet(context, ref);
+        },
       ),
     );
   }

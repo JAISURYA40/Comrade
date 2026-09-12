@@ -1,17 +1,25 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:comrade/models/ai_user_context.dart';
 
 class ChatEngine {
-  final String apiKey = "";
-i_key
+  // Keep the API key out of source code.
+  // Run with:
+  // flutter run --dart-define=GROQ_API_KEY=your_key
+  final String apiKey = const String.fromEnvironment('GROQ_API_KEY');
+
   Future<String> processMessage(
     String message,
     List<dynamic> history,
     AiUserContext context,
   ) async {
     try {
-            print("===== COMRADE AI CONTEXT =====");
+      if (apiKey.isEmpty) {
+        return "Error: GROQ_API_KEY is not configured.";
+      }
+
+      print("===== COMRADE AI CONTEXT =====");
       print("Screen time: ${context.todayScreenTime}");
       print("App usage: ${context.appUsage}");
       print("Focus today: ${context.todayFocusTime}");
@@ -65,7 +73,7 @@ RESPONSE LOGIC
      - "Which app do I use the most?"
      - "How much screen time did I have?"
      - "How much did I focus today?"
-   - For these questions, calculate the answer from the provided data.
+   - Calculate the answer from the provided data.
    - If the required data is missing or empty, clearly say that the data is unavailable.
    - Never pretend that you cannot access Comrade data when it is present in USER CONTEXT.
 
@@ -154,7 +162,9 @@ Always guide, structure, and act — not just answer.
       });
 
       final response = await http.post(
-        Uri.parse("https://api.groq.com/openai/v1/chat/completions"),
+        Uri.parse(
+          "https://api.groq.com/openai/v1/chat/completions",
+        ),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer $apiKey",
@@ -168,9 +178,9 @@ Always guide, structure, and act — not just answer.
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        return data["choices"][0]["message"]["content"];
+        return data["choices"][0]["message"]["content"] as String;
       } else {
-        return "Error: ${data["error"]["message"]}";
+        return "Error: ${data["error"]?["message"] ?? "Unknown API error"}";
       }
     } catch (e) {
       return "Error: $e";

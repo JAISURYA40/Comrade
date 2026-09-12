@@ -9,26 +9,27 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:comrade/config/app_colors.dart';
+import 'package:comrade/config/app_theme_tokens.dart';
 
-/// Utility class for theme-related helper methods
+/// Theme-aware decoration helpers. Prefer passing [BuildContext] so moods apply.
 class ThemeUtils {
-  /// Creates a BoxDecoration with gradient and glow effect
-  /// Perfect for premium buttons and highlighted cards
   static BoxDecoration gradientGlowDecoration({
+    required BuildContext context,
     double borderRadius = 16,
     List<Color>? gradient,
   }) {
+    final tokens = context.themeTokens;
+    final colors = gradient ?? tokens.primaryGradient;
     return BoxDecoration(
       borderRadius: BorderRadius.circular(borderRadius),
       gradient: LinearGradient(
-        colors: gradient ?? AppColors.primaryGradient,
+        colors: colors,
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ),
       boxShadow: [
         BoxShadow(
-          color: AppColors.primary.withValues(alpha: 0.4), // --glow-primary
+          color: tokens.primary.withValues(alpha: 0.4),
           blurRadius: 20,
           spreadRadius: -5,
           offset: const Offset(0, 4),
@@ -37,15 +38,16 @@ class ThemeUtils {
     );
   }
 
-  /// Creates a gradient widget decoration
-  static Decoration gradientDecoration({
+  static BoxDecoration gradientDecoration({
+    required BuildContext context,
     double borderRadius = 16,
     List<Color>? gradient,
   }) {
+    final tokens = context.themeTokens;
     return BoxDecoration(
       borderRadius: BorderRadius.circular(borderRadius),
       gradient: LinearGradient(
-        colors: gradient ?? AppColors.primaryGradient,
+        colors: gradient ?? tokens.primaryGradient,
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ),

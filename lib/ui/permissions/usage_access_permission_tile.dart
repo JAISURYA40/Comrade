@@ -27,9 +27,11 @@ class UsageAccessPermissionTile extends ConsumerWidget {
     final havePermission = ref
         .watch(permissionProvider.select((v) => v.haveUsageAccessPermission));
 
+    final title = context.locale.permission_usage_title;
+
     return DefaultListTile(
       position: ItemPosition.mid,
-      titleText: context.locale.permission_usage_title,
+      titleText: title,
       accent: havePermission ? null : Theme.of(context).colorScheme.error,
       subtitleText: havePermission
           ? context.locale.permission_status_allowed
@@ -47,8 +49,7 @@ class UsageAccessPermissionTile extends ConsumerWidget {
         icon: FluentIcons.data_pie_20_filled,
         title: context.locale.permission_usage_title,
         description: context.locale.permission_usage_info,
-        deviceSwitchTileLabel:
-            context.locale.permission_usage_device_tile_label,
+        deviceSwitchTileLabel: context.locale.permission_usage_device_tile_label,
         onTapGrantPermission: () {
           Navigator.of(sheetContext).maybePop();
           ref.read(permissionProvider.notifier).askUsageAccessPermission();

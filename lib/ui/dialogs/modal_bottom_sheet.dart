@@ -24,45 +24,47 @@ Future<void> showDefaultBottomSheet({
   Widget? header,
   String? headerTitle,
   double initialSize = 0.5,
-}) async =>
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      showDragHandle: true,
-      sheetAnimationStyle: AnimationStyle(
-        duration: AppConstants.defaultAnimDuration,
-        curve: Curves.easeOutBack,
-        reverseDuration: AppConstants.defaultAnimDuration,
-        reverseCurve: Curves.easeOutBack.flipped,
-      ),
-      builder: (sheetContext) => DraggableScrollableSheet(
-        expand: false,
-        initialChildSize: initialSize,
-        builder: (context, scrollController) => Padding(
-          padding: padding,
-          child: Column(
-            children: [
-              /// Header
-              headerTitle != null
-                  ? ContentSectionHeader(
-                      title: headerTitle,
-                      padding: const EdgeInsets.only(bottom: 12),
-                    )
-                  : header ?? 0.vBox,
+}) async {
+  final clampedInitial = initialSize.clamp(0.35, 0.92);
 
-              /// Body
-              Expanded(
-                child: CustomScrollView(
-                  controller: scrollController,
-                  slivers: [
-                    sliverBody,
-                    const SliverTabsBottomPadding(),
-                  ],
-                ),
+  return showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    useSafeArea: true,
+    showDragHandle: true,
+    sheetAnimationStyle: AnimationStyle(
+      duration: AppConstants.defaultAnimDuration,
+      curve: Curves.easeOutBack,
+      reverseDuration: AppConstants.defaultAnimDuration,
+      reverseCurve: Curves.easeOutBack.flipped,
+    ),
+    builder: (sheetContext) => DraggableScrollableSheet(
+      expand: false,
+      initialChildSize: clampedInitial,
+      minChildSize: 0.3,
+      maxChildSize: 0.95,
+      builder: (context, scrollController) => Padding(
+        padding: padding,
+        child: Column(
+          children: [
+            headerTitle != null
+                ? ContentSectionHeader(
+                    title: headerTitle,
+                    padding: const EdgeInsets.only(bottom: 12),
+                  )
+                : header ?? 0.vBox,
+            Expanded(
+              child: CustomScrollView(
+                controller: scrollController,
+                slivers: [
+                  sliverBody,
+                  const SliverTabsBottomPadding(),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-    );
+    ),
+  );
+}

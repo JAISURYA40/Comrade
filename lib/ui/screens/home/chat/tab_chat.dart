@@ -1,778 +1,235 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
-import 'package:comrade/core/services/ai_context_builder.dart';
-import 'package:comrade/core/services/chat_engine.dart';
+import 'dart:convert';
 
-class TabChat extends StatefulWidget {
-  const TabChat({super.key});
+import 'package:http/http.dart' as http;
+import 'package:comrade/models/ai_user_context.dart';
 
-  @override
-  State<TabChat> createState() => _TabChatState();
-}
-
-class _TabChatState extends State<TabChat> {
-  final TextEditingController _messageController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
-
-  final ChatEngine _chatEngine = ChatEngine();
-  final AiContextBuilder _contextBuilder = AiContextBuilder();
-
-  bool _isTyping = false;
-
-  final List<ChatMessage> _messages = [
-    ChatMessage(
-      text: "Hello! I'm Comrade. How can I help you?",
-      isUser: false,
-      timestamp: DateTime.now(),
-    ),
-  ];
-
-  @override
-  void dispose() {
-    _messageController.dispose();
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _sendMessage() async {
-    final text = _messageController.text.trim();
-
-    if (text.isEmpty || _isTyping) return;
-
-    setState(() {
-      _messages.add(
-        ChatMessage(
-          text: text,
-          isUser: true,
-          timestamp: DateTime.now(),
-        ),
-      );
-
-      _isTyping = true;
-    });
-
-    _messageController.clear();
-    _scrollToBottom();
-
+class ChatEngine {
+  final String apiKey = "";
+i_key
+  Future<String> processMessage(
+    String message,
+    List<dynamic> history,
+    AiUserContext context,
+  ) async {
     try {
-      // Build the user's current Comrade context.
-      final context = await _contextBuilder.build();
+            print("===== COMRADE AI CONTEXT =====");
+      print("Screen time: ${context.todayScreenTime}");
+      print("App usage: ${context.appUsage}");
+      print("Focus today: ${context.todayFocusTime}");
+      print("Focus this week: ${context.weeklyFocusTime}");
+      print("Active focus: ${context.hasActiveFocusSession}");
+      print("Focus duration: ${context.focusSessionDuration}");
+      print("==============================");
 
-      final response = await _chatEngine.processMessage(
-        text,
-        _messages,
-        context,
-      );
+      final recentHistory = history.length > 8
+          ? history.sublist(history.length - 8)
+          : history;
 
-      if (!mounted) return;
+      final messages = recentHistory.map((msg) {
+        return {
+          "role": msg.isUser ? "user" : "assistant",
+          "content": msg.text,
+        };
+      }).toList();
 
-      setState(() {
-        _isTyping = false;
+      messages.insert(0, {
+        "role": "system",
+        "content": """
+You are Comrade — an AI execution coach and learning assistant.
 
-        _messages.add(
-          ChatMessage(
-            text: response,
-            isUser: false,
-            timestamp: DateTime.now(),
-          ),
-        );
-      });
+Your purpose:
+Convert user goals into clear daily execution, teach concepts step-by-step, and guide users with discipline without burnout.
 
-      _scrollToBottom();
-    } catch (e) {
-      if (!mounted) return;
+You may receive RELEVANT MEMORIES from past conversations. Use them when the user asks what they told you earlier. Do not invent memories. If no memory fits, say you don't have that saved.
 
-      setState(() {
-        _isTyping = false;
+You can also trigger device actions via the agent layer (theme, app limits). If the user asks you to change theme or block an app, prefer confirming you can do it — the agent may already handle it. For coaching answers, stay concise.
 
-        _messages.add(
-          ChatMessage(
-            text: "I couldn't process that right now. Please try again.",
-            isUser: false,
-            timestamp: DateTime.now(),
-          ),
-        );
-      });
+-------------------------
+CORE BEHAVIOR RULES
+-------------------------
 
-      _scrollToBottom();
-    }
-  }
+1. Always respond in a structured format using points or steps (not more than 3, use only if needed).
+2. Keep answers crisp and concise.
+3. Use simple, clear English. No complex wording.
+4. Be highly motivating, energetic, and positive.
+5. Never give harmful, illegal, or unsafe content.
+6. If the user speaks about something useless, vague, or off-topic, ask them to talk about their goals.
+7. Never invent user information.
+8. Use the user's Comrade context when it is relevant.
 
-  Future<void> _regenerateResponse() async {
-    if (_isTyping || _messages.length < 2) return;
+-------------------------
+RESPONSE LOGIC
+-------------------------
 
-    final lastAssistantIndex = _messages.lastIndexWhere(
-      (message) => !message.isUser,
-    );
+0. If the user asks about their personal Comrade data:
+   - Answer directly using the USER CONTEXT provided below.
+   - Do NOT ask clarifying questions.
+   - Examples:
+     - "What do you know about my activity today?"
+     - "Where did I spend most of my time?"
+     - "Which app do I use the most?"
+     - "How much screen time did I have?"
+     - "How much did I focus today?"
+   - For these questions, calculate the answer from the provided data.
+   - If the required data is missing or empty, clearly say that the data is unavailable.
+   - Never pretend that you cannot access Comrade data when it is present in USER CONTEXT.
 
-    if (lastAssistantIndex == -1) return;
+1. If the user gives a GOAL:
+   - Break it into a roadmap.
+   - Provide step-by-step plan.
+   - Suggest daily actions.
 
-    int userIndex = lastAssistantIndex - 1;
+2. If the user asks a DOUBT:
+   - Teach step-by-step.
+   - Use examples if needed.
+   - Keep it simple and structured.
 
-    while (userIndex >= 0 && !_messages[userIndex].isUser) {
-      userIndex--;
-    }
+3. If the user is VAGUE:
+   - Ask 2–3 clarifying questions before proceeding.
 
-    if (userIndex < 0) return;
+4. If the user is STUCK or CONFUSED:
+   - Simplify the problem.
+   - Give the next small actionable step.
 
-    final userMessage = _messages[userIndex].text;
+5. If the user is DISTRACTED:
+   - Gently redirect to focus.
+   - Use the user's actual screen-time and app-usage data when relevant.
 
-    setState(() {
-      _messages.removeAt(lastAssistantIndex);
-      _isTyping = true;
-    });
+6. If the user asks about productivity or studying:
+   - Consider the user's actual focus history.
+   - Consider their actual screen-time behavior.
+   - Give realistic recommendations based on the available context.
 
-    _scrollToBottom();
+-------------------------
+USER CONTEXT
+-------------------------
 
+Today's total screen time:
+${_formatDuration(context.todayScreenTime)}
+
+Today's app usage:
+${_formatAppUsage(context.appUsage)}
+
+Today's focus time:
+${_formatDuration(context.todayFocusTime)}
+
+Focus time during the last 7 days:
+${_formatDuration(context.weeklyFocusTime)}
+
+Active focus session:
+${context.hasActiveFocusSession ? "Yes" : "No"}
+
+Configured focus session duration:
+${_formatDuration(context.focusSessionDuration)}
+
+Distracting apps:
+${context.distractingApps.isEmpty ? "None configured" : context.distractingApps.join(", ")}
+
+-------------------------
+CONTEXT RULES
+-------------------------
+
+- Treat the above information as the user's current Comrade data.
+- Use it when it helps answer the user's request.
+- Do not mention the context unless it is useful.
+- Do not invent missing information.
+- Do not assume a goal or task that is not present in the context.
+- Do not blindly recommend longer focus sessions.
+- Base productivity suggestions on the user's actual behavior when relevant.
+
+-------------------------
+STYLE RULES
+-------------------------
+
+- Prefer bullet points over paragraphs.
+- Keep responses concise.
+- No unnecessary explanations.
+- No motivational fluff without action.
+- Every response should help the user move forward.
+
+  Future<String> processMessage(
+    String message,
+    List<dynamic> history, {
+    List<String> memoryContext = const [],
+  }) async {
     try {
-      // Rebuild context so regeneration uses the latest data.
-      final context = await _contextBuilder.build();
+      if (!hasApiKey) {
+        return "Error: GROQ_API_KEY is not configured. Please supply your Groq API key (e.g. using --dart-define=GROQ_API_KEY=your_key).";
+      }
 
-      final response = await _chatEngine.processMessage(
-        userMessage,
-        _messages,
-        context,
-      );
+      final recentHistory = history.length > 8
+          ? history.sublist(history.length - 8)
+          : history;
 
-      if (!mounted) return;
+      final messages = <Map<String, String>>[
+        {"role": "system", "content": _systemPrompt},
+      ];
 
-      setState(() {
-        _isTyping = false;
+      if (memoryContext.isNotEmpty) {
+        messages.add({
+          "role": "system",
+          "content":
+              "RELEVANT MEMORIES (use only if relevant; do not invent):\n"
+                  "${memoryContext.map((e) => '- $e').join('\n')}",
+        });
+      }
 
-        _messages.add(
-          ChatMessage(
-            text: response,
-            isUser: false,
-            timestamp: DateTime.now(),
-          ),
-        );
+Always guide, structure, and act — not just answer.
+""",
       });
 
-      _scrollToBottom();
+      final response = await http.post(
+        Uri.parse("https://api.groq.com/openai/v1/chat/completions"),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $apiKey",
+        },
+        body: jsonEncode({
+          "model": "openai/gpt-oss-20b",
+          "messages": messages,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return data["choices"][0]["message"]["content"] as String;
+      } else {
+        return "Error: ${data["error"]["message"]}";
+      }
     } catch (e) {
-      if (!mounted) return;
-
-      setState(() {
-        _isTyping = false;
-
-        _messages.add(
-          ChatMessage(
-            text: "I couldn't regenerate the response. Please try again.",
-            isUser: false,
-            timestamp: DateTime.now(),
-          ),
-        );
-      });
-
-      _scrollToBottom();
+      return "Error: $e";
     }
   }
 
-  void _copyMessage(String text) {
-    Clipboard.setData(ClipboardData(text: text));
+  String _formatDuration(int seconds) {
+    final duration = Duration(seconds: seconds);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Copied to clipboard"),
-        duration: Duration(seconds: 1),
-      ),
-    );
-  }
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes.remainder(60);
 
-  void _scrollToBottom() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!_scrollController.hasClients) return;
-
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                controller: _scrollController,
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                padding: const EdgeInsets.only(
-                  top: 16,
-                  bottom: 20,
-                ),
-                itemCount: _messages.length + (_isTyping ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (index < _messages.length) {
-                    final message = _messages[index];
-
-                    final isLastAssistantMessage =
-                        !message.isUser &&
-                        index == _messages.lastIndexWhere(
-                          (item) => !item.isUser,
-                        );
-
-                    return _ChatMessageView(
-                      message: message,
-                      showActions: isLastAssistantMessage,
-                      onCopy: () => _copyMessage(message.text),
-                      onRegenerate: _regenerateResponse,
-                    );
-                  }
-
-                  return const _TypingIndicator();
-                },
-              ),
-            ),
-            _ChatComposer(
-              controller: _messageController,
-              onSend: _sendMessage,
-              isEnabled: !_isTyping,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ============================================================
-// CHAT MESSAGE
-// ============================================================
-
-class ChatMessage {
-  final String text;
-  final bool isUser;
-  final DateTime timestamp;
-
-  ChatMessage({
-    required this.text,
-    required this.isUser,
-    required this.timestamp,
-  });
-}
-
-// ============================================================
-// MESSAGE VIEW
-// ============================================================
-
-class _ChatMessageView extends StatelessWidget {
-  const _ChatMessageView({
-    required this.message,
-    required this.showActions,
-    required this.onCopy,
-    required this.onRegenerate,
-  });
-
-  final ChatMessage message;
-  final bool showActions;
-  final VoidCallback onCopy;
-  final VoidCallback onRegenerate;
-
-  @override
-  Widget build(BuildContext context) {
-    if (message.isUser) {
-      return _UserMessage(
-        message: message,
-      );
+    if (hours > 0) {
+      return "${hours}h ${minutes}m";
     }
 
-    return _AssistantMessage(
-      message: message,
-      showActions: showActions,
-      onCopy: onCopy,
-      onRegenerate: onRegenerate,
-    );
-  }
-}
-
-// ============================================================
-// USER MESSAGE
-// ============================================================
-
-class _UserMessage extends StatelessWidget {
-  const _UserMessage({
-    required this.message,
-  });
-
-  final ChatMessage message;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: 48,
-        right: 16,
-        top: 8,
-        bottom: 8,
-      ),
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: Container(
-          constraints: const BoxConstraints(
-            maxWidth: 360,
-          ),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 11,
-          ),
-          decoration: BoxDecoration(
-            color: theme.colorScheme.primaryContainer,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(18),
-              topRight: Radius.circular(18),
-              bottomLeft: Radius.circular(18),
-              bottomRight: Radius.circular(5),
-            ),
-          ),
-          child: Text(
-            message.text,
-            style: TextStyle(
-              color: theme.colorScheme.onPrimaryContainer,
-              fontSize: 15.5,
-              height: 1.45,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// ============================================================
-// ASSISTANT MESSAGE
-// ============================================================
-
-class _AssistantMessage extends StatelessWidget {
-  const _AssistantMessage({
-    required this.message,
-    required this.showActions,
-    required this.onCopy,
-    required this.onRegenerate,
-  });
-
-  final ChatMessage message;
-  final bool showActions;
-  final VoidCallback onCopy;
-  final VoidCallback onRegenerate;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: 16,
-        right: 16,
-        top: 12,
-        bottom: 8,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 30,
-                height: 30,
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primary.withValues(
-                    alpha: 0.15,
-                  ),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.auto_awesome,
-                  size: 17,
-                  color: theme.colorScheme.primary,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: MarkdownBody(
-                  data: message.text,
-                  selectable: true,
-                  shrinkWrap: true,
-                  styleSheet: MarkdownStyleSheet(
-                    p: TextStyle(
-                      color: theme.colorScheme.onSurface,
-                      fontSize: 15.5,
-                      height: 1.55,
-                    ),
-                    h1: TextStyle(
-                      color: theme.colorScheme.onSurface,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700,
-                      height: 1.3,
-                    ),
-                    h2: TextStyle(
-                      color: theme.colorScheme.onSurface,
-                      fontSize: 21,
-                      fontWeight: FontWeight.w700,
-                      height: 1.3,
-                    ),
-                    h3: TextStyle(
-                      color: theme.colorScheme.onSurface,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      height: 1.35,
-                    ),
-                    strong: TextStyle(
-                      color: theme.colorScheme.onSurface,
-                      fontWeight: FontWeight.w700,
-                    ),
-                    em: TextStyle(
-                      color: theme.colorScheme.onSurface,
-                      fontStyle: FontStyle.italic,
-                    ),
-                    listBullet: TextStyle(
-                      color: theme.colorScheme.primary,
-                      fontSize: 15,
-                    ),
-                    code: TextStyle(
-                      color: theme.colorScheme.onSurface,
-                      backgroundColor:
-                          theme.colorScheme.surfaceContainerHighest,
-                      fontSize: 13.5,
-                      fontFamily: 'monospace',
-                    ),
-                    codeblockDecoration: BoxDecoration(
-                      color:
-                          theme.colorScheme.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: theme.colorScheme.outline.withValues(
-                          alpha: 0.2,
-                        ),
-                      ),
-                    ),
-                    blockquoteDecoration: BoxDecoration(
-                      border: Border(
-                        left: BorderSide(
-                          color: theme.colorScheme.primary,
-                          width: 3,
-                        ),
-                      ),
-                    ),
-                    tableHead: TextStyle(
-                      color: theme.colorScheme.onSurface,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 14,
-                    ),
-                    tableBody: TextStyle(
-                      color: theme.colorScheme.onSurface,
-                      fontSize: 14,
-                    ),
-                    tableBorder: TableBorder.all(
-                      color: theme.colorScheme.outline.withValues(
-                        alpha: 0.25,
-                      ),
-                    ),
-                    a: TextStyle(
-                      color: theme.colorScheme.primary,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                  onTapLink: (
-                    text,
-                    href,
-                    title,
-                  ) {
-                    if (href == null) return;
-                  },
-                ),
-              ),
-            ],
-          ),
-          if (showActions)
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 40,
-                top: 4,
-              ),
-              child: Row(
-                children: [
-                  _MessageActionButton(
-                    icon: Icons.copy_outlined,
-                    tooltip: "Copy",
-                    onPressed: onCopy,
-                  ),
-                  const SizedBox(width: 4),
-                  _MessageActionButton(
-                    icon: Icons.refresh_rounded,
-                    tooltip: "Regenerate",
-                    onPressed: onRegenerate,
-                  ),
-                ],
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-// ============================================================
-// MESSAGE ACTION BUTTON
-// ============================================================
-
-class _MessageActionButton extends StatelessWidget {
-  const _MessageActionButton({
-    required this.icon,
-    required this.tooltip,
-    required this.onPressed,
-  });
-
-  final IconData icon;
-  final String tooltip;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      tooltip: tooltip,
-      onPressed: onPressed,
-      icon: Icon(
-        icon,
-        size: 18,
-      ),
-      visualDensity: VisualDensity.compact,
-      padding: const EdgeInsets.all(6),
-      constraints: const BoxConstraints(
-        minWidth: 32,
-        minHeight: 32,
-      ),
-    );
-  }
-}
-
-// ============================================================
-// TYPING INDICATOR
-// ============================================================
-
-class _TypingIndicator extends StatefulWidget {
-  const _TypingIndicator();
-
-  @override
-  State<_TypingIndicator> createState() => _TypingIndicatorState();
-}
-
-class _TypingIndicatorState extends State<_TypingIndicator>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(
-        milliseconds: 900,
-      ),
-    )..repeat();
+    return "${minutes}m";
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  String _formatAppUsage(Map<String, int> appUsage) {
+    if (appUsage.isEmpty) {
+      return "No app usage data available.";
+    }
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final sortedApps = appUsage.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
 
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: 16,
-        right: 16,
-        top: 12,
-        bottom: 12,
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 30,
-            height: 30,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.primary.withValues(
-                alpha: 0.15,
-              ),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.auto_awesome,
-              size: 17,
-              color: theme.colorScheme.primary,
-            ),
-          ),
-          const SizedBox(width: 12),
-          AnimatedBuilder(
-            animation: _controller,
-            builder: (context, child) {
-              final value = _controller.value;
+    final topApps = sortedApps.take(5);
 
-              return Row(
-                children: List.generate(
-                  3,
-                  (index) {
-                    final delay = index * 0.2;
-
-                    final animationValue =
-                        ((value - delay) % 1.0);
-
-                    final opacity =
-                        0.3 +
-                        (animationValue < 0.5
-                            ? animationValue * 1.4
-                            : (1 - animationValue) * 1.4);
-
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 2,
-                      ),
-                      child: Opacity(
-                        opacity: opacity.clamp(0.3, 1.0),
-                        child: Container(
-                          width: 7,
-                          height: 7,
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.primary,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ============================================================
-// CHAT COMPOSER
-// ============================================================
-
-class _ChatComposer extends StatelessWidget {
-  const _ChatComposer({
-    required this.controller,
-    required this.onSend,
-    required this.isEnabled,
-  });
-
-  final TextEditingController controller;
-  final VoidCallback onSend;
-  final bool isEnabled;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      padding: EdgeInsets.only(
-        left: 12,
-        right: 12,
-        top: 8,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 10,
-      ),
-      decoration: BoxDecoration(
-        color: theme.scaffoldBackgroundColor,
-        border: Border(
-          top: BorderSide(
-            color: theme.colorScheme.outline.withValues(
-              alpha: 0.12,
-            ),
-          ),
-        ),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Expanded(
-            child: TextField(
-              controller: controller,
-              enabled: isEnabled,
-              minLines: 1,
-              maxLines: 6,
-              textInputAction: TextInputAction.newline,
-              keyboardType: TextInputType.multiline,
-              decoration: InputDecoration(
-                hintText: "Message Comrade...",
-                filled: true,
-                fillColor:
-                    theme.colorScheme.surfaceContainerHighest,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 18,
-                  vertical: 13,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(22),
-                  borderSide: BorderSide.none,
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(22),
-                  borderSide: BorderSide.none,
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(22),
-                  borderSide: BorderSide(
-                    color: theme.colorScheme.primary.withValues(
-                      alpha: 0.45,
-                    ),
-                  ),
-                ),
-              ),
-              onSubmitted: (_) {
-                if (isEnabled) {
-                  onSend();
-                }
-              },
-            ),
-          ),
-          const SizedBox(width: 8),
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: isEnabled
-                  ? theme.colorScheme.primary
-                  : theme.colorScheme.surfaceContainerHighest,
-              shape: BoxShape.circle,
-            ),
-            child: IconButton(
-              tooltip: "Send",
-              onPressed: isEnabled ? onSend : null,
-              icon: Icon(
-                Icons.arrow_upward_rounded,
-                color: isEnabled
-                    ? theme.colorScheme.onPrimary
-                    : theme.colorScheme.onSurfaceVariant,
-                size: 22,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+    return topApps
+        .map(
+          (entry) =>
+              "${entry.key}: ${_formatDuration(entry.value)}",
+        )
+        .join("\n");
   }
 }

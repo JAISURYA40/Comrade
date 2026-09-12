@@ -21,6 +21,7 @@ import 'package:comrade/core/extensions/ext_num.dart';
 import 'package:comrade/core/services/auth_service.dart';
 import 'package:comrade/config/navigation/navigation_service.dart';
 import 'package:comrade/core/services/method_channel_service.dart';
+import 'package:comrade/core/utils/platform_features.dart';
 import 'package:comrade/providers/system/comrade_settings_provider.dart';
 import 'package:comrade/providers/system/parental_controls_provider.dart';
 import 'package:comrade/providers/system/permissions_provider.dart';
@@ -41,55 +42,78 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   bool _isOnboardingDone = false;
   bool _isAccessProtected = false;
   bool _isAppUpdated = false;
+  bool _isReady = false;
 
   @override
   void initState() {
     super.initState();
-    _checkOnboardingAndPerms();
+    _bootstrap();
   }
 
-  void _checkOnboardingAndPerms() async {
-    final perms =
-        await ref.read(permissionProvider.notifier).fetchPermissionsStatus();
+  Future<void> _bootstrap() async {
+    final startedAt = DateTime.now();
 
-    final settings = await ref.read(comradeSettingsProvider.notifier).init();
-    _isOnboardingDone = settings.isOnboardingDone;
-    _isAppUpdated = settings.appVersion !=
-        MethodChannelService.instance.deviceInfo.comradeVersion;
+    try {
+      final perms =
+          await ref.read(permissionProvider.notifier).fetchPermissionsStatus();
+      final settings = await ref.read(comradeSettingsProvider.notifier).init();
+      final parental =
+          await ref.read(parentalControlsProvider.notifier).init();
 
-    _isAccessProtected =
-        (await ref.read(parentalControlsProvider.notifier).init())
-            .protectedAccess;
-    _haveAllEssentialPermissions = perms.haveUsageAccessPermission &&
-        perms.haveDisplayOverlayPermission &&
-        perms.haveAlarmsPermission &&
-        perms.haveNotificationPermission;
+      _isOnboardingDone = settings.isOnboardingDone;
+      _isAppUpdated = settings.appVersion !=
+          MethodChannelService.instance.deviceInfo.comradeVersion;
+      _isAccessProtected = parental.protectedAccess;
+      _haveAllEssentialPermissions =
+          PlatformFeatures.haveEssentialPermissions(perms);
+    } catch (e) {
+      debugPrint('SplashScreen._bootstrap(): $e');
+      // Fail closed for first-launch: show onboarding rather than home.
+      _isOnboardingDone = false;
+      _haveAllEssentialPermissions = false;
+    }
 
-    if (mounted) setState(() {});
-    _isAccessProtected ? _authenticate() : _goToNextScreen(true);
+    // Always show the logo/animation for a readable beat on both platforms.
+    // iOS needs a longer pause so the first-launch sequence is not skipped.
+    final minSplash = PlatformFeatures.isIOS ? 1800.ms : 250.ms;
+    final elapsed = DateTime.now().difference(startedAt);
+    if (elapsed < minSplash) {
+      await Future.delayed(minSplash - elapsed);
+    }
+
+    if (!mounted) return;
+    setState(() => _isReady = true);
+
+    if (_isAccessProtected) {
+      _authenticate();
+    } else {
+      _goToNextScreen();
+    }
   }
 
-  void _goToNextScreen(bool shouldDelay) async {
-    if (shouldDelay) await Future.delayed(250.ms);
+  void _goToNextScreen() {
     if (!mounted) return;
 
-    if (_haveAllEssentialPermissions && _isOnboardingDone) {
+    // Fresh installs always go through onboarding/setup until Finish Setup.
+    final canEnterApp =
+        _isOnboardingDone && _haveAllEssentialPermissions;
+
+    if (canEnterApp) {
       NavigationService.instance.init(showChangeLogsToo: _isAppUpdated);
-    } else {
-      Navigator.of(context).pushReplacementNamed(
-        AppRoutes.onboardingPath,
-        arguments: {"isOnboardingDone": _isOnboardingDone},
-      );
+      return;
     }
+
+    Navigator.of(context).pushReplacementNamed(
+      AppRoutes.onboardingPath,
+      arguments: {"isOnboardingDone": _isOnboardingDone},
+    );
   }
 
   void _authenticate() async {
     final isAuthenticated = await AuthService.instance.authenticate();
 
-    /// Return if not mounted
     if (!mounted) return;
 
-    /// If removed locks
     if (isAuthenticated == null) {
       context.showSnackAlert(
         context.locale.protected_access_removed_lock_snack_alert,
@@ -98,88 +122,80 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       return;
     }
 
-    /// If aborted the auth
     if (!isAuthenticated) {
       context.showSnackAlert(
         context.locale.protected_access_failed_lock_snack_alert,
         icon: FluentIcons.fingerprint_20_filled,
       );
-
       return;
     }
 
-    _goToNextScreen(false);
+    _goToNextScreen();
   }
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
+    final logoSide = min(320.0, size.width * 0.72);
+
     return PopScope(
       onPopInvokedWithResult: (didPop, _) => SystemNavigator.pop(),
       child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          toolbarHeight: 0,
-          scrolledUnderElevation: 0,
-          automaticallyImplyLeading: false,
-          backgroundColor: Theme.of(context).colorScheme.surface,
-        ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            /// Breathing logo
-            BreathingWidget(
-              dimension: min(420, MediaQuery.of(context).size.width * 0.8),
-              child: RoundedContainer(
-                circularRadius: 420,
-                color: Colors.transparent,
-                padding: const EdgeInsets.all(8),
-                child: Image.asset(
-                  'assets/comradelogo.png',
-                  width: min(400, MediaQuery.of(context).size.width * 0.75),
-                  height: min(400, MediaQuery.of(context).size.width * 0.75),
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-
-            Column(
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                /// Title
-                const StyledText(
-                  "Comrade",
-                  fontSize: 48,
-                  fontWeight: FontWeight.bold,
-                  height: 1,
+                BreathingWidget(
+                  dimension: logoSide + 20,
+                  child: RoundedContainer(
+                    circularRadius: logoSide,
+                    color: Colors.transparent,
+                    padding: const EdgeInsets.all(8),
+                    child: Image.asset(
+                      'assets/comradelogo.png',
+                      width: logoSide,
+                      height: logoSide,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
                 ),
-
-                /// Tag line
-                StyledText(
-                  context.locale.comrade_tagline,
-                  fontSize: 16,
-                  isSubtitle: true,
+                Column(
+                  children: [
+                    StyledText(
+                      "Comrade",
+                      fontSize: size.width < 360 ? 36 : 48,
+                      fontWeight: FontWeight.bold,
+                      height: 1,
+                    ),
+                    StyledText(
+                      context.locale.comrade_tagline,
+                      fontSize: 16,
+                      isSubtitle: true,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
-              ],
-            ),
-
-            const Divider(color: Colors.transparent),
-            _isAccessProtected
-                ? FilledButton.icon(
+                if (_isAccessProtected && _isReady)
+                  FilledButton.icon(
                     icon: const Icon(FluentIcons.fingerprint_20_regular),
                     label: Text(context.locale.unlock_button_label),
                     onPressed: _authenticate,
                   )
-                : 0.vBox,
-
-            /// Make
-            const StyledText(
-              "Made with ♥️ in 🇮🇳",
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
+                else
+                  0.vBox,
+                const StyledText(
+                  "Made with ♥️ in 🇮🇳",
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ].animate(
+                effects: DefaultEffects.transitionIn,
+                delay: 100.ms,
+                interval: 100.ms,
+              ),
             ),
-          ].animate(
-            effects: DefaultEffects.transitionIn,
-            delay: 100.ms,
-            interval: 100.ms,
           ),
         ),
       ),
