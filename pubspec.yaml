@@ -24,6 +24,7 @@ dependencies:
   dynamic_color: ^1.7.0
   flutter_svg: ^2.0.17
   slide_action: ^0.0.2
+  flutter_markdown_plus: ^1.0.12
 
   # Animation
   flutter_animate: ^4.2.0+1

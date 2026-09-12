@@ -1,400 +1,235 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:comrade/core/enums/app_theme_mode.dart';
-import 'package:comrade/core/services/chat/chat_agent.dart';
-import 'package:comrade/core/services/chat/chat_tool_base.dart';
-import 'package:comrade/core/utils/platform_features.dart';
-import 'package:comrade/models/app_info.dart';
-import 'package:comrade/providers/apps/apps_info_provider.dart';
-import 'package:comrade/providers/focus/focus_mode_provider.dart';
-import 'package:comrade/providers/restrictions/apps_restrictions_provider.dart';
-import 'package:comrade/providers/system/comrade_settings_provider.dart';
-import 'package:comrade/providers/system/permissions_provider.dart';
+import 'dart:convert';
 
-class TabChat extends ConsumerStatefulWidget {
-  const TabChat({super.key});
+import 'package:http/http.dart' as http;
+import 'package:comrade/models/ai_user_context.dart';
 
-  @override
-  ConsumerState<TabChat> createState() => _TabChatState();
-}
-
-class _TabChatState extends ConsumerState<TabChat> {
-  final TextEditingController _messageController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
-  final ChatAgent _agent = ChatAgent();
-
-  bool _isBusy = false;
-  String? _statusLabel;
-  bool _historyLoaded = false;
-
-  final List<ChatMessage> _messages = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _loadHistory();
-  }
-
-  Future<void> _loadHistory() async {
+class ChatEngine {
+  final String apiKey = "";
+i_key
+  Future<String> processMessage(
+    String message,
+    List<dynamic> history,
+    AiUserContext context,
+  ) async {
     try {
-      final userId = await _agent.memory.resolveUserId();
-      final rows =
-          await _agent.memory.loadRecentMessages(userId: userId, limit: 50);
-      if (!mounted) return;
-      setState(() {
-        if (rows.isEmpty) {
-          _messages.add(
-            ChatMessage(
-              text:
-                  "Hello! I'm Comrade. I remember our chats and can change themes or limit apps when you ask.",
-              isUser: false,
-              timestamp: DateTime.now(),
-            ),
-          );
-        } else {
-          _messages.addAll(rows.map((r) => ChatMessage(
-                text: r.content,
-                isUser: r.role == 'user',
-                timestamp: r.createdAt,
-              )));
-        }
-        _historyLoaded = true;
+            print("===== COMRADE AI CONTEXT =====");
+      print("Screen time: ${context.todayScreenTime}");
+      print("App usage: ${context.appUsage}");
+      print("Focus today: ${context.todayFocusTime}");
+      print("Focus this week: ${context.weeklyFocusTime}");
+      print("Active focus: ${context.hasActiveFocusSession}");
+      print("Focus duration: ${context.focusSessionDuration}");
+      print("==============================");
+
+      final recentHistory = history.length > 8
+          ? history.sublist(history.length - 8)
+          : history;
+
+      final messages = recentHistory.map((msg) {
+        return {
+          "role": msg.isUser ? "user" : "assistant",
+          "content": msg.text,
+        };
+      }).toList();
+
+      messages.insert(0, {
+        "role": "system",
+        "content": """
+You are Comrade — an AI execution coach and learning assistant.
+
+Your purpose:
+Convert user goals into clear daily execution, teach concepts step-by-step, and guide users with discipline without burnout.
+
+You may receive RELEVANT MEMORIES from past conversations. Use them when the user asks what they told you earlier. Do not invent memories. If no memory fits, say you don't have that saved.
+
+You can also trigger device actions via the agent layer (theme, app limits). If the user asks you to change theme or block an app, prefer confirming you can do it — the agent may already handle it. For coaching answers, stay concise.
+
+-------------------------
+CORE BEHAVIOR RULES
+-------------------------
+
+1. Always respond in a structured format using points or steps (not more than 3, use only if needed).
+2. Keep answers crisp and concise.
+3. Use simple, clear English. No complex wording.
+4. Be highly motivating, energetic, and positive.
+5. Never give harmful, illegal, or unsafe content.
+6. If the user speaks about something useless, vague, or off-topic, ask them to talk about their goals.
+7. Never invent user information.
+8. Use the user's Comrade context when it is relevant.
+
+-------------------------
+RESPONSE LOGIC
+-------------------------
+
+0. If the user asks about their personal Comrade data:
+   - Answer directly using the USER CONTEXT provided below.
+   - Do NOT ask clarifying questions.
+   - Examples:
+     - "What do you know about my activity today?"
+     - "Where did I spend most of my time?"
+     - "Which app do I use the most?"
+     - "How much screen time did I have?"
+     - "How much did I focus today?"
+   - For these questions, calculate the answer from the provided data.
+   - If the required data is missing or empty, clearly say that the data is unavailable.
+   - Never pretend that you cannot access Comrade data when it is present in USER CONTEXT.
+
+1. If the user gives a GOAL:
+   - Break it into a roadmap.
+   - Provide step-by-step plan.
+   - Suggest daily actions.
+
+2. If the user asks a DOUBT:
+   - Teach step-by-step.
+   - Use examples if needed.
+   - Keep it simple and structured.
+
+3. If the user is VAGUE:
+   - Ask 2–3 clarifying questions before proceeding.
+
+4. If the user is STUCK or CONFUSED:
+   - Simplify the problem.
+   - Give the next small actionable step.
+
+5. If the user is DISTRACTED:
+   - Gently redirect to focus.
+   - Use the user's actual screen-time and app-usage data when relevant.
+
+6. If the user asks about productivity or studying:
+   - Consider the user's actual focus history.
+   - Consider their actual screen-time behavior.
+   - Give realistic recommendations based on the available context.
+
+-------------------------
+USER CONTEXT
+-------------------------
+
+Today's total screen time:
+${_formatDuration(context.todayScreenTime)}
+
+Today's app usage:
+${_formatAppUsage(context.appUsage)}
+
+Today's focus time:
+${_formatDuration(context.todayFocusTime)}
+
+Focus time during the last 7 days:
+${_formatDuration(context.weeklyFocusTime)}
+
+Active focus session:
+${context.hasActiveFocusSession ? "Yes" : "No"}
+
+Configured focus session duration:
+${_formatDuration(context.focusSessionDuration)}
+
+Distracting apps:
+${context.distractingApps.isEmpty ? "None configured" : context.distractingApps.join(", ")}
+
+-------------------------
+CONTEXT RULES
+-------------------------
+
+- Treat the above information as the user's current Comrade data.
+- Use it when it helps answer the user's request.
+- Do not mention the context unless it is useful.
+- Do not invent missing information.
+- Do not assume a goal or task that is not present in the context.
+- Do not blindly recommend longer focus sessions.
+- Base productivity suggestions on the user's actual behavior when relevant.
+
+-------------------------
+STYLE RULES
+-------------------------
+
+- Prefer bullet points over paragraphs.
+- Keep responses concise.
+- No unnecessary explanations.
+- No motivational fluff without action.
+- Every response should help the user move forward.
+
+  Future<String> processMessage(
+    String message,
+    List<dynamic> history, {
+    List<String> memoryContext = const [],
+  }) async {
+    try {
+      if (!hasApiKey) {
+        return "Error: GROQ_API_KEY is not configured. Please supply your Groq API key (e.g. using --dart-define=GROQ_API_KEY=your_key).";
+      }
+
+      final recentHistory = history.length > 8
+          ? history.sublist(history.length - 8)
+          : history;
+
+      final messages = <Map<String, String>>[
+        {"role": "system", "content": _systemPrompt},
+      ];
+
+      if (memoryContext.isNotEmpty) {
+        messages.add({
+          "role": "system",
+          "content":
+              "RELEVANT MEMORIES (use only if relevant; do not invent):\n"
+                  "${memoryContext.map((e) => '- $e').join('\n')}",
+        });
+      }
+
+Always guide, structure, and act — not just answer.
+""",
       });
-      _scrollToBottom();
-    } catch (_) {
-      if (!mounted) return;
-      setState(() {
-        _messages.add(
-          ChatMessage(
-            text: "Hello! I'm Comrade. How can I help you?",
-            isUser: false,
-            timestamp: DateTime.now(),
-          ),
-        );
-        _historyLoaded = true;
-      });
+
+      final response = await http.post(
+        Uri.parse("https://api.groq.com/openai/v1/chat/completions"),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $apiKey",
+        },
+        body: jsonEncode({
+          "model": "openai/gpt-oss-20b",
+          "messages": messages,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return data["choices"][0]["message"]["content"] as String;
+      } else {
+        return "Error: ${data["error"]["message"]}";
+      }
+    } catch (e) {
+      return "Error: $e";
     }
   }
 
-  @override
-  void dispose() {
-    _messageController.dispose();
-    _scrollController.dispose();
-    super.dispose();
+  String _formatDuration(int seconds) {
+    final duration = Duration(seconds: seconds);
+
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes.remainder(60);
+
+    if (hours > 0) {
+      return "${hours}h ${minutes}m";
+    }
+
+    return "${minutes}m";
   }
 
-  ChatToolContext _buildToolContext() {
-    return ChatToolContext(
-      changeThemeMode: (AppThemeMode mode) async {
-        ref.read(comradeSettingsProvider.notifier).changeThemeMode(mode);
-      },
-      currentThemeMode: () => ref.read(comradeSettingsProvider).themeMode,
-      updateAppTimer: (package, timerSec) async {
-        await ref
-            .read(appsRestrictionsProvider.notifier)
-            .updateAppTimer(package, timerSec);
-      },
-      resolveInstalledApps: () async {
-        final async = ref.read(appsInfoProvider);
-        return async.value ?? <String, AppInfo>{};
-      },
-      isAndroid: PlatformFeatures.isAndroid,
-      openSystemSettings: () async {
-        await openAppSettings();
-      },
-      hasUsagePermission: () async {
-        final perm = ref.read(permissionProvider);
-        return perm.haveUsageAccessPermission;
-      },
-      getAppTimer: (package) {
-        final restrictions = ref.read(appsRestrictionsProvider);
-        return restrictions[package]?.timerSec ?? 0;
-      },
-      startFocusSession: () async {
-        await ref.read(focusModeProvider.notifier).startNewSession();
-      },
-      stopFocusSession: () async {
-        await ref.read(focusModeProvider.notifier).giveUpOrFinishFocusSession(
-              isTheSessionSuccessful: true,
-              isFiniteSession: false,
-            );
-      },
-      isFocusSessionActive: () {
-        return ref.read(focusModeProvider).activeSession.value != null;
-      },
-    );
-  }
+  String _formatAppUsage(Map<String, int> appUsage) {
+    if (appUsage.isEmpty) {
+      return "No app usage data available.";
+    }
 
-  Future<void> _sendMessage() async {
-    final text = _messageController.text.trim();
-    if (text.isEmpty || _isBusy) return;
+    final sortedApps = appUsage.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
 
-    setState(() {
-      _messages.add(ChatMessage(
-        text: text,
-        isUser: true,
-        timestamp: DateTime.now(),
-      ));
-      _isBusy = true;
-      _statusLabel = 'Understanding…';
-    });
+    final topApps = sortedApps.take(5);
 
-    _messageController.clear();
-    _scrollToBottom();
-
-    final response = await _agent.handle(
-      message: text,
-      toolContext: _buildToolContext(),
-      onProgress: (p) {
-        if (!mounted) return;
-        setState(() => _statusLabel = p.label ?? _statusLabel);
-      },
-    );
-
-    if (!mounted) return;
-
-    setState(() {
-      _isBusy = false;
-      _statusLabel = null;
-      _messages.add(ChatMessage(
-        text: response.text,
-        isUser: false,
-        timestamp: DateTime.now(),
-        actionSucceeded: response.actionSucceeded,
-        toolName: response.toolName,
-      ));
-    });
-
-    _scrollToBottom();
-  }
-
-  void _scrollToBottom() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollController.hasClients) {
-        _scrollController.jumpTo(
-          _scrollController.position.maxScrollExtent,
-        );
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        child: Column(
-          children: [
-            if (!_historyLoaded)
-              const LinearProgressIndicator(minHeight: 2)
-            else
-              const SizedBox(height: 2),
-            Expanded(
-              child: ListView.builder(
-                controller: _scrollController,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                itemCount: _messages.length + (_isBusy ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (index < _messages.length) {
-                    return _ChatBubble(message: _messages[index]);
-                  }
-                  return _TypingIndicator(label: _statusLabel ?? 'Working…');
-                },
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                border: Border(
-                  top: BorderSide(
-                    color: Theme.of(context).colorScheme.outlineVariant,
-                  ),
-                ),
-              ),
-              child: _ChatInput(
-                controller: _messageController,
-                onSend: _sendMessage,
-                isEnabled: !_isBusy && _historyLoaded,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ChatMessage {
-  final String text;
-  final bool isUser;
-  final DateTime timestamp;
-  final bool? actionSucceeded;
-  final String? toolName;
-
-  ChatMessage({
-    required this.text,
-    required this.isUser,
-    required this.timestamp,
-    this.actionSucceeded,
-    this.toolName,
-  });
-}
-
-class _ChatBubble extends StatelessWidget {
-  const _ChatBubble({required this.message});
-  final ChatMessage message;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isAction = message.actionSucceeded != null;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Align(
-        alignment:
-            message.isUser ? Alignment.centerRight : Alignment.centerLeft,
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 300),
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: message.isUser
-                ? theme.colorScheme.primary
-                : isAction
-                    ? (message.actionSucceeded == true
-                        ? theme.colorScheme.tertiaryContainer
-                        : theme.colorScheme.errorContainer)
-                    : theme.colorScheme.surfaceContainerHighest,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (isAction && message.toolName != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 6),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        message.actionSucceeded == true
-                            ? Icons.check_circle_rounded
-                            : Icons.cancel_rounded,
-                        size: 14,
-                        color: message.actionSucceeded == true
-                            ? theme.colorScheme.onTertiaryContainer
-                            : theme.colorScheme.onErrorContainer,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        message.actionSucceeded == true
-                            ? 'Action completed'
-                            : 'Action failed',
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: message.actionSucceeded == true
-                              ? theme.colorScheme.onTertiaryContainer
-                              : theme.colorScheme.onErrorContainer,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              Text(
-                message.text,
-                style: TextStyle(
-                  color: message.isUser
-                      ? theme.colorScheme.onPrimary
-                      : isAction && message.actionSucceeded == false
-                          ? theme.colorScheme.onErrorContainer
-                          : theme.colorScheme.onSurface,
-                  fontSize: 15,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _TypingIndicator extends StatelessWidget {
-  const _TypingIndicator({required this.label});
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(12),
-      child: Row(
-        children: [
-          const SizedBox(
-            width: 16,
-            height: 16,
-            child: CircularProgressIndicator(strokeWidth: 2),
-          ),
-          const SizedBox(width: 10),
-          Text(label),
-        ],
-      ),
-    );
-  }
-}
-
-class _ChatInput extends StatelessWidget {
-  const _ChatInput({
-    required this.controller,
-    required this.onSend,
-    this.isEnabled = true,
-  });
-
-  final TextEditingController controller;
-  final VoidCallback onSend;
-  final bool isEnabled;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(24),
-            ),
-            child: TextField(
-              controller: controller,
-              enabled: isEnabled,
-              maxLines: null,
-              decoration: const InputDecoration(
-                hintText: "Message Comrade...",
-                border: InputBorder.none,
-              ),
-              onSubmitted: (_) {
-                if (isEnabled) onSend();
-              },
-            ),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary,
-            shape: BoxShape.circle,
-          ),
-          child: IconButton(
-            icon: Icon(
-              Icons.send,
-              color: Theme.of(context).colorScheme.onPrimary,
-            ),
-            onPressed: isEnabled ? onSend : null,
-          ),
-        ),
-      ],
-    );
+    return topApps
+        .map(
+          (entry) =>
+              "${entry.key}: ${_formatDuration(entry.value)}",
+        )
+        .join("\n");
   }
 }
