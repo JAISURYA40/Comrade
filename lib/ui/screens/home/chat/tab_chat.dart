@@ -1,17 +1,28 @@
+/*
+ * Copyright (c) 2024 Comrade (https://github.com/akaMrNagar/Comrade)
+ * Author : Pawan Nagar (https://github.com/akaMrNagar)
+ *
+ * This source code is licensed under the GPL-2.0 license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:comrade/core/services/ai_agent_action.dart';
+import 'package:comrade/core/services/ai_agent_executor.dart';
 import 'package:comrade/core/services/ai_context_builder.dart';
 import 'package:comrade/core/services/chat_engine.dart';
 
-class TabChat extends StatefulWidget {
+class TabChat extends ConsumerStatefulWidget {
   const TabChat({super.key});
 
   @override
-  State<TabChat> createState() => _TabChatState();
+  ConsumerState<TabChat> createState() => _TabChatState();
 }
 
-class _TabChatState extends State<TabChat> {
+class _TabChatState extends ConsumerState<TabChat> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
@@ -22,7 +33,8 @@ class _TabChatState extends State<TabChat> {
 
   final List<ChatMessage> _messages = [
     ChatMessage(
-      text: "Hello! I'm Comrade. How can I help you?",
+      text:
+          "Hey! I'm your Comrade AI Agent. ⚡\n\nYou can talk to me, or ask me to control Comrade for you:\n- *\"Set my focus time 10 mins now and start\"*\n- *\"Block WhatsApp during focus\"*\n- *\"Stop current focus session\"*\n- *\"How much screen time did I use today?\"*",
       isUser: false,
       timestamp: DateTime.now(),
     ),
@@ -35,8 +47,8 @@ class _TabChatState extends State<TabChat> {
     super.dispose();
   }
 
-  Future<void> _sendMessage() async {
-    final text = _messageController.text.trim();
+  Future<void> _sendMessage([String? customPrompt]) async {
+    final text = (customPrompt ?? _messageController.text).trim();
 
     if (text.isEmpty || _isTyping) return;
 
@@ -52,7 +64,9 @@ class _TabChatState extends State<TabChat> {
       _isTyping = true;
     });
 
-    _messageController.clear();
+    if (customPrompt == null) {
+      _messageController.clear();
+    }
     _scrollToBottom();
 
     try {
@@ -65,6 +79,16 @@ class _TabChatState extends State<TabChat> {
         context,
       );
 
+      // Execute any tool/action requests returned by the AI Agent
+      final List<AgentActionResult> executedActions = [];
+      if (response.actions.isNotEmpty) {
+        for (final action in response.actions) {
+          final result = await AiAgentExecutor.execute(action, ref);
+          executedActions.add(result);
+        }
+        HapticFeedback.mediumImpact();
+      }
+
       if (!mounted) return;
 
       setState(() {
@@ -72,9 +96,10 @@ class _TabChatState extends State<TabChat> {
 
         _messages.add(
           ChatMessage(
-            text: response,
+            text: response.replyText,
             isUser: false,
             timestamp: DateTime.now(),
+            actionResults: executedActions,
           ),
         );
       });
@@ -88,7 +113,7 @@ class _TabChatState extends State<TabChat> {
 
         _messages.add(
           ChatMessage(
-            text: "I couldn't process that right now. Please try again.",
+            text: "I couldn't process that right now. Please try again. ($e)",
             isUser: false,
             timestamp: DateTime.now(),
           ),
@@ -126,7 +151,6 @@ class _TabChatState extends State<TabChat> {
     _scrollToBottom();
 
     try {
-      // Rebuild context so regeneration uses the latest data.
       final context = await _contextBuilder.build();
 
       final response = await _chatEngine.processMessage(
@@ -135,6 +159,15 @@ class _TabChatState extends State<TabChat> {
         context,
       );
 
+      final List<AgentActionResult> executedActions = [];
+      if (response.actions.isNotEmpty) {
+        for (final action in response.actions) {
+          final result = await AiAgentExecutor.execute(action, ref);
+          executedActions.add(result);
+        }
+        HapticFeedback.mediumImpact();
+      }
+
       if (!mounted) return;
 
       setState(() {
@@ -142,9 +175,10 @@ class _TabChatState extends State<TabChat> {
 
         _messages.add(
           ChatMessage(
-            text: response,
+            text: response.replyText,
             isUser: false,
             timestamp: DateTime.now(),
+            actionResults: executedActions,
           ),
         );
       });
@@ -222,11 +256,21 @@ class _TabChatState extends State<TabChat> {
                           (item) => !item.isUser,
                         );
 
-                    return _ChatMessageView(
-                      message: message,
-                      showActions: isLastAssistantMessage,
-                      onCopy: () => _copyMessage(message.text),
-                      onRegenerate: _regenerateResponse,
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _ChatMessageView(
+                          message: message,
+                          showActions: isLastAssistantMessage,
+                          onCopy: () => _copyMessage(message.text),
+                          onRegenerate: _regenerateResponse,
+                        ),
+                        // Quick Action suggestions on first load
+                        if (index == 0 && _messages.length == 1)
+                          _QuickActionSuggestions(
+                            onSelect: (prompt) => _sendMessage(prompt),
+                          ),
+                      ],
                     );
                   }
 
@@ -236,7 +280,7 @@ class _TabChatState extends State<TabChat> {
             ),
             _ChatComposer(
               controller: _messageController,
-              onSend: _sendMessage,
+              onSend: () => _sendMessage(),
               isEnabled: !_isTyping,
             ),
           ],
@@ -247,19 +291,70 @@ class _TabChatState extends State<TabChat> {
 }
 
 // ============================================================
-// CHAT MESSAGE
+// CHAT MESSAGE MODEL
 // ============================================================
 
 class ChatMessage {
   final String text;
   final bool isUser;
   final DateTime timestamp;
+  final List<AgentActionResult> actionResults;
 
   ChatMessage({
     required this.text,
     required this.isUser,
     required this.timestamp,
+    this.actionResults = const [],
   });
+}
+
+// ============================================================
+// QUICK ACTION SUGGESTIONS
+// ============================================================
+
+class _QuickActionSuggestions extends StatelessWidget {
+  const _QuickActionSuggestions({required this.onSelect});
+
+  final ValueChanged<String> onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    final suggestions = [
+      "Set my focus time 10 mins now and start",
+      "Block the WhatsApp app",
+      "How much screen time did I use today?",
+      "Stop my focus session",
+    ];
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 56, right: 16, top: 4, bottom: 12),
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: suggestions.map((prompt) {
+          return ActionChip(
+            label: Text(
+              prompt,
+              style: TextStyle(
+                fontSize: 12.5,
+                color: theme.colorScheme.primary,
+              ),
+            ),
+            backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.08),
+            side: BorderSide(
+              color: theme.colorScheme.primary.withValues(alpha: 0.25),
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            onPressed: () => onSelect(prompt),
+          );
+        }).toList(),
+      ),
+    );
+  }
 }
 
 // ============================================================
@@ -386,113 +481,178 @@ class _AssistantMessage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 30,
-                height: 30,
+                width: 32,
+                height: 32,
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.primary.withValues(
-                    alpha: 0.15,
+                  gradient: LinearGradient(
+                    colors: [
+                      theme.colorScheme.primary,
+                      theme.colorScheme.tertiary,
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
-                  Icons.auto_awesome,
-                  size: 17,
-                  color: theme.colorScheme.primary,
+                child: const Icon(
+                  Icons.bolt_rounded,
+                  size: 19,
+                  color: Colors.white,
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: MarkdownBody(
-                  data: message.text,
-                  selectable: true,
-                  shrinkWrap: true,
-                  styleSheet: MarkdownStyleSheet(
-                    p: TextStyle(
-                      color: theme.colorScheme.onSurface,
-                      fontSize: 15.5,
-                      height: 1.55,
-                    ),
-                    h1: TextStyle(
-                      color: theme.colorScheme.onSurface,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700,
-                      height: 1.3,
-                    ),
-                    h2: TextStyle(
-                      color: theme.colorScheme.onSurface,
-                      fontSize: 21,
-                      fontWeight: FontWeight.w700,
-                      height: 1.3,
-                    ),
-                    h3: TextStyle(
-                      color: theme.colorScheme.onSurface,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      height: 1.35,
-                    ),
-                    strong: TextStyle(
-                      color: theme.colorScheme.onSurface,
-                      fontWeight: FontWeight.w700,
-                    ),
-                    em: TextStyle(
-                      color: theme.colorScheme.onSurface,
-                      fontStyle: FontStyle.italic,
-                    ),
-                    listBullet: TextStyle(
-                      color: theme.colorScheme.primary,
-                      fontSize: 15,
-                    ),
-                    code: TextStyle(
-                      color: theme.colorScheme.onSurface,
-                      backgroundColor:
-                          theme.colorScheme.surfaceContainerHighest,
-                      fontSize: 13.5,
-                      fontFamily: 'monospace',
-                    ),
-                    codeblockDecoration: BoxDecoration(
-                      color:
-                          theme.colorScheme.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: theme.colorScheme.outline.withValues(
-                          alpha: 0.2,
-                        ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Agent Actions Executed Badges
+                    if (message.actionResults.isNotEmpty) ...[
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 6,
+                        children: message.actionResults.map((result) {
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: result.success
+                                  ? theme.colorScheme.primary.withValues(alpha: 0.12)
+                                  : theme.colorScheme.error.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: result.success
+                                    ? theme.colorScheme.primary.withValues(alpha: 0.35)
+                                    : theme.colorScheme.error.withValues(alpha: 0.35),
+                                width: 1,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  result.success
+                                      ? Icons.check_circle_rounded
+                                      : Icons.error_outline_rounded,
+                                  size: 14,
+                                  color: result.success
+                                      ? theme.colorScheme.primary
+                                      : theme.colorScheme.error,
+                                ),
+                                const SizedBox(width: 5),
+                                Flexible(
+                                  child: Text(
+                                    result.message,
+                                    style: TextStyle(
+                                      fontSize: 12.5,
+                                      fontWeight: FontWeight.w600,
+                                      color: result.success
+                                          ? theme.colorScheme.primary
+                                          : theme.colorScheme.error,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
                       ),
-                    ),
-                    blockquoteDecoration: BoxDecoration(
-                      border: Border(
-                        left: BorderSide(
+                      const SizedBox(height: 8),
+                    ],
+
+                    MarkdownBody(
+                      data: message.text,
+                      selectable: true,
+                      shrinkWrap: true,
+                      styleSheet: MarkdownStyleSheet(
+                        p: TextStyle(
+                          color: theme.colorScheme.onSurface,
+                          fontSize: 15.5,
+                          height: 1.55,
+                        ),
+                        h1: TextStyle(
+                          color: theme.colorScheme.onSurface,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                          height: 1.3,
+                        ),
+                        h2: TextStyle(
+                          color: theme.colorScheme.onSurface,
+                          fontSize: 21,
+                          fontWeight: FontWeight.w700,
+                          height: 1.3,
+                        ),
+                        h3: TextStyle(
+                          color: theme.colorScheme.onSurface,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          height: 1.35,
+                        ),
+                        strong: TextStyle(
+                          color: theme.colorScheme.onSurface,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        em: TextStyle(
+                          color: theme.colorScheme.onSurface,
+                          fontStyle: FontStyle.italic,
+                        ),
+                        listBullet: TextStyle(
                           color: theme.colorScheme.primary,
-                          width: 3,
+                          fontSize: 15,
+                        ),
+                        code: TextStyle(
+                          color: theme.colorScheme.onSurface,
+                          backgroundColor:
+                              theme.colorScheme.surfaceContainerHighest,
+                          fontSize: 13.5,
+                          fontFamily: 'monospace',
+                        ),
+                        codeblockDecoration: BoxDecoration(
+                          color: theme.colorScheme.surfaceContainerHighest,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: theme.colorScheme.outline.withValues(
+                              alpha: 0.2,
+                            ),
+                          ),
+                        ),
+                        blockquoteDecoration: BoxDecoration(
+                          border: Border(
+                            left: BorderSide(
+                              color: theme.colorScheme.primary,
+                              width: 3,
+                            ),
+                          ),
+                        ),
+                        tableHead: TextStyle(
+                          color: theme.colorScheme.onSurface,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                        ),
+                        tableBody: TextStyle(
+                          color: theme.colorScheme.onSurface,
+                          fontSize: 14,
+                        ),
+                        tableBorder: TableBorder.all(
+                          color: theme.colorScheme.outline.withValues(
+                            alpha: 0.25,
+                          ),
+                        ),
+                        a: TextStyle(
+                          color: theme.colorScheme.primary,
+                          decoration: TextDecoration.underline,
                         ),
                       ),
+                      onTapLink: (
+                        text,
+                        href,
+                        title,
+                      ) {
+                        if (href == null) return;
+                      },
                     ),
-                    tableHead: TextStyle(
-                      color: theme.colorScheme.onSurface,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 14,
-                    ),
-                    tableBody: TextStyle(
-                      color: theme.colorScheme.onSurface,
-                      fontSize: 14,
-                    ),
-                    tableBorder: TableBorder.all(
-                      color: theme.colorScheme.outline.withValues(
-                        alpha: 0.25,
-                      ),
-                    ),
-                    a: TextStyle(
-                      color: theme.colorScheme.primary,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                  onTapLink: (
-                    text,
-                    href,
-                    title,
-                  ) {
-                    if (href == null) return;
-                  },
+                  ],
                 ),
               ),
             ],
@@ -500,7 +660,7 @@ class _AssistantMessage extends StatelessWidget {
           if (showActions)
             Padding(
               padding: const EdgeInsets.only(
-                left: 40,
+                left: 42,
                 top: 4,
               ),
               child: Row(
@@ -606,18 +766,23 @@ class _TypingIndicatorState extends State<_TypingIndicator>
       child: Row(
         children: [
           Container(
-            width: 30,
-            height: 30,
+            width: 32,
+            height: 32,
             decoration: BoxDecoration(
-              color: theme.colorScheme.primary.withValues(
-                alpha: 0.15,
+              gradient: LinearGradient(
+                colors: [
+                  theme.colorScheme.primary,
+                  theme.colorScheme.tertiary,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              Icons.auto_awesome,
-              size: 17,
-              color: theme.colorScheme.primary,
+            child: const Icon(
+              Icons.bolt_rounded,
+              size: 19,
+              color: Colors.white,
             ),
           ),
           const SizedBox(width: 12),
@@ -716,7 +881,7 @@ class _ChatComposer extends StatelessWidget {
               textInputAction: TextInputAction.newline,
               keyboardType: TextInputType.multiline,
               decoration: InputDecoration(
-                hintText: "Message Comrade...",
+                hintText: "Ask Comrade AI to take action...",
                 filled: true,
                 fillColor:
                     theme.colorScheme.surfaceContainerHighest,
