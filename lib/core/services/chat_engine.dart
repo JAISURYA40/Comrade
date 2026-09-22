@@ -188,7 +188,31 @@ Always guide, structure, and act — not just answer.
       final data = jsonDecode(response.body);
 
       if (response.statusCode != 200) {
-        final errorMsg = data["error"]?["message"] ?? "Unknown API error";
+        final errorMsg = data["error"]?["message"]?.toString() ?? "Unknown API error";
+        // If Groq encountered a tool call validation error, retry without tools to get a conversational reply
+        if (errorMsg.toLowerCase().contains("tool call validation failed") ||
+            errorMsg.toLowerCase().contains("parameters for tool")) {
+          debugPrint("Tool validation failed on Groq, retrying conversationally: $errorMsg");
+          final retryResponse = await http.post(
+            Uri.parse("https://api.groq.com/openai/v1/chat/completions"),
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer $apiKey",
+            },
+            body: jsonEncode({
+              "model": modelName,
+              "messages": messages,
+            }),
+          );
+          final retryData = jsonDecode(retryResponse.body);
+          if (retryResponse.statusCode == 200) {
+            return ChatEngineResult(
+              replyText: retryData["choices"]?[0]?["message"]?["content"] ??
+                  "Could you please specify which app and duration you would like?",
+            );
+          }
+        }
+
         return ChatEngineResult(
           replyText: "Error communicating with AI agent: $errorMsg",
         );

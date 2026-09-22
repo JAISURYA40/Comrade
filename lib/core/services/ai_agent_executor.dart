@@ -60,7 +60,11 @@ class AiAgentExecutor {
     Map<String, dynamic> args,
     WidgetRef ref,
   ) async {
-    final rawDuration = args['duration_minutes'] ?? args['duration'] ?? 25;
+    final rawDuration = args['duration_minutes'] ??
+        args['duration'] ??
+        args['timer_minutes'] ??
+        args['minutes'] ??
+        25;
     final durationMinutes = (rawDuration is num)
         ? rawDuration.toInt()
         : int.tryParse(rawDuration.toString()) ?? 25;
@@ -161,17 +165,26 @@ class AiAgentExecutor {
     Map<String, dynamic> args,
     WidgetRef ref,
   ) async {
-    final appName = args['app_name']?.toString() ?? '';
-    final rawTimer = args['timer_minutes'] ?? 0;
+    final appName = (args['app_name'] ?? args['app'] ?? '').toString().trim();
+    final rawTimer = args['timer_minutes'] ??
+        args['duration_minutes'] ??
+        args['duration'] ??
+        args['minutes'] ??
+        0;
     final timerMinutes = (rawTimer is num)
         ? rawTimer.toInt()
         : int.tryParse(rawTimer.toString()) ?? 0;
 
     if (appName.isEmpty) {
+      if (timerMinutes > 0) {
+        // Fallback: If no app was specified, assume the user wanted a focus session
+        return await _startFocusSession({'duration_minutes': timerMinutes}, ref);
+      }
       return AgentActionResult(
         toolName: 'set_app_timer',
         success: false,
-        message: "No app name was specified.",
+        message:
+            "Please specify which app to set a timer for (e.g. 'limit Instagram to 30 mins').",
       );
     }
 

@@ -52,7 +52,7 @@ class AiAgentTools {
       "function": {
         "name": "start_focus_session",
         "description":
-            "Starts a new focus mode session with a specified duration in minutes, with optional DND or strict enforcement.",
+            "Starts a new focus mode session with a specified duration in minutes. Use this for all focus sessions or timer requests (e.g. 'set focus time 10 mins', 'start focus 25 mins', 'set timer 15 mins').",
         "parameters": {
           "type": "object",
           "properties": {
@@ -68,8 +68,7 @@ class AiAgentTools {
               "type": "boolean",
               "description": "Whether to enable strict enforced focus mode."
             }
-          },
-          "required": ["duration_minutes"]
+          }
         }
       }
     },
@@ -106,8 +105,7 @@ class AiAgentTools {
               "type": "boolean",
               "description": "True to block/restrict the app in focus mode, false to unblock/remove."
             }
-          },
-          "required": ["app_name", "should_block"]
+          }
         }
       }
     },
@@ -115,7 +113,7 @@ class AiAgentTools {
       "type": "function",
       "function": {
         "name": "set_app_timer",
-        "description": "Sets a daily screen time usage limit/timer for a specific app.",
+        "description": "Sets a daily screen time usage limit for a specific installed app. Only use when an app name is specified.",
         "parameters": {
           "type": "object",
           "properties": {
@@ -127,8 +125,7 @@ class AiAgentTools {
               "type": "integer",
               "description": "The daily limit allowed for this app in minutes (e.g. 30, 60)."
             }
-          },
-          "required": ["app_name", "timer_minutes"]
+          }
         }
       }
     }
