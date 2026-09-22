@@ -18,6 +18,7 @@ import 'package:comrade/core/extensions/ext_num.dart';
 import 'package:comrade/config/hero_tags.dart';
 import 'package:comrade/providers/restrictions/wellbeing_provider.dart';
 import 'package:comrade/providers/system/parental_controls_provider.dart';
+import 'package:comrade/providers/usage/shorts_screen_time_provider.dart';
 import 'package:comrade/ui/common/rounded_container.dart';
 import 'package:comrade/ui/common/time_text_short.dart';
 import 'package:comrade/ui/common/styled_text.dart';
@@ -58,6 +59,7 @@ class ShortsTimerChart extends ConsumerWidget {
 
     if (newTimer == null || newTimer == allowedTimeSec) return;
     ref.read(wellBeingProvider.notifier).setAllowedShortContentTime(newTimer);
+    ref.invalidate(shortsScreenTimeProvider);
   }
 
   @override

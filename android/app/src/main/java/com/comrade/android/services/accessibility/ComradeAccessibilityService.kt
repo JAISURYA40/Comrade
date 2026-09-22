@@ -208,7 +208,8 @@ class ComradeAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
         return wellbeing.blockedFeatures.isNotEmpty() ||
                 wellbeing.blockedWebsites.isNotEmpty() ||
                 wellbeing.nsfwWebsites.isNotEmpty() ||
-                wellbeing.blockNsfwSites
+                wellbeing.blockNsfwSites ||
+                wellbeing.allowedShortsTimeMs > 0
     }
 
 
@@ -288,6 +289,18 @@ class ComradeAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
                             }
                     }
                 }
+            }
+
+            if (wellbeing.allowedShortsTimeMs > 0) {
+                shortsPlatformPackages.add(INSTAGRAM_PACKAGE)
+                shortsPlatformPackages.add(SNAPCHAT_PACKAGE)
+                shortsPlatformPackages.add(FACEBOOK_PACKAGE)
+                shortsPlatformPackages.add(REDDIT_PACKAGE)
+                shortsPlatformPackages.add(YOUTUBE_PACKAGE)
+                val ytIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com"))
+                pm.queryIntentActivities(ytIntent, PackageManager.MATCH_ALL)
+                    .filterNot { browserPackages.contains(it.activityInfo.packageName) }
+                    .forEach { shortsPlatformPackages.add(it.activityInfo.packageName) }
             }
 
 

@@ -89,6 +89,13 @@ class MethodChannelService {
     return time ~/ 1000;
   }
 
+  /// Resets short content screen time to 0.
+  Future<void> resetShortsScreenTime() async {
+    try {
+      await _methodChannel.invokeMethod('resetShortsScreenTime');
+    } catch (_) {}
+  }
+
   /// Gets all the stored native crash logs and clears them afterward.
   Future<List<CrashLogsTableCompanion>> getNativeCrashLogs() async {
     List<CrashLogsTableCompanion> crashLogs = [];

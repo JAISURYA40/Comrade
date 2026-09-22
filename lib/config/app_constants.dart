@@ -18,7 +18,7 @@ class AppConstants {
   static const defaultThemeMode = AppThemeMode.system;
   static const defaultMaterialColor = "Indigo";
   static const defaultLocale = "en";
-  static const defaultUsername = "Achiever";
+  static const defaultUsername = "Buddy";
   static const defaultCurve = Curves.fastEaseInToSlowEaseOut;
   static const defaultAnimDuration = Duration(milliseconds: 350);
 

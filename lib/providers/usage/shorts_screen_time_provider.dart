@@ -12,6 +12,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:comrade/core/services/method_channel_service.dart';
 
 /// Short content's screen time in SECONDS provider
-final shortsScreenTimeProvider = FutureProvider.autoDispose<int>(
-  (ref) async => await MethodChannelService.instance.getShortsScreenTimeSec(),
+final shortsScreenTimeProvider = StreamProvider.autoDispose<int>(
+  (ref) async* {
+    yield await MethodChannelService.instance.getShortsScreenTimeSec();
+    await for (final _ in Stream.periodic(const Duration(seconds: 1))) {
+      yield await MethodChannelService.instance.getShortsScreenTimeSec();
+    }
+  },
 );

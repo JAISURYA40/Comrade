@@ -72,7 +72,9 @@ class WellBeingNotifier extends StateNotifier<Wellbeing> {
   void insertNsfwSite(String websiteHost) async => state =
       state.copyWith(nsfwWebsites: [...state.nsfwWebsites, websiteHost]);
 
-  /// Sets the allowed time limit for short content consumption.
-  void setAllowedShortContentTime(int timeSec) =>
-      state = state.copyWith(allowedShortsTimeSec: timeSec > 0 ? timeSec : -1);
+  /// Sets the allowed time limit for short content consumption and resets current shorts screen time.
+  void setAllowedShortContentTime(int timeSec) {
+    state = state.copyWith(allowedShortsTimeSec: timeSec > 0 ? timeSec : -1);
+    MethodChannelService.instance.resetShortsScreenTime();
+  }
 }

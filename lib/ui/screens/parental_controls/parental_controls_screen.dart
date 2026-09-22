@@ -25,7 +25,7 @@ import 'package:comrade/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:comrade/ui/common/styled_text.dart';
 import 'package:comrade/ui/dialogs/time_picker_dialog.dart';
 import 'package:comrade/ui/permissions/admin_permission_tile.dart';
-import 'package:comrade/ui/screens/parental_controls/invincible_mode_settings.dart';
+// import 'package:comrade/ui/screens/parental_controls/invincible_mode_settings.dart';
 import 'package:comrade/ui/transitions/default_hero.dart';
 
 class ParentalControlsScreen extends ConsumerWidget {
@@ -84,8 +84,8 @@ class ParentalControlsScreen extends ConsumerWidget {
           sliverBody: CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
-              /// Invincible mode
-              const InvincibleModeSettings(),
+              /// Invincible mode (commented out for now; can be enabled if needed)
+              // const InvincibleModeSettings(),
 
               /// Parental controls
               ContentSectionHeader(

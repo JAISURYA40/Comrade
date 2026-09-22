@@ -10,6 +10,7 @@
 
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:comrade/config/app_constants.dart';
 import 'package:comrade/core/database/app_database.dart';
 import 'package:comrade/core/enums/app_theme_mode.dart';
 import 'package:comrade/core/enums/default_home_tab.dart';
@@ -35,6 +36,10 @@ class ComradeSettingsNotifier extends StateNotifier<ComradeSettings> {
   Future<ComradeSettings> init({bool addListenerToo = false}) async {
     final dao = DriftDbService.instance.driftDb.uniqueRecordsDao;
     state = await dao.loadComradeSettings();
+    if (state.username == "Achiever") {
+      state = state.copyWith(username: AppConstants.defaultUsername);
+      await dao.saveComradeSettings(state);
+    }
     await MethodChannelService.instance
         .updateLocale(languageCode: state.localeCode);
 

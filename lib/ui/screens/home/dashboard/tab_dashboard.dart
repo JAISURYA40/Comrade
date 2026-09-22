@@ -174,7 +174,7 @@ class TabDashboard extends ConsumerWidget {
 
         /// Learning YouTube
         DefaultListTile(
-          position: ItemPosition.top,
+          position: ItemPosition.none,
           leadingIcon: FluentIcons.hat_graduation_20_regular,
           titleText: "Learning YouTube",
           subtitleText: "Curated, distraction-free educational videos.",
@@ -183,6 +183,7 @@ class TabDashboard extends ConsumerWidget {
               Navigator.of(context).pushNamed(AppRoutes.learningYoutubePath),
         ),
 
+        /*
         /// Habits
         DefaultListTile(
           position: ItemPosition.mid,
@@ -221,5 +222,6 @@ class TabDashboard extends ConsumerWidget {
             icon: FluentIcons.info_20_filled,
           ),
         ),
+        */
       ];
 }

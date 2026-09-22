@@ -50,11 +50,11 @@ class ShortsPlatformManager(
 
         /// Check if blocking is enabled for platforms
         val isFeatureOpen = when (resolvedPackage) {
-            INSTAGRAM_PACKAGE -> isInstagramFeatureOpen(node, blockedFeatures)
-            SNAPCHAT_PACKAGE -> isSnapchatFeatureOpen(node, blockedFeatures)
-            FACEBOOK_PACKAGE -> isFacebookFeatureOpen(node, blockedFeatures)
-            REDDIT_PACKAGE -> isRedditFeatureOpen(node, blockedFeatures)
-            YOUTUBE_PACKAGE -> isYoutubeFeatureOpen(node, blockedFeatures)
+            INSTAGRAM_PACKAGE -> isInstagramFeatureOpen(node, blockedFeatures, wellbeing.allowedShortsTimeMs)
+            SNAPCHAT_PACKAGE -> isSnapchatFeatureOpen(node, blockedFeatures, wellbeing.allowedShortsTimeMs)
+            FACEBOOK_PACKAGE -> isFacebookFeatureOpen(node, blockedFeatures, wellbeing.allowedShortsTimeMs)
+            REDDIT_PACKAGE -> isRedditFeatureOpen(node, blockedFeatures, wellbeing.allowedShortsTimeMs)
+            YOUTUBE_PACKAGE -> isYoutubeFeatureOpen(node, blockedFeatures, wellbeing.allowedShortsTimeMs)
             else -> false
         }
 
@@ -73,31 +73,31 @@ class ShortsPlatformManager(
      * @return True if a blocked short-form content website is open, false otherwise.
      */
     fun checkAndBlockShortsOnBrowser(wellbeing: Wellbeing, url: String): Boolean {
-        when {
-            PlatformFeatures.INSTAGRAM_REELS in wellbeing.blockedFeatures
+        val isBlocked = when {
+            (wellbeing.allowedShortsTimeMs > 0 || PlatformFeatures.INSTAGRAM_REELS in wellbeing.blockedFeatures)
                     && doesUrlContainsAnyElement(mInstaReelUrls, url) -> true
 
-            PlatformFeatures.INSTAGRAM_EXPLORE in wellbeing.blockedFeatures
+            (wellbeing.allowedShortsTimeMs > 0 || PlatformFeatures.INSTAGRAM_EXPLORE in wellbeing.blockedFeatures)
                     && doesUrlContainsAnyElement(mInstaExploreUrls, url) -> true
 
-            PlatformFeatures.YOUTUBE_SHORTS in wellbeing.blockedFeatures
+            (wellbeing.allowedShortsTimeMs > 0 || PlatformFeatures.YOUTUBE_SHORTS in wellbeing.blockedFeatures)
                     && doesUrlContainsAnyElement(mYtShortUrls, url) -> true
 
-            PlatformFeatures.FACEBOOK_REELS in wellbeing.blockedFeatures
+            (wellbeing.allowedShortsTimeMs > 0 || PlatformFeatures.FACEBOOK_REELS in wellbeing.blockedFeatures)
                     && doesUrlContainsAnyElement(mFbReelUrls, url) -> true
 
-            PlatformFeatures.SNAPCHAT_SPOTLIGHT in wellbeing.blockedFeatures
+            (wellbeing.allowedShortsTimeMs > 0 || PlatformFeatures.SNAPCHAT_SPOTLIGHT in wellbeing.blockedFeatures)
                     && doesUrlContainsAnyElement(mSnapSpotlightUrls, url) -> true
 
-            PlatformFeatures.SNAPCHAT_DISCOVER in wellbeing.blockedFeatures
+            (wellbeing.allowedShortsTimeMs > 0 || PlatformFeatures.SNAPCHAT_DISCOVER in wellbeing.blockedFeatures)
                     && doesUrlContainsAnyElement(mSnapDiscoverUrls, url) -> true
 
             else -> false
-        }.let {
-            if (it) {
-                updateShortsScreenTime(wellbeing.allowedShortsTimeMs)
-                return true
-            }
+        }
+
+        if (isBlocked) {
+            updateShortsScreenTime(wellbeing.allowedShortsTimeMs)
+            return true
         }
 
         return false
@@ -114,7 +114,7 @@ class ShortsPlatformManager(
         maxAllowedDuration: Long = 30 * 1000L,
     ) {
         // Check if limit is exhausted
-        if (allowedShortContentTimeMs < 0 || shortContentScreenTime > (allowedShortContentTimeMs + SAVING_INTERVAL_MS)) {
+        if (allowedShortContentTimeMs > 0 && shortContentScreenTime >= allowedShortContentTimeMs) {
             blockedContentGoBack.invoke()
             return
         }
@@ -127,14 +127,13 @@ class ShortsPlatformManager(
         shortContentScreenTime += (if (elapsedTime <= maxAllowedDuration) elapsedTime else 0)
         lastTimeShortsEvent = currentTime
 
-        // Check if the minimum interval has passed before calling shared preferences
-        if ((currentTime - lastTimeSaved) > SAVING_INTERVAL_MS) {
-            SharedPrefsHelper.getSetShortsScreenTimeMs(context, shortContentScreenTime)
-            lastTimeSaved = currentTime
-            Log.d(
-                TAG,
-                "checkTimerAndBlockShortContent: shorts time saved: " + (shortContentScreenTime / 1000L) + " seconds"
-            )
+        // Save immediately so UI and background stay synchronized
+        SharedPrefsHelper.getSetShortsScreenTimeMs(context, shortContentScreenTime)
+        lastTimeSaved = currentTime
+
+        // Check if limit reached after update
+        if (allowedShortContentTimeMs > 0 && shortContentScreenTime >= allowedShortContentTimeMs) {
+            blockedContentGoBack.invoke()
         }
     }
 
@@ -183,13 +182,14 @@ class ShortsPlatformManager(
         private fun isInstagramFeatureOpen(
             node: AccessibilityNodeInfo,
             blockedFeatures: Set<PlatformFeatures>,
+            allowedShortsTimeMs: Long = 0,
         ): Boolean {
             return when {
-                PlatformFeatures.INSTAGRAM_REELS in blockedFeatures &&
+                (allowedShortsTimeMs > 0 || PlatformFeatures.INSTAGRAM_REELS in blockedFeatures) &&
                         doesNodeByIdExists(node, "com.instagram.android:id/clips_video_container")
                 -> true
 
-                PlatformFeatures.INSTAGRAM_EXPLORE in blockedFeatures &&
+                (allowedShortsTimeMs > 0 || PlatformFeatures.INSTAGRAM_EXPLORE in blockedFeatures) &&
                         doesNodeByIdExists(node, "com.instagram.android:id/action_bar_search_edit_text")
                 -> true
 
@@ -203,8 +203,9 @@ class ShortsPlatformManager(
         private fun isYoutubeFeatureOpen(
             node: AccessibilityNodeInfo,
             blockedFeatures: Set<PlatformFeatures>,
+            allowedShortsTimeMs: Long = 0,
         ): Boolean {
-            return PlatformFeatures.YOUTUBE_SHORTS in blockedFeatures &&
+            return (allowedShortsTimeMs > 0 || PlatformFeatures.YOUTUBE_SHORTS in blockedFeatures) &&
                     doesNodeByIdExists(node, "${node.packageName}:id/reel_player_underlay")
         }
 
@@ -214,17 +215,18 @@ class ShortsPlatformManager(
         private fun isSnapchatFeatureOpen(
             node: AccessibilityNodeInfo,
             blockedFeatures: Set<PlatformFeatures>,
+            allowedShortsTimeMs: Long = 0,
         ): Boolean {
 
             return when {
-                PlatformFeatures.SNAPCHAT_SPOTLIGHT in blockedFeatures &&
+                (allowedShortsTimeMs > 0 || PlatformFeatures.SNAPCHAT_SPOTLIGHT in blockedFeatures) &&
                         doesNodeByIdExists(
                             node,
                             "com.snapchat.android:id/spotlight_card_static_thumbnail"
                         )
                 -> true
 
-                PlatformFeatures.SNAPCHAT_DISCOVER in blockedFeatures &&
+                (allowedShortsTimeMs > 0 || PlatformFeatures.SNAPCHAT_DISCOVER in blockedFeatures) &&
                         doesNodeByIdExists(node, "com.snapchat.android:id/df_large_story")
                 -> true
 
@@ -238,11 +240,12 @@ class ShortsPlatformManager(
         private fun isFacebookFeatureOpen(
             node: AccessibilityNodeInfo,
             blockedFeatures: Set<PlatformFeatures>,
+            allowedShortsTimeMs: Long = 0,
         ): Boolean {
             // TODO: Add more string translated from different languages for the node text
             //  as user may have set different language for facebook app
 
-            if (PlatformFeatures.FACEBOOK_REELS in blockedFeatures) {
+            if (allowedShortsTimeMs > 0 || PlatformFeatures.FACEBOOK_REELS in blockedFeatures) {
                 for (text in mFbNodeTexts) {
                     if (node.findAccessibilityNodeInfosByText(text).isNotEmpty()) {
                         return true
@@ -259,8 +262,9 @@ class ShortsPlatformManager(
         private fun isRedditFeatureOpen(
             node: AccessibilityNodeInfo,
             blockedFeatures: Set<PlatformFeatures>,
+            allowedShortsTimeMs: Long = 0,
         ): Boolean {
-            return PlatformFeatures.REDDIT_SHORTS in blockedFeatures && node.viewIdResourceName == "feed_vertical_pager"
+            return (allowedShortsTimeMs > 0 || PlatformFeatures.REDDIT_SHORTS in blockedFeatures) && node.viewIdResourceName == "feed_vertical_pager"
         }
 
         /**

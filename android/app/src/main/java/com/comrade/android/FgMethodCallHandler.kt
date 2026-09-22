@@ -144,6 +144,11 @@ class FgMethodCallHandler(
                 result.success(SharedPrefsHelper.getSetShortsScreenTimeMs(context, null))
             }
 
+            "resetShortsScreenTime" -> {
+                SharedPrefsHelper.getSetShortsScreenTimeMs(context, 0L)
+                result.success(true)
+            }
+
             "getNativeCrashLogs" -> {
                 result.success(SharedPrefsHelper.getCrashLogsArrayJsonString(context))
             }
