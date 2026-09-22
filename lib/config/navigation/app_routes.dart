@@ -24,6 +24,7 @@ import 'package:comrade/ui/screens/shorts_blocking/shorts_blocking_screen.dart';
 import 'package:comrade/ui/screens/notifications/notifications_screen.dart';
 import 'package:comrade/ui/screens/websites_blocking/websites_blocking_screen.dart';
 import 'package:comrade/ui/screens/roadmap/roadmap_screen.dart';
+import 'package:comrade/ui/screens/learning_youtube/learning_youtube_screen.dart';
 import 'package:comrade/ui/splash_screen.dart';
 
 class AppRoutes {
@@ -44,6 +45,7 @@ class AppRoutes {
   static const String appDashboardPath = '/appDashboard';
   static const String notificationsPath = '/notifications';
   static const String roadmapPath = '/roadmap';
+  static const String learningYoutubePath = '/learningYoutube';
 
   static final Map<String, Widget Function(BuildContext)> routes = {
     /// Root
@@ -103,5 +105,8 @@ class AppRoutes {
 
     /// Roadmap screen
     roadmapPath: (context) => const RoadmapScreen(),
+
+    /// Learning YouTube screen
+    learningYoutubePath: (context) => const LearningYoutubeScreen(),
   };
 }

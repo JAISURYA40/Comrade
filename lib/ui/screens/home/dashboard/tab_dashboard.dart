@@ -176,9 +176,20 @@ class TabDashboard extends ConsumerWidget {
         /// Productivity
         const ContentSectionHeader(title: "Productivity"),
 
-        /// Habits
+        /// Learning YouTube
         DefaultListTile(
           position: ItemPosition.top,
+          leadingIcon: FluentIcons.hat_graduation_20_regular,
+          titleText: "Learning YouTube",
+          subtitleText: "Curated, distraction-free educational videos.",
+          trailing: const Icon(FluentIcons.chevron_right_20_regular),
+          onPressed: () =>
+              Navigator.of(context).pushNamed(AppRoutes.learningYoutubePath),
+        ),
+
+        /// Habits
+        DefaultListTile(
+          position: ItemPosition.mid,
           leadingIcon: FluentIcons.drink_coffee_20_regular,
           titleText: "Habits",
           subtitleText: "Build better habits and track them.",
