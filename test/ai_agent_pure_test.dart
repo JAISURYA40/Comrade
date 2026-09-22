@@ -16,7 +16,7 @@ void main() {
   print('✓ Test 1 Passed: AgentAction JSON deserialization');
 
   // Test 2: Tools Definition
-  assert(AiAgentTools.toolsDefinition.length >= 5, 'Should have at least 5 tools');
+  assert(AiAgentTools.toolsDefinition.length == 4, 'Should have 4 action tools');
   final toolNames = AiAgentTools.toolsDefinition
       .map((t) => (t['function'] as Map<String, dynamic>)['name'])
       .toSet();
@@ -24,7 +24,6 @@ void main() {
   assert(toolNames.contains('stop_focus_session'), 'Should contain stop_focus_session');
   assert(toolNames.contains('block_app_in_focus'), 'Should contain block_app_in_focus');
   assert(toolNames.contains('set_app_timer'), 'Should contain set_app_timer');
-  assert(toolNames.contains('get_productivity_status'), 'Should contain get_productivity_status');
   print('✓ Test 2 Passed: AiAgentTools specifications');
 
   // Test 3: AgentActionResult

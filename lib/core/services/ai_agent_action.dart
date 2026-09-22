@@ -131,17 +131,6 @@ class AiAgentTools {
           "required": ["app_name", "timer_minutes"]
         }
       }
-    },
-    {
-      "type": "function",
-      "function": {
-        "name": "get_productivity_status",
-        "description": "Fetches real-time status of today's screen time, focus history, and active session details.",
-        "parameters": {
-          "type": "object",
-          "properties": {}
-        }
-      }
     }
   ];
 }
