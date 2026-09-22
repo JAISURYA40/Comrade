@@ -372,17 +372,6 @@
                         android:textColor="@color/secondaryContainer" />
 
                     <!-- Made in India -->
-                    <TextView
-                        android:id="@+id/overlay_sheet_made"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="32dp"
-                        android:gravity="center"
-                        android:text="Made with ♥️ in 🇮🇳"
-                        android:textColor="@color/textSecondary"
-                        android:textSize="12sp"
-                        tools:ignore="HardcodedText" />
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>

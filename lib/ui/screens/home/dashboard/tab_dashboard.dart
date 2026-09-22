@@ -29,7 +29,6 @@ import 'package:comrade/ui/controllers/tab_controller_provider.dart';
 import 'package:comrade/ui/screens/home/dashboard/glance_cards/focus_daily_glance.dart';
 import 'package:comrade/ui/screens/home/dashboard/glance_cards/screen_time_glance.dart';
 import 'package:comrade/ui/screens/home/dashboard/glance_cards_grid.dart';
-import 'package:comrade/ui/screens/home/dashboard/sliver_tips_and_tricks.dart';
 import 'package:comrade/ui/transitions/default_effects.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -111,9 +110,6 @@ class TabDashboard extends ConsumerWidget {
               interval: 100.ms,
             ),
           ),
-
-          /// Tips and tricks
-          const SliverTipsAndTricks(),
 
           const SliverTabsBottomPadding(),
         ],
