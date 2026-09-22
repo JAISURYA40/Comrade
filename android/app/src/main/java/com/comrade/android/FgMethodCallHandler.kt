@@ -33,6 +33,7 @@ import com.comrade.android.services.vpn.ComradeVpnService
 import com.comrade.android.utils.AppUtils
 import com.comrade.android.utils.JsonUtils
 import com.comrade.android.utils.Utils
+import com.comrade.android.widgets.FocusModeWidgetProvider
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -247,6 +248,49 @@ class FgMethodCallHandler(
                     focusServiceConn.unBindService()
                 }
                 result.success(true)
+            }
+
+            "syncFocusWidgetConfig" -> {
+                val jsonString = call.arguments<String>() ?: ""
+                try {
+                    val jsonObject = org.json.JSONObject(jsonString)
+                    val durationSecs = jsonObject.optInt("durationSecs", 1500)
+                    val toggleDnd = jsonObject.optBoolean("toggleDnd", false)
+                    val distractingApps = JsonUtils.parseStringSet(
+                        jsonObject.optJSONArray("distractingApps")?.toString()
+                    )
+                    SharedPrefsHelper.setFocusWidgetConfig(
+                        context,
+                        durationSecs,
+                        toggleDnd,
+                        distractingApps
+                    )
+                    FocusModeWidgetProvider.updateAllWidgets(context)
+                    result.success(true)
+                } catch (e: Exception) {
+                    result.success(false)
+                }
+            }
+
+            "isFocusSessionRunning" -> {
+                val isRunning = Utils.isServiceRunning(context, FocusSessionService::class.java)
+                result.success(isRunning)
+            }
+
+            "getActiveFocusSessionInfo" -> {
+                val isRunning = Utils.isServiceRunning(context, FocusSessionService::class.java)
+                if (isRunning) {
+                    val startTime = SharedPrefsHelper.getActiveFocusStartTime(context)
+                    val duration = SharedPrefsHelper.getActiveFocusDuration(context)
+                    val map = mapOf(
+                        "isRunning" to true,
+                        "startTimeMsEpoch" to startTime,
+                        "durationSecs" to duration
+                    )
+                    result.success(map)
+                } else {
+                    result.success(mapOf("isRunning" to false))
+                }
             }
 
             "updateNotificationSettings" -> {

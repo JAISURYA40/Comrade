@@ -130,6 +130,21 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_screen_usage_config" />
         </receiver>
+        <receiver
+            android:name=".widgets.FocusModeWidgetProvider"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.comrade.android.action.START_FOCUS_FROM_WIDGET" />
+                <action android:name="com.comrade.android.action.STOP_FOCUS_FROM_WIDGET" />
+                <action android:name="com.comrade.android.action.REFRESH_FOCUS_WIDGET" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_focus_mode_config" />
+        </receiver>
 
         <!-- _________________________________________________________________________________ -->
         <!-- ________________________________ RECEIVERS ______________________________________ -->

@@ -57,7 +57,30 @@ class FocusModeNotifier extends StateNotifier<FocusModeModel>
     final focusMode = await _uniqueDao.loadFocusModeSettings();
     final focusProfile =
         await _dynamicDao.fetchFocusProfileBySessionType(focusMode.sessionType);
-    final activeSession = await _dynamicDao.fetchLastActiveFocusSession();
+    var activeSession = await _dynamicDao.fetchLastActiveFocusSession();
+
+    // Check if a session was started from the home-screen widget while app was closed
+    if (activeSession == null) {
+      final isRunningNatively =
+          await MethodChannelService.instance.isFocusSessionRunning();
+      if (isRunningNatively) {
+        final info =
+            await MethodChannelService.instance.getActiveFocusSessionInfo();
+        if (info != null && (info['isRunning'] as bool? ?? false)) {
+          final startTimeEpoch = (info['startTimeMsEpoch'] as num?)?.toInt() ??
+              DateTime.now().millisecondsSinceEpoch;
+          final durationSecs = (info['durationSecs'] as num?)?.toInt() ??
+              focusProfile.sessionDuration;
+          final startDateTime =
+              DateTime.fromMillisecondsSinceEpoch(startTimeEpoch);
+          activeSession = await _dynamicDao.insertFocusSession(
+            type: focusMode.sessionType,
+            durationSecs: durationSecs,
+            startDateTime: startDateTime,
+          );
+        }
+      }
+    }
 
     /// update state
     state = state.copyWith(
@@ -65,6 +88,8 @@ class FocusModeNotifier extends StateNotifier<FocusModeModel>
       focusProfile: focusProfile,
       activeSession: activeSession,
     );
+
+    _syncFocusWidgetConfig();
 
     /// Run after a delay to avoid database deadlock
     await Future.delayed(1.seconds, () {
@@ -302,9 +327,19 @@ class FocusModeNotifier extends StateNotifier<FocusModeModel>
   void _updateFocusModeInDb() async =>
       await _uniqueDao.saveFocusModeSettings(state.focusMode);
 
-  /// Saves the current focus profile configuration to the database.
-  void _updateFocusProfileInDb() async =>
-      await _dynamicDao.insertFocusProfileBySessionType(state.focusProfile);
+  /// Saves the current focus profile configuration to the database and syncs to native widget.
+  void _updateFocusProfileInDb() async {
+    await _dynamicDao.insertFocusProfileBySessionType(state.focusProfile);
+    _syncFocusWidgetConfig();
+  }
+
+  void _syncFocusWidgetConfig() {
+    MethodChannelService.instance.syncFocusWidgetConfig(
+      durationSecs: state.focusProfile.sessionDuration,
+      toggleDnd: state.focusProfile.shouldStartDnd,
+      distractingApps: state.focusProfile.distractingApps,
+    );
+  }
 
   @override
   void dispose() {
@@ -322,11 +357,37 @@ class FocusModeNotifier extends StateNotifier<FocusModeModel>
     }
 
     /// Synchronize timer if resumed after pause or not
-    if (appState == AppLifecycleState.resumed &&
-        _isAppPaused &&
-        state.activeSession.value != null) {
+    if (appState == AppLifecycleState.resumed && _isAppPaused) {
       _isAppPaused = false;
-      _startSessionServiceAndTimer(state.activeSession.value!);
+      final isRunningNatively =
+          await MethodChannelService.instance.isFocusSessionRunning();
+
+      if (state.activeSession.value != null && !isRunningNatively) {
+        // Stopped outside (e.g. from home-screen widget STOP button)
+        state = state.removeActiveSession();
+        _activeSessionTimer?.cancel();
+      } else if (state.activeSession.value != null && isRunningNatively) {
+        _startSessionServiceAndTimer(state.activeSession.value!);
+      } else if (state.activeSession.value == null && isRunningNatively) {
+        // Started outside (e.g. from home-screen widget START button)
+        final info =
+            await MethodChannelService.instance.getActiveFocusSessionInfo();
+        if (info != null && (info['isRunning'] as bool? ?? false)) {
+          final startTimeEpoch = (info['startTimeMsEpoch'] as num?)?.toInt() ??
+              DateTime.now().millisecondsSinceEpoch;
+          final durationSecs = (info['durationSecs'] as num?)?.toInt() ??
+              state.focusProfile.sessionDuration;
+          final startDateTime =
+              DateTime.fromMillisecondsSinceEpoch(startTimeEpoch);
+          final session = await _dynamicDao.insertFocusSession(
+            type: state.focusMode.sessionType,
+            durationSecs: durationSecs,
+            startDateTime: startDateTime,
+          );
+          state = state.copyWith(activeSession: session);
+          _startSessionServiceAndTimer(session);
+        }
+      }
     }
   }
 }

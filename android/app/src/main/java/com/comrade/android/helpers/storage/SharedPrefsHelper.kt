@@ -33,6 +33,11 @@ object SharedPrefsHelper {
     private const val PREF_KEY_SHORTS_SCREEN_TIME = "shortsScreenTime"
     private const val PREF_KEY_DND_WAKE_LOCK = "dndWakeLock"
     private const val PREF_KEY_EXCLUDED_APPS = "excludedApps"
+    private const val PREF_KEY_FOCUS_DURATION_SECS = "focusDurationSecs"
+    private const val PREF_KEY_FOCUS_TOGGLE_DND = "focusToggleDnd"
+    private const val PREF_KEY_FOCUS_DISTRACTING_APPS = "focusDistractingApps"
+    private const val PREF_KEY_FOCUS_ACTIVE_START_TIME = "focusActiveStartTime"
+    private const val PREF_KEY_FOCUS_ACTIVE_DURATION = "focusActiveDuration"
 
     private var mListenablePrefs: SharedPreferences? = null
     private const val LISTENABLE_PREFS_BOX = "UniquePrefs"
@@ -243,5 +248,63 @@ object SharedPrefsHelper {
     fun clearCrashLogs(context: Context) {
         checkAndInitializeCrashLogPrefs(context)
         mCrashLogPrefs!!.edit().putString(PREF_KEY_CRASH_LOGS, "[]").apply()
+    }
+
+    /**
+     * Stores the user's latest focus configuration for home-screen widget use.
+     */
+    fun setFocusWidgetConfig(
+        context: Context,
+        durationSecs: Int,
+        toggleDnd: Boolean,
+        distractingApps: Set<String>,
+    ) {
+        checkAndInitializeUniquePrefs(context)
+        mUniquePrefs!!.edit()
+            .putInt(PREF_KEY_FOCUS_DURATION_SECS, durationSecs)
+            .putBoolean(PREF_KEY_FOCUS_TOGGLE_DND, toggleDnd)
+            .putStringSet(PREF_KEY_FOCUS_DISTRACTING_APPS, distractingApps)
+            .apply()
+    }
+
+    fun getFocusDurationSecs(context: Context): Int {
+        checkAndInitializeUniquePrefs(context)
+        return mUniquePrefs!!.getInt(PREF_KEY_FOCUS_DURATION_SECS, 1500)
+    }
+
+    fun getFocusToggleDnd(context: Context): Boolean {
+        checkAndInitializeUniquePrefs(context)
+        return mUniquePrefs!!.getBoolean(PREF_KEY_FOCUS_TOGGLE_DND, false)
+    }
+
+    fun getFocusDistractingApps(context: Context): Set<String> {
+        checkAndInitializeUniquePrefs(context)
+        return mUniquePrefs!!.getStringSet(PREF_KEY_FOCUS_DISTRACTING_APPS, emptySet()) ?: emptySet()
+    }
+
+    fun setActiveFocusSession(context: Context, startTimeMs: Long, durationSecs: Int) {
+        checkAndInitializeUniquePrefs(context)
+        mUniquePrefs!!.edit()
+            .putLong(PREF_KEY_FOCUS_ACTIVE_START_TIME, startTimeMs)
+            .putInt(PREF_KEY_FOCUS_ACTIVE_DURATION, durationSecs)
+            .apply()
+    }
+
+    fun getActiveFocusStartTime(context: Context): Long {
+        checkAndInitializeUniquePrefs(context)
+        return mUniquePrefs!!.getLong(PREF_KEY_FOCUS_ACTIVE_START_TIME, 0L)
+    }
+
+    fun getActiveFocusDuration(context: Context): Int {
+        checkAndInitializeUniquePrefs(context)
+        return mUniquePrefs!!.getInt(PREF_KEY_FOCUS_ACTIVE_DURATION, 0)
+    }
+
+    fun clearActiveFocusSession(context: Context) {
+        checkAndInitializeUniquePrefs(context)
+        mUniquePrefs!!.edit()
+            .putLong(PREF_KEY_FOCUS_ACTIVE_START_TIME, 0L)
+            .putInt(PREF_KEY_FOCUS_ACTIVE_DURATION, 0)
+            .apply()
     }
 }

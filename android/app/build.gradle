@@ -65,7 +65,7 @@ android {
                 debugSymbolLevel 'full'
             }
             resValue "string", "app_name", "Comrade"
-            signingConfig signingConfigs.release
+            signingConfig System.getenv("KEYSTORE_FILE") != null ? signingConfigs.release : signingConfigs.debug
 
             // If you see "SigningConfig 'release' is missing required property 'storeFile'",  
             // it means your release keystore is not set up due to missing environment variables.  

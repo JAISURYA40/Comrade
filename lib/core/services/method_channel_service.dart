@@ -274,6 +274,50 @@ class MethodChannelService {
         isTheSessionSuccessful,
       );
 
+  /// Syncs the focus profile configuration to the native side for the home-screen widget.
+  Future<bool> syncFocusWidgetConfig({
+    required int durationSecs,
+    required bool toggleDnd,
+    required List<String> distractingApps,
+  }) async {
+    try {
+      final result = await _methodChannel.invokeMethod<bool>(
+        'syncFocusWidgetConfig',
+        jsonEncode({
+          'durationSecs': durationSecs,
+          'toggleDnd': toggleDnd,
+          'distractingApps': distractingApps,
+        }),
+      );
+      return result ?? false;
+    } catch (e) {
+      debugPrint('Failed to sync focus widget config: $e');
+      return false;
+    }
+  }
+
+  /// Checks if the native FocusSessionService is currently active.
+  Future<bool> isFocusSessionRunning() async {
+    try {
+      final result = await _methodChannel.invokeMethod<bool>('isFocusSessionRunning');
+      return result ?? false;
+    } catch (e) {
+      debugPrint('Failed to check if focus session is running: $e');
+      return false;
+    }
+  }
+
+  /// Gets the active focus session info if running natively.
+  Future<Map<String, dynamic>?> getActiveFocusSessionInfo() async {
+    try {
+      final result = await _methodChannel.invokeMapMethod<String, dynamic>('getActiveFocusSessionInfo');
+      return result;
+    } catch (e) {
+      debugPrint('Failed to get active focus session info: $e');
+      return null;
+    }
+  }
+
   // ===========================================================================================
   // ==================================== PERMISSIONS ==========================================
   // ===========================================================================================

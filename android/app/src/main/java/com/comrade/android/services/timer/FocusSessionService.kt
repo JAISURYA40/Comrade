@@ -30,6 +30,7 @@ import com.comrade.android.services.quickTiles.FocusQuickTileService
 import com.comrade.android.services.tracking.ComradeTrackerService
 import com.comrade.android.utils.AppUtils
 import com.comrade.android.utils.DateTimeUtils
+import com.comrade.android.widgets.FocusModeWidgetProvider
 import java.util.Calendar
 import kotlin.math.max
 
@@ -50,8 +51,28 @@ class FocusSessionService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (intent?.action == ServiceBinder.ACTION_START_COMRADE_SERVICE) {
+        val action = intent?.action
+        if (action == ServiceBinder.ACTION_START_COMRADE_SERVICE) {
             return START_STICKY
+        } else if (action == FocusModeWidgetProvider.ACTION_START_FOCUS) {
+            val durationSecs = intent.getIntExtra("durationSecs", SharedPrefsHelper.getFocusDurationSecs(this))
+            val toggleDnd = intent.getBooleanExtra("toggleDnd", SharedPrefsHelper.getFocusToggleDnd(this))
+            val distractingApps = intent.getStringArrayListExtra("distractingApps")?.toSet()
+                ?: SharedPrefsHelper.getFocusDistractingApps(this)
+            val startTimeMsEpoch = intent.getLongExtra("startTimeMsEpoch", System.currentTimeMillis())
+
+            val focusSession = FocusSession(
+                toggleDnd = toggleDnd,
+                startTimeMsEpoch = startTimeMsEpoch,
+                durationSecs = durationSecs,
+                distractingApps = distractingApps
+            )
+            startFocusSession(focusSession)
+            return START_STICKY
+        } else if (action == FocusModeWidgetProvider.ACTION_STOP_FOCUS) {
+            giveUpOrStopFocusSession(false)
+            stopSelf()
+            return START_NOT_STICKY
         }
 
         stopSelf()
@@ -100,6 +121,10 @@ class FocusSessionService : Service() {
                 this,
                 ComponentName(this, FocusQuickTileService::class.java)
             )
+
+            // Save active session and update widgets
+            SharedPrefsHelper.setActiveFocusSession(this, focusSession.startTimeMsEpoch, focusSession.durationSecs)
+            FocusModeWidgetProvider.updateAllWidgets(this, isActive = true, session = focusSession)
             Log.d(TAG, "startFocusSession: FOCUS service started successfully")
         } catch (e: Exception) {
             Log.d(TAG, "startFocusSession: Failed to start FOCUS service", e)
@@ -164,6 +189,9 @@ class FocusSessionService : Service() {
             NotificationHelper.toggleDnd(this, DndWakeLock.FOCUS_MODE, false)
         }
 
+        SharedPrefsHelper.clearActiveFocusSession(this)
+        FocusModeWidgetProvider.updateAllWidgets(this, isActive = false, session = null)
+
         mNotificationTimer.forceDisposeTimer(
             getString(
                 if (isTheSessionSuccessful) R.string.focus_session_success_notification_info
@@ -184,6 +212,10 @@ class FocusSessionService : Service() {
             this,
             ComponentName(this, FocusQuickTileService::class.java)
         )
+
+        // Clear active session and update widgets
+        SharedPrefsHelper.clearActiveFocusSession(this)
+        FocusModeWidgetProvider.updateAllWidgets(this, isActive = false, session = null)
         super.onDestroy()
     }
 

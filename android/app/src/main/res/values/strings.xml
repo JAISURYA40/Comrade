@@ -78,4 +78,9 @@
 
     <string name="notification_schedule_batch_title">Unread notifications</string>
     <string name="notification_schedule_batch_summery" comment="Number of notifications as placeholder" formatted="true">You have %d unread notifications while you were away. They’ll be marked as read after 24 hours.</string>
+
+    <string name="widget_focus_mode_label">Focus mode</string>
+    <string name="widget_focus_mode_start">START</string>
+    <string name="widget_focus_mode_stop">STOP</string>
+    <string name="widget_focus_mode_focusing">Focusing...</string>
 </resources>

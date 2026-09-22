@@ -293,12 +293,13 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
   Future<FocusSession> insertFocusSession({
     required SessionType type,
     required int durationSecs,
+    DateTime? startDateTime,
   }) async =>
       into(focusSessionsTable).insertReturning(
         FocusSessionsTableCompanion.insert(
           type: Value(type),
           state: const Value(SessionState.active),
-          startDateTime: Value(DateTime.now()),
+          startDateTime: Value(startDateTime ?? DateTime.now()),
           durationSecs: Value(durationSecs),
         ),
         mode: InsertMode.insertOrReplace,

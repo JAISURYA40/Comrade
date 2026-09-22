@@ -23,7 +23,7 @@ class ChatEngineResult {
 }
 
 class ChatEngine {
-  final String apiKey = "";
+  final String apiKey = "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";
   final String modelName = "openai/gpt-oss-20b";
 
   Future<ChatEngineResult> processMessage(
