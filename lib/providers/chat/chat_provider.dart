@@ -6,13 +6,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:comrade/core/services/ai_agent_action.dart';
 import 'package:comrade/core/services/ai_agent_executor.dart';
 import 'package:comrade/core/services/ai_context_builder.dart';
+import 'package:comrade/core/services/ai_intent_classifier.dart';
 import 'package:comrade/core/services/chat_engine.dart';
 import 'package:comrade/core/services/chat_storage_service.dart';
+import 'package:comrade/models/ai_intent_decision.dart';
 import 'package:comrade/models/chat_conversation.dart';
 import 'package:comrade/models/chat_message.dart';
 
@@ -72,7 +75,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
         _contextBuilder = contextBuilder ?? AiContextBuilder(),
         super(
           ChatState(
-            activeConversationId: 'conv_${DateTime.now().millisecondsSinceEpoch}',
+            activeConversationId:
+                'conv_${DateTime.now().millisecondsSinceEpoch}',
             messages: [ChatState.defaultInitialMessage],
           ),
         ) {
@@ -138,17 +142,48 @@ class ChatNotifier extends StateNotifier<ChatState> {
         context,
       );
 
+      final intentDecision = response.intentDecision ??
+          AiIntentClassifier.classify(
+            cleanText,
+            recentMessages: state.messages,
+          );
+
       final List<AgentActionResult> executedActions = [];
       if (response.actions.isNotEmpty) {
         for (final action in response.actions) {
-          final result = await AiAgentExecutor.execute(action, _ref);
-          executedActions.add(result);
+          final isAuthorized =
+              _isActionAuthorizedByIntent(action, intentDecision);
+          if (isAuthorized) {
+            final result = await AiAgentExecutor.execute(action, _ref);
+            executedActions.add(result);
+          } else {
+            debugPrint(
+              "AiAgentGate: Blocked unauthorized action '${action.toolName}' "
+              "for intent '${intentDecision.intent.name}' (Action: ${intentDecision.action})",
+            );
+          }
         }
-        HapticFeedback.mediumImpact();
+        if (executedActions.isNotEmpty) {
+          HapticFeedback.mediumImpact();
+        }
+      }
+
+      String replyText = response.replyText;
+      // If intent is ambiguous focus desire, ensure assistant asks confirmation if not already asking
+      if (intentDecision.intent == UserIntentType.ambiguousFocus) {
+        final lower = replyText.toLowerCase();
+        if (!lower.contains('focus session') &&
+            !lower.contains('focus mode') &&
+            !lower.contains('start') &&
+            !lower.contains('would you like') &&
+            !lower.contains('want me to')) {
+          replyText =
+              "$replyText\n\nWould you like me to start a Focus Mode session for you?";
+        }
       }
 
       final assistantMessage = ChatMessage(
-        text: response.replyText,
+        text: replyText,
         isUser: false,
         timestamp: DateTime.now(),
         actionResults: executedActions,
@@ -190,7 +225,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
     if (userIndex < 0) return;
 
     final userMessageText = state.messages[userIndex].text;
-    final trimmedMessages = List<ChatMessage>.from(state.messages)..removeAt(lastAssistantIndex);
+    final trimmedMessages = List<ChatMessage>.from(state.messages)
+      ..removeAt(lastAssistantIndex);
 
     state = state.copyWith(
       messages: trimmedMessages,
@@ -208,13 +244,30 @@ class ChatNotifier extends StateNotifier<ChatState> {
         context,
       );
 
+      final intentDecision = response.intentDecision ??
+          AiIntentClassifier.classify(
+            userMessageText,
+            recentMessages: state.messages,
+          );
+
       final List<AgentActionResult> executedActions = [];
       if (response.actions.isNotEmpty) {
         for (final action in response.actions) {
-          final result = await AiAgentExecutor.execute(action, _ref);
-          executedActions.add(result);
+          final isAuthorized =
+              _isActionAuthorizedByIntent(action, intentDecision);
+          if (isAuthorized) {
+            final result = await AiAgentExecutor.execute(action, _ref);
+            executedActions.add(result);
+          } else {
+            debugPrint(
+              "AiAgentGate: Blocked unauthorized action '${action.toolName}' "
+              "for intent '${intentDecision.intent.name}' (Action: ${intentDecision.action})",
+            );
+          }
         }
-        HapticFeedback.mediumImpact();
+        if (executedActions.isNotEmpty) {
+          HapticFeedback.mediumImpact();
+        }
       }
 
       final assistantMessage = ChatMessage(
@@ -247,6 +300,44 @@ class ChatNotifier extends StateNotifier<ChatState> {
     }
   }
 
+  bool _isActionAuthorizedByIntent(
+    AgentAction action,
+    UserIntentDecision intentDecision,
+  ) {
+    // 1. Explicit negative intent, casual chat, learning questions, or planning must NEVER execute actions
+    if (intentDecision.intent == UserIntentType.negativeIntent ||
+        intentDecision.intent == UserIntentType.generalChat ||
+        intentDecision.intent == UserIntentType.learningQuestion ||
+        intentDecision.intent == UserIntentType.planning ||
+        intentDecision.intent == UserIntentType.comradeQuery) {
+      return false;
+    }
+
+    // 2. Ambiguous desires require user confirmation before starting focus mode
+    if (intentDecision.intent == UserIntentType.ambiguousFocus) {
+      return false;
+    }
+
+    // 3. Explicit action: verify tool aligns with intent
+    if (intentDecision.intent == UserIntentType.explicitAction) {
+      if (action.toolName == 'start_focus_session') {
+        return intentDecision.action == 'start_focus_session';
+      }
+      if (action.toolName == 'stop_focus_session') {
+        return intentDecision.action == 'stop_focus_session';
+      }
+      if (action.toolName == 'block_app_in_focus') {
+        return intentDecision.action == 'block_app_in_focus';
+      }
+      if (action.toolName == 'set_app_timer') {
+        return intentDecision.action == 'set_app_timer';
+      }
+      return true;
+    }
+
+    return false;
+  }
+
   Future<void> startNewConversation() async {
     final newId = 'conv_${DateTime.now().millisecondsSinceEpoch}';
     state = state.copyWith(
@@ -269,7 +360,8 @@ final chatStorageServiceProvider = Provider<ChatStorageService>((ref) {
   return ChatStorageService();
 });
 
-final chatNotifierProvider = StateNotifierProvider<ChatNotifier, ChatState>((ref) {
+final chatNotifierProvider =
+    StateNotifierProvider<ChatNotifier, ChatState>((ref) {
   final storage = ref.watch(chatStorageServiceProvider);
   return ChatNotifier(storage: storage, ref: ref);
 });
