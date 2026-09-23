@@ -42,6 +42,24 @@ class AgentActionResult {
     required this.message,
     DateTime? executedAt,
   }) : executedAt = executedAt ?? DateTime.now();
+
+  factory AgentActionResult.fromJson(Map<String, dynamic> json) {
+    return AgentActionResult(
+      toolName: json['toolName']?.toString() ?? '',
+      success: json['success'] as bool? ?? false,
+      message: json['message']?.toString() ?? '',
+      executedAt: json['executedAt'] != null
+          ? DateTime.tryParse(json['executedAt'].toString()) ?? DateTime.now()
+          : DateTime.now(),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'toolName': toolName,
+        'success': success,
+        'message': message,
+        'executedAt': executedAt.toIso8601String(),
+      };
 }
 
 /// Tool definitions in OpenAI / Groq compatible format.

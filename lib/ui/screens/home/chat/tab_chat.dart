@@ -10,10 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:comrade/core/services/ai_agent_action.dart';
-import 'package:comrade/core/services/ai_agent_executor.dart';
-import 'package:comrade/core/services/ai_context_builder.dart';
-import 'package:comrade/core/services/chat_engine.dart';
+import 'package:comrade/models/chat_message.dart';
+import 'package:comrade/providers/chat/chat_provider.dart';
+
+export 'package:comrade/models/chat_message.dart';
 
 class TabChat extends ConsumerStatefulWidget {
   const TabChat({super.key});
@@ -22,23 +22,13 @@ class TabChat extends ConsumerStatefulWidget {
   ConsumerState<TabChat> createState() => _TabChatState();
 }
 
-class _TabChatState extends ConsumerState<TabChat> {
+class _TabChatState extends ConsumerState<TabChat>
+    with AutomaticKeepAliveClientMixin {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
-  final ChatEngine _chatEngine = ChatEngine();
-  final AiContextBuilder _contextBuilder = AiContextBuilder();
-
-  bool _isTyping = false;
-
-  final List<ChatMessage> _messages = [
-    ChatMessage(
-      text:
-          "Hey! I'm your Comrade AI Agent. ⚡\n\nYou can talk to me, or ask me to control Comrade for you:\n- *\"Set my focus time 10 mins now and start\"*\n- *\"Block WhatsApp during focus\"*\n- *\"Stop current focus session\"*\n- *\"How much screen time did I use today?\"*",
-      isUser: false,
-      timestamp: DateTime.now(),
-    ),
-  ];
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void dispose() {
@@ -47,160 +37,21 @@ class _TabChatState extends ConsumerState<TabChat> {
     super.dispose();
   }
 
-  Future<void> _sendMessage([String? customPrompt]) async {
+  void _sendMessage([String? customPrompt]) {
     final text = (customPrompt ?? _messageController.text).trim();
-
-    if (text.isEmpty || _isTyping) return;
-
-    setState(() {
-      _messages.add(
-        ChatMessage(
-          text: text,
-          isUser: true,
-          timestamp: DateTime.now(),
-        ),
-      );
-
-      _isTyping = true;
-    });
+    if (text.isEmpty || ref.read(chatNotifierProvider).isTyping) return;
 
     if (customPrompt == null) {
       _messageController.clear();
     }
     _scrollToBottom();
-
-    try {
-      // Build the user's current Comrade context.
-      final context = await _contextBuilder.build();
-
-      final response = await _chatEngine.processMessage(
-        text,
-        _messages,
-        context,
-      );
-
-      // Execute any tool/action requests returned by the AI Agent
-      final List<AgentActionResult> executedActions = [];
-      if (response.actions.isNotEmpty) {
-        for (final action in response.actions) {
-          final result = await AiAgentExecutor.execute(action, ref);
-          executedActions.add(result);
-        }
-        HapticFeedback.mediumImpact();
-      }
-
-      if (!mounted) return;
-
-      setState(() {
-        _isTyping = false;
-
-        _messages.add(
-          ChatMessage(
-            text: response.replyText,
-            isUser: false,
-            timestamp: DateTime.now(),
-            actionResults: executedActions,
-          ),
-        );
-      });
-
-      _scrollToBottom();
-    } catch (e) {
-      if (!mounted) return;
-
-      setState(() {
-        _isTyping = false;
-
-        _messages.add(
-          ChatMessage(
-            text: "I couldn't process that right now. Please try again. ($e)",
-            isUser: false,
-            timestamp: DateTime.now(),
-          ),
-        );
-      });
-
-      _scrollToBottom();
-    }
+    ref.read(chatNotifierProvider.notifier).sendMessage(text);
   }
 
-  Future<void> _regenerateResponse() async {
-    if (_isTyping || _messages.length < 2) return;
-
-    final lastAssistantIndex = _messages.lastIndexWhere(
-      (message) => !message.isUser,
-    );
-
-    if (lastAssistantIndex == -1) return;
-
-    int userIndex = lastAssistantIndex - 1;
-
-    while (userIndex >= 0 && !_messages[userIndex].isUser) {
-      userIndex--;
-    }
-
-    if (userIndex < 0) return;
-
-    final userMessage = _messages[userIndex].text;
-
-    setState(() {
-      _messages.removeAt(lastAssistantIndex);
-      _isTyping = true;
-    });
-
+  void _regenerateResponse() {
+    if (ref.read(chatNotifierProvider).isTyping) return;
     _scrollToBottom();
-
-    try {
-      final context = await _contextBuilder.build();
-
-      final response = await _chatEngine.processMessage(
-        userMessage,
-        _messages,
-        context,
-      );
-
-      final List<AgentActionResult> executedActions = [];
-      if (response.actions.isNotEmpty) {
-        for (final action in response.actions) {
-          final result = await AiAgentExecutor.execute(action, ref);
-          executedActions.add(result);
-        }
-        HapticFeedback.mediumImpact();
-      }
-
-      if (!mounted) return;
-
-      setState(() {
-        _isTyping = false;
-
-        _messages.add(
-          ChatMessage(
-            text: response.replyText,
-            isUser: false,
-            timestamp: DateTime.now(),
-            actionResults: executedActions,
-          ),
-        );
-      });
-
-      _scrollToBottom();
-    } catch (e) {
-      if (!mounted) return;
-
-      setState(() {
-        _isTyping = false;
-
-        _messages.add(
-          ChatMessage(
-            text: "I couldn't regenerate the response. Please try again.",
-            isUser: false,
-            timestamp: DateTime.now(),
-          ),
-        );
-      });
-
-      _scrollToBottom();
-    }
+    ref.read(chatNotifierProvider.notifier).regenerateResponse();
   }
 
   void _copyMessage(String text) {
@@ -228,7 +79,15 @@ class _TabChatState extends ConsumerState<TabChat> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final theme = Theme.of(context);
+    final chatState = ref.watch(chatNotifierProvider);
+    final messages = chatState.messages;
+    final isTyping = chatState.isTyping;
+
+    ref.listen(chatNotifierProvider.select((s) => s.messages.length), (prev, next) {
+      _scrollToBottom();
+    });
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -245,14 +104,14 @@ class _TabChatState extends ConsumerState<TabChat> {
                   top: 16,
                   bottom: 20,
                 ),
-                itemCount: _messages.length + (_isTyping ? 1 : 0),
+                itemCount: messages.length + (isTyping ? 1 : 0),
                 itemBuilder: (context, index) {
-                  if (index < _messages.length) {
-                    final message = _messages[index];
+                  if (index < messages.length) {
+                    final message = messages[index];
 
                     final isLastAssistantMessage =
                         !message.isUser &&
-                        index == _messages.lastIndexWhere(
+                        index == messages.lastIndexWhere(
                           (item) => !item.isUser,
                         );
 
@@ -266,7 +125,7 @@ class _TabChatState extends ConsumerState<TabChat> {
                           onRegenerate: _regenerateResponse,
                         ),
                         // Quick Action suggestions on first load
-                        if (index == 0 && _messages.length == 1)
+                        if (index == 0 && messages.length == 1)
                           _QuickActionSuggestions(
                             onSelect: (prompt) => _sendMessage(prompt),
                           ),
@@ -281,31 +140,13 @@ class _TabChatState extends ConsumerState<TabChat> {
             _ChatComposer(
               controller: _messageController,
               onSend: () => _sendMessage(),
-              isEnabled: !_isTyping,
+              isEnabled: !isTyping,
             ),
           ],
         ),
       ),
     );
   }
-}
-
-// ============================================================
-// CHAT MESSAGE MODEL
-// ============================================================
-
-class ChatMessage {
-  final String text;
-  final bool isUser;
-  final DateTime timestamp;
-  final List<AgentActionResult> actionResults;
-
-  ChatMessage({
-    required this.text,
-    required this.isUser,
-    required this.timestamp,
-    this.actionResults = const [],
-  });
 }
 
 // ============================================================

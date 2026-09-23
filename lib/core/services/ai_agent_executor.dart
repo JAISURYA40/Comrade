@@ -7,7 +7,6 @@
  */
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:comrade/core/services/ai_agent_action.dart';
 import 'package:comrade/core/services/method_channel_service.dart';
 import 'package:comrade/models/app_info.dart';
@@ -19,7 +18,7 @@ class AiAgentExecutor {
   /// Executes a single [AgentAction] against Comrade's Riverpod state.
   static Future<AgentActionResult> execute(
     AgentAction action,
-    WidgetRef ref,
+    dynamic ref,
   ) async {
     try {
       switch (action.toolName) {
@@ -58,7 +57,7 @@ class AiAgentExecutor {
   /// Starts a new focus session.
   static Future<AgentActionResult> _startFocusSession(
     Map<String, dynamic> args,
-    WidgetRef ref,
+    dynamic ref,
   ) async {
     final rawDuration = args['duration_minutes'] ??
         args['duration'] ??
@@ -94,7 +93,7 @@ class AiAgentExecutor {
   /// Stops or finishes the active focus session.
   static Future<AgentActionResult> _stopFocusSession(
     Map<String, dynamic> args,
-    WidgetRef ref,
+    dynamic ref,
   ) async {
     final focusState = ref.read(focusModeProvider);
     if (focusState.activeSession.value == null) {
@@ -125,7 +124,7 @@ class AiAgentExecutor {
   /// Adds or removes an app from the distracting apps list during focus mode.
   static Future<AgentActionResult> _blockAppInFocus(
     Map<String, dynamic> args,
-    WidgetRef ref,
+    dynamic ref,
   ) async {
     final appName = args['app_name']?.toString() ?? '';
     final shouldBlock = args['should_block'] != false;
@@ -163,7 +162,7 @@ class AiAgentExecutor {
   /// Sets daily usage timer for an app.
   static Future<AgentActionResult> _setAppTimer(
     Map<String, dynamic> args,
-    WidgetRef ref,
+    dynamic ref,
   ) async {
     final appName = (args['app_name'] ?? args['app'] ?? '').toString().trim();
     final rawTimer = args['timer_minutes'] ??
@@ -212,7 +211,7 @@ class AiAgentExecutor {
   }
 
   /// Fetches productivity status.
-  static Future<AgentActionResult> _getProductivityStatus(WidgetRef ref) async {
+  static Future<AgentActionResult> _getProductivityStatus(dynamic ref) async {
     final focusState = ref.read(focusModeProvider);
     final hasActiveSession = focusState.activeSession.value != null;
     final distractingCount = focusState.focusProfile.distractingApps.length;
@@ -227,7 +226,7 @@ class AiAgentExecutor {
   }
 
   /// Resolves user natural language query to an installed [AppInfo].
-  static Future<AppInfo?> _resolveApp(String query, WidgetRef ref) async {
+  static Future<AppInfo?> _resolveApp(String query, dynamic ref) async {
     final cleanQuery = query.trim().toLowerCase();
 
     // 1. Try reading from Riverpod state

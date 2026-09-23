@@ -31,6 +31,7 @@ import 'package:comrade/ui/screens/home/dashboard/tab_dashboard.dart';
 import 'package:comrade/ui/screens/home/notifications/new_notification_schedule_fab.dart';
 import 'package:comrade/ui/screens/home/statistics/tab_statistics.dart';
 import 'package:comrade/ui/screens/home/notifications/tab_notifications.dart';
+import 'package:comrade/providers/chat/chat_provider.dart';
 import 'package:comrade/ui/screens/home/chat/tab_chat.dart';
 import 'package:comrade/ui/transitions/default_hero.dart';
 
@@ -121,10 +122,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             titleText: "Chat",
             icon: FluentIcons.chat_20_regular,
             filledIcon: FluentIcons.chat_20_filled,
+            actions: const [_NewChatButton()],
             sliverBody: const TabChat(),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _NewChatButton extends ConsumerWidget {
+  const _NewChatButton();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return IconButton(
+      tooltip: "New Chat",
+      icon: const Icon(FluentIcons.chat_add_20_regular),
+      onPressed: () {
+        HapticFeedback.lightImpact();
+        ref.read(chatNotifierProvider.notifier).startNewConversation();
+        context.showSnackAlert(
+          "Started new conversation",
+          icon: FluentIcons.checkmark_circle_20_regular,
+        );
+      },
     );
   }
 }
